@@ -12,6 +12,7 @@ import java.util.Date;
 @Data
 public class User {
     private Integer userId;
+    private Integer groupId; // 用户所在的小组
     private String userName;
     private String account;
     private String tel;
@@ -19,7 +20,6 @@ public class User {
     private String email;
     private String birth;
     private String school;
-    private String idCard;
     private Integer authorityTableId;
     private Date createdDate;
     private Date lastLoginDate;
