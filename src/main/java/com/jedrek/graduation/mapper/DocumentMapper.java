@@ -1,18 +1,19 @@
-package com.jedrek.graduation.dao;
+package com.jedrek.graduation.mapper;
 
 import com.jedrek.graduation.entity.Document;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 @Mapper
-public interface DocumentDao {
+public interface DocumentMapper {
 
-    int addDocuemnt(Document document);
+    int addDocument(Document document);
 
     int deleteDocument(Integer documentId);
 
-    int modifyDocument(Document oldDocument, Document newDocument);
+    int modifyDocument(@Param("documentId") Integer documentId, @Param("newDocument") Document newDocument);
 
     Document queryDocument(Integer documentId);
 

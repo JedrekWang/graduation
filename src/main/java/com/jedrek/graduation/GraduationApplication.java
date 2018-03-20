@@ -1,12 +1,12 @@
-package com.jedrek.graduationdemo;
+package com.jedrek.graduation;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GraduationdemoApplication {
+public class GraduationApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GraduationdemoApplication.class, args);
+		SpringApplication.run(GraduationApplication.class, args);
 	}
 }
