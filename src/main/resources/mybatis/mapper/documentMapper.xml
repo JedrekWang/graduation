@@ -1,0 +1,91 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.DocumentMapper">
+
+    <insert id="addDocument">
+        INSERT INTO document(
+        title, content_url, created_date, created_user_id, last_modify_date,
+        last_modify_user_id
+        ) VALUES (
+        #{title}, #{contentUrl}, #{createdDate}, #{createdUserId}, #{lastModifyDate}
+        #{lastModifyUserId}
+        );
+    </insert>
+
+    <delete id="deleteDocument">
+        DELETE FROM document WHERE document_id = #{documentId}
+    </delete>
+
+    <update id="modifyDocument">
+        UPDATE document SET
+        document.title = #{title},
+        document.content_url = #{contentUrl},
+        document.created_date = #{createdDate},
+        document.created_user_id = #{createdUserId},
+        document.last_modify_date = #{lastModifyDate},
+        document.last_modify_user_id = #{lastModifyUserId}
+        WHERE document_id = #{documentId}
+    </update>
+
+    <select id="queryDocument" resultType="com.jedrek.graduation.entity.Document">
+        SELECT
+        document_id as documentId,
+        title,
+        content_url as contentUrl,
+        created_date as createdDate,
+        created_user_id as createdUserId,
+        last_modify_date as lastModifyDate,
+        last_modify_user_id as lastModifyUserId
+        FROM document WHERE document_id = #{documentId}
+    </select>
+
+    <select id="queryDocumentByTitle" resultType="com.jedrek.graduation.entity.Document">
+        SELECT
+        document_id as documentId,
+        title,
+        content_url as contentUrl,
+        created_date as createdDate,
+        created_user_id as createdUserId,
+        last_modify_date as lastModifyDate,
+        last_modify_user_id as lastModifyUserId
+        FROM document WHERE title = #{title}
+    </select>
+
+    <select id="queryDocumentByUser" resultType="com.jedrek.graduation.entity.Document">
+        SELECT
+        document_id as documentId,
+        title,
+        content_url as contentUrl,
+        created_date as createdDate,
+        created_user_id as createdUserId,
+        last_modify_date as lastModifyDate,
+        last_modify_user_id as lastModifyUserId
+        FROM document WHERE created_user_id = #{createdUserId}
+    </select>
+
+    <select id="queryDocumentByModifyUser" resultType="com.jedrek.graduation.entity.Document">
+        SELECT
+        document_id as documentId,
+        title,
+        content_url as contentUrl,
+        created_date as createdDate,
+        created_user_id as createdUserId,
+        last_modify_date as lastModifyDate,
+        last_modify_user_id as lastModifyUserId
+        FROM document WHERE last_modify_user_id =#{modifyUserId}
+    </select>
+
+    <select id="queryAllDocument" resultType="com.jedrek.graduation.entity.Document">
+        SELECT
+        document_id as documentId,
+        title,
+        content_url as contentUrl,
+        created_date as createdDate,
+        created_user_id as createdUserId,
+        last_modify_date as lastModifyDate,
+        last_modify_user_id as lastModifyUserId
+        FROM document;
+    </select>
+
+</mapper>

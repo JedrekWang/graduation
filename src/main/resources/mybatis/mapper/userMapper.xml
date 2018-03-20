@@ -1,0 +1,78 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.UserMapper">
+
+    <select id="queryUser" resultType="com.jedrek.graduation.entity.User">
+        SELECT
+        user_id AS userId,
+        user_name AS userName,
+        group_id as groupId,
+        account,tel,sex,email,birth,school,
+        authority_table_id as authorityTableId,
+         created_date as createdDate
+        FROM user WHERE user.user_id = #{userId};
+</select>
+
+    <select id="queryAllUser" resultType="com.jedrek.graduation.entity.User">
+        SELECT
+        user_id AS userId,
+        user_name AS userName,
+        group_id as groupId,
+        account,tel,sex,email,birth,school,
+        authority_table_id as authorityTableId,
+         created_date as createdDate
+        FROM user;
+    </select>
+
+    <insert id="addUser" parameterType="com.jedrek.graduation.entity.User">
+        INSERT INTO user(
+        group_id,user_name,account,tel,sex,email,
+        birth,school,authority_table_id,created_date)
+        VALUES (
+        #{groupId}, #{userName}, #{account}, # {tel}, #{email},
+        #{birth}, #{school}, #{authorityTableId}, #{createdDate})
+    </insert>
+
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        DELETE FROM user where user_id = #{userId}
+    </delete>
+
+    <update id="modifyUser">
+        UPDATE "user" SET
+        user.group_id = #{groupId},
+        user.user_name = #{userName},
+        user.account = #{account},
+        user.tel = #{tel},
+        user.email = #{email},
+        user.birth = #{birth},
+        user.school = #{school},
+        user.authority_table_id = #{authorizationTableId},
+        user.created_date = #{createdDate}
+        where user_id = #{userId}
+    </update>
+
+    <select id="queryUserByGroup" resultType="com.jedrek.graduation.entity.User">
+        SELECT
+        user_id AS userId,
+        user_name AS userName,
+        group_id as groupId,
+        account,tel,sex,email,birth,school,
+        authority_table_id as authorityTableId,
+         created_date as createdDate
+         FROM "user" WHERE "user".groupId = #{groupId}
+    </select>
+
+    <select id="queryUserBySchool" resultType="com.jedrek.graduation.entity.User">
+        SELECT
+        user_id AS userId,
+        user_name AS userName,
+        group_id as groupId,
+        account,tel,sex,email,birth,school,
+        authority_table_id as authorityTableId,
+         created_date as createdDate
+        FROM "user" WHERE "user".school = #{school}
+    </select>
+
+
+</mapper>
