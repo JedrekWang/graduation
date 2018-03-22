@@ -10,6 +10,7 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.Request;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,25 +27,44 @@ public class MainController {
         this.userService = userService;
     }
 
+    /**
+     * 首页，左边展示网站功能，右边是注册登录功能
+     * @return
+     */
     @RequestMapping("/")
-    @ResponseBody
     public String index() {
-        return "hello world";
-    }
-
-    @RequestMapping("/test")
-    public String getIndex() {
         return "index";
     }
 
+
+    /**
+     * 提供登录功能
+     * @return
+     */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login() {
-        return "login";
+    public String showLogin() {
+        return "signup";
     }
 
-    @RequestMapping(value = "/signup", method = RequestMethod.GET)
-    public String signup() {
-        return "signup";
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public String login() {
+        // todo 完成具体的登录验证工作
+        return null;
+    }
+
+    /**
+     * 提供注册功能
+     * @return
+     */
+    @RequestMapping(value = "/join", method = RequestMethod.GET)
+    public String showJoin() {
+        return "join";
+    }
+
+    @RequestMapping(value = "/join", method = RequestMethod.POST)
+    public String join() {
+        // todo 完成邮箱注册功能
+        return null;
     }
 
     @RequestMapping(value = "/news", method = RequestMethod.GET)
@@ -52,58 +72,5 @@ public class MainController {
         return "news";
     }
 
-    @RequestMapping(value = "/document/upload", method = RequestMethod.GET)
-    public String showUploadDocument() {
-        return "upload";
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "document/upload", method = RequestMethod.POST)
-    public String uploadDocument(MultipartFile file) {
-        // todo 简单的上传文件，需要添加路径的散列算法以及文件名的修改
-        Date day = new Date();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String uploadDate = df.format(day);
-
-
-        if (!file.isEmpty()) {
-            String name = file.getOriginalFilename();
-            String uploadPath = Constant.uploadPath + name;
-            try {
-                file.transferTo(new File(uploadPath));
-                return "success";
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-        return "failed";
-
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "document/download", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> downloadDocument(
-            @RequestParam String filename) throws Exception {
-
-        String filePath = Constant.uploadPath + filename;
-        // fixme 用户上传的不应该是文件名，而是文档的编号，通过编号查找数据库得到url，再与uploadPath结合并下载
-        File file = new File(filePath);
-        HttpHeaders headers = new HttpHeaders();
-        //下载显示的文件名，解决中文名称乱码问题
-        String downloadFielName = new String(filename.getBytes("UTF-8"), "iso-8859-1");
-        headers.setContentDispositionFormData("attachment", downloadFielName);
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<>(FileUtils.readFileToByteArray(file),
-                headers, HttpStatus.CREATED);
-    }
-
-    @ResponseBody
-    @RequestMapping("user/{userId}")
-    public String getUserMessage(@PathVariable Integer userId) {
-        User user = userService.queryUserById(userId);
-        String name = user.getUserName();
-        return name;
-    }
 }
 

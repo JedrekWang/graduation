@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component
-public class HashFile {
+public class DocumentUtil {
     public static void main(String[] args) {
 
     }
@@ -37,4 +37,6 @@ public class HashFile {
         String ans = String.join("", split);
         return ans;
     }
+
+
 }
