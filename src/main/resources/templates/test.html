@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .navbar-brand {
+            width: 400px;
+            background-image: url(static/img/logo.jpg);
+            background-repeat: no-repeat;
+            background-size: 60%;
+            background-position: center center;
+        }
+        .test {
+            margin-left: 200px;
+        }
+        .image{
+            border-radius: 15px;
+        }
+        .main-card{
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <el-container width="100%">
+        <el-header>
+            <el-col :span="20">
+                <el-menu
+                        :default-active="activeIndex2"
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        @select="handleSelect"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="1">
+                        DocumentKiller
+                    </el-menu-item>
+                    <el-menu-item index="2">
+                        <i class="el-icon-tickets"></i>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <el-input v-model="input" placeholder="请输入文档关键字">
+                            <i slot="suffix" class="el-icon-search"></i>
+                        </el-input>
+                    </el-menu-item>
+                    <el-menu-item index="4">我的工作台</el-menu-item>
+                    <el-menu-item index="5">消息中心</el-menu-item>
+                    <el-menu-item index="6"><a href="https://www.ele.me" target="_blank">小组管理</a></el-menu-item>
+                </el-menu>
+            </el-col>
+            <el-col :span="4">
+                <el-menu
+                        :default-active="activeIndex2"
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        @select="handleSelect"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="8" class="test">
+                        <i class="el-icon-bell"></i>
+                    </el-menu-item>
+                    <el-menu-item index="9">
+                        <i class="el-icon-plus"></i>
+                    </el-menu-item>
+                    <el-menu-item index="10">
+                        <i class="el-icon-star-on"></i>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-header>
+
+        <el-container>
+            <el-aside width="40%">
+                <el-col :span="24">
+                    <el-card :body-style="{ padding: '50px' }">
+                        <img src="static/img/2-1.jpg" class="image">
+                        <div style="padding: 14px;">
+                            <span>王杰</span>
+                            <div class="line"></div>
+                            <span>JedrekWang</span>
+                            <div class="line"></div>
+                            <span>中南大学在校生</span>
+                            <div class="line"></div>
+                            <span>学校</span>
+                            <div class="line"></div>
+                            <i class="el-icon-message"></i>
+                            <span>Jedekwang@gmail.com</span>
+                            <div class="line"></div>
+                            <span>小组信息</span>
+                            <div class="bottom clearfix">
+                                <time class="time">{{ currentDate }}</time>
+                                <el-button type="text" class="button">操作按钮</el-button>
+                            </div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-aside>
+            <el-container>
+                <el-main>
+                    <el-card class="box-card main-card">
+                        <div slot="header" class="clearfix">
+                            <span>文档一</span>
+                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                        </div>
+                    </el-card>
+                    <el-card class="box-card main-card">
+                        <div slot="header" class="clearfix">
+                            <span>文档二</span>
+                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                        </div>
+                    </el-card>
+                    <el-card class="box-card main-card">
+                        <div slot="header" class="clearfix">
+                            <span>文档三</span>
+                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                        </div>
+                    </el-card>
+                    <el-card class="box-card main-card">
+                        <div slot="header" class="clearfix">
+                            <span>文档四</span>
+                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                        </div>
+                    </el-card>
+                </el-main>
+                <el-footer>
+                    @CopyRight 2017-1028 by Jedrek
+                    <i class="el-icon-success"></i>
+                </el-footer>
+            </el-container>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function () {
+            return {visible: false}
+        }
+    })
+</script>
+</html>
