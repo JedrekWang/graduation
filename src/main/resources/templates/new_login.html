@@ -40,37 +40,37 @@
     </style>
 </head>
 <body>
-<div id="app">
-    <el-row>
-        <el-col :span="10" :offset="4">
-            <div class="left-content">
-                <h1>Built for<br>Creators</h1>
-                <h2>{{slogan}}</h2>
-            </div>
-        </el-col>
-        <el-col :span="8" :offset="2">
-            <div class="login-box">
-                <div class="less_login">
-                    <el-form :model="joinForm" ref="joinForm" method="post">
-                        <el-form-item label="账号">
-                            <el-input  name="account" v-model="joinForm.account" placeholder="请输入账号或用户名">{{joinForm.account}}</el-input>
-                        </el-form-item>
-                        <el-form-item label="邮箱">
-                            <el-input name="email" v-model="joinForm.email" placeholder="请输入邮箱"></el-input>
-                        </el-form-item>
-                        <el-form-item label="密码">
-                            <el-input name="password" type="password" v-model="joinForm.password" placeholder="请输入密码"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Signal Up"/>
-                        </el-form-item>
-                        <p class="signup-message">{{login_prompt}}</p>
-                    </el-form>
+    <div id="app">
+        <el-row>
+            <el-col :span="10" :offset="4">
+                <div class="left-content">
+                    <h1>Built for<br>Creators</h1>
+                    <h2>{{slogan}}</h2>
                 </div>
-            </div>
-        </el-col>
-    </el-row>
-</div>
+            </el-col>
+            <el-col :span="8" :offset="2">
+                <div class="login-box">
+                    <div class="less_login">
+                        <el-form :model="joinForm" ref="joinForm">
+                            <el-form-item label="账号">
+                                <el-input  v-model="joinForm.account" placeholder="请输入账号或用户名">{{joinForm.account}}</el-input>
+                            </el-form-item>
+                            <el-form-item label="邮箱">
+                                <el-input v-model="joinForm.email" placeholder="请输入邮箱"></el-input>
+                            </el-form-item>
+                            <el-form-item label="密码">
+                                <el-input type="password" v-model="joinForm.password" placeholder="请输入密码"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <button type="button" @click="submitForm" class="btn btn-primary btn-lg btn-block">Signal Up</button>
+                            </el-form-item>
+                                <p class="signup-message">{{login_prompt}}</p>
+                        </el-form>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
 
 </body>
 <script src="../static/js/vue.js"></script>

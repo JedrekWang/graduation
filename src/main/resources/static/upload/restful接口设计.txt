@@ -1,0 +1,16 @@
+
+username/     --用户首页展示
+username?tab=**  --用户的部分细节页面展示
+username?tab=documents --列出该用户所有的文档记录
+username?tab=documents&q=**&type=** --根据文档名搜索文档,文档类型搜索
+username/search?q=** --用户首页搜索文档内容
+
+groupname/  -- 小组信息展示
+groupname/people --小组成员展示
+
+username/document_name/ 用户的某个文档的首页展示,可以是相关描述
+username/document_name/preview  展示文档的静态内容
+username/document_name/log    文档的修改历史记录
+username/document_name/discuss 文档的话题讨论
+username/document_name/archive/***.doc  文档的下载
+

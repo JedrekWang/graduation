@@ -38,6 +38,7 @@ public class DocumentController {
      * @param documentName
      * @return
      */
+    @ResponseBody
     @RequestMapping(value = "{userName}/{documentName}" , method = RequestMethod.GET)
     public String showDocumentInfo(@PathVariable String userName, @PathVariable String documentName) {
         return null;
