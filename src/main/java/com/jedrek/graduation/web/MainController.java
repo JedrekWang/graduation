@@ -2,9 +2,12 @@ package com.jedrek.graduation.web;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jedrek.graduation.constant.Constant;
+import com.jedrek.graduation.entity.LoginUser;
 import com.jedrek.graduation.mapper.UserMapper;
 import com.jedrek.graduation.entity.User;
+import com.jedrek.graduation.service.LoginUserService;
 import com.jedrek.graduation.service.UserService;
+import com.jedrek.graduation.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.apache.commons.io.FileUtils;
@@ -27,10 +30,12 @@ import java.util.Map;
 public class MainController {
 
     private UserService userService;
+    private LoginUserService loginUserService;
 
     @Autowired
-    public MainController(UserService userService) {
+    public MainController(UserService userService, LoginUserService loginUserService) {
         this.userService = userService;
+        this.loginUserService = loginUserService;
     }
 
     /**
@@ -53,9 +58,15 @@ public class MainController {
             @RequestParam("account") String account,
             @RequestParam("email") String email,
             @RequestParam("password") String password) {
-        // todo 通过email给该邮箱发送一封邮件，然后等待用户点击指定链接，若点击了根据账号，邮件，密码创建一个用户
-
-        return "test";
+        LoginUser loginUser = new LoginUser();
+        loginUser.setAccount(account);
+        loginUser.setEmail(email);
+        loginUser.setPassowrd(password);
+        loginUserService.saveLoginUser(loginUser);
+        String data = String.format("%s+%s+%s",account,email,password);
+        // 向指定用户发送一封邮件
+        MailUtil.sendMail(email, data);
+        return "verify_email";
 
     }
 //    FIXME 这是通过axios由前端将数据传给后台
