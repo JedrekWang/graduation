@@ -14,6 +14,9 @@ import javax.mail.internet.MimeMessage;
 import com.sun.mail.util.MailSSLSocketFactory;
 
 public class MailUtil {
+
+    private static final String CRYPT_KEY = "magiccode";
+
     public static void main(String[] args) throws Exception {
         String to = "1850715048@qq.com";
         String userMessage = "Jedrek_1850715048@qq.com_12345";
@@ -47,7 +50,7 @@ public class MailUtil {
         // 获取默认session对象
         Session session = Session.getDefaultInstance(properties, new Authenticator() {
             public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("xxxxx@qq.com", "xxxxxx"); //发件人邮件用户名、密码
+                return new PasswordAuthentication("1309898641@qq.com", "cikojppfidbrijgb"); //发件人邮件用户名、密码
             }
         });
 
@@ -65,7 +68,6 @@ public class MailUtil {
             message.setSubject("Welcome to DocumentHub!");
 
             // 设置消息体
-            // todo 两个问题，一个应发送一个html页面，激活链接应修改
             String hash = makeHashCode(userMessage);
             String html = makeMailContent(to, hash);
             message.setContent(html, "text/html;charset=utf-8");
@@ -84,22 +86,37 @@ public class MailUtil {
      * @param hash l链接中的动态内容
      *
      */
-    public static String makeMailContent(String to, String hash) {
-        String url = String.format("localhost:8088/email=%s&hash=%s", to, hash);
+    private static String makeMailContent(String to, String hash) {
+        String url = String.format("http://localhost:8088/verify_email?email=%s&hash=%s", to, hash);
         String html = "<h2>欢迎你注册DoucmentHub，请点击以下链接来激活全部服务</h2>";
         String link = String.format("<a href=\"%s\">Join us</a>", url);
         String end = "<h3>如果此操作非本人，请忽略此封邮件</h3>";
         return html+link+end;
     }
 
-    public static String makeHashCode(String message) {
-        String cryptKey = "magiccode";
-        String data = message;
+    private static String makeHashCode(String message) {
         try {
-            return DESUtil.encrypt(data, cryptKey);
+            return DESUtil.encrypt(message, CRYPT_KEY);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("生成注册hash值失败");
         }
     }
+
+    public static String decryptHashCode(String hash) {
+        try {
+            String decrypt = DESUtil.decrypt(hash, CRYPT_KEY);
+            String[] message = decrypt.split("\\+");
+            if (message.length != 3) {
+                throw new RuntimeException("解密注册hash值时出错");
+            }
+            return decrypt;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }
+
+
+//http://localhost:8088/verify_email?email=1850715048@qq.com%26hash=61AD531F838A33515487FEDFA252E66CF47C2AF34AF4F301CE196AB74175763301F589D93600FC5B&mailid=HQUJaHABAAUGFFpEBHZtAmJLeQV6VX9iRUpydGFtUQEG&spam=0

@@ -1,11 +1,9 @@
 package com.jedrek.graduation.web;
 
 
-import com.jedrek.graduation.entity.LoginUser;
-import com.jedrek.graduation.entity.User;
-import com.jedrek.graduation.service.LoginUserService;
+import com.jedrek.graduation.entity.Login;
+import com.jedrek.graduation.service.LoginService;
 import com.jedrek.graduation.service.UserService;
-import com.jedrek.graduation.utils.DESUtil;
 import com.jedrek.graduation.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,12 +14,12 @@ import java.util.Objects;
 @Controller
 public class UserController {
     private UserService userService;
-    private LoginUserService loginUserService;
+    private LoginService loginService;
 
     @Autowired
-    public UserController(UserService userService, LoginUserService loginUserService) {
+    public UserController(UserService userService, LoginService loginService) {
         this.userService = userService;
-        this.loginUserService = loginUserService;
+        this.loginService = loginService;
     }
 
 
@@ -34,13 +32,13 @@ public class UserController {
     @RequestMapping("verify_email")
     public String verifyEmail(@RequestParam("email") String email, @RequestParam("hash") String hash) {
         String message = MailUtil.decryptHashCode(hash);
-        String[] userMessage = message.split("_");
+        String[] userMessage = message.split("\\+");
         if (userMessage.length == 3) {
             String account = userMessage[0];
             String password = userMessage[2];
-            LoginUser loginUser = loginUserService.queryLoginUserByAccount(account);
-            if (loginUser != null && Objects.equals(loginUser.getEmail(), email) &&
-                    Objects.equals(loginUser.getPassowrd(), password)) {
+            Login login = loginService.queryLoginByAccount(account);
+            if (login != null && Objects.equals(login.getEmail(), email) &&
+                    Objects.equals(login.getPassword(), password)) {
                 return "test";  // 认证成功返回首页
             }
         }

@@ -6,8 +6,9 @@ import lombok.Data;
  *  用户的注册信息
  */
 @Data
-public class LoginUser {
+public class Login {
+    private Integer loginId;
     private String account;
     private String email;
-    private String passowrd;
+    private String password;
 }

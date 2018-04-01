@@ -1,41 +1,29 @@
 package com.jedrek.graduation.web;
 
-import com.alibaba.fastjson.JSONObject;
-import com.jedrek.graduation.constant.Constant;
-import com.jedrek.graduation.entity.LoginUser;
-import com.jedrek.graduation.mapper.UserMapper;
+import com.jedrek.graduation.entity.Login;
 import com.jedrek.graduation.entity.User;
-import com.jedrek.graduation.service.LoginUserService;
+import com.jedrek.graduation.mapper.LoginMapper;
+import com.jedrek.graduation.service.LoginService;
 import com.jedrek.graduation.service.UserService;
 import com.jedrek.graduation.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import sun.misc.Request;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 
 @Controller
 public class MainController {
 
     private UserService userService;
-    private LoginUserService loginUserService;
+    private LoginService loginService;
 
     @Autowired
-    public MainController(UserService userService, LoginUserService loginUserService) {
+    public MainController(UserService userService, LoginService loginService) {
         this.userService = userService;
-        this.loginUserService = loginUserService;
+        this.loginService = loginService;
     }
 
     /**
@@ -58,11 +46,11 @@ public class MainController {
             @RequestParam("account") String account,
             @RequestParam("email") String email,
             @RequestParam("password") String password) {
-        LoginUser loginUser = new LoginUser();
+        Login loginUser = new Login();
         loginUser.setAccount(account);
         loginUser.setEmail(email);
-        loginUser.setPassowrd(password);
-        loginUserService.saveLoginUser(loginUser);
+        loginUser.setPassword(password);
+        loginService.saveLogin(loginUser);
         String data = String.format("%s+%s+%s",account,email,password);
         // 向指定用户发送一封邮件
         MailUtil.sendMail(email, data);

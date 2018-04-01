@@ -13,7 +13,6 @@ import javax.crypto.spec.DESKeySpec;
  * 这个加密算法，在本系统中的应用，主要是因为该加密算法加密后
  * 密文都是字符串和数字的，没有其他字符。这样的密文可以应用在url地址上，
  * 不用担心被URL 地址上传递的数字被转义
- * @author Administrator
  *
  */
 
