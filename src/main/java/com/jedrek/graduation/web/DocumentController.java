@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -42,6 +43,13 @@ public class DocumentController {
     @RequestMapping(value = "{userName}/{documentName}" , method = RequestMethod.GET)
     public String showDocumentInfo(@PathVariable String userName, @PathVariable String documentName) {
         return null;
+    }
+
+    @ResponseBody
+    @RequestMapping("{userId}/documents")
+    public List<Document> getDocumentsByUser(@PathVariable Integer userId) {
+        List<Document> documents = documentService.queryDocumentByUser(userId);
+        return documents;
     }
 
     @RequestMapping(value = "{userName}/{documentName}", method = RequestMethod.POST)

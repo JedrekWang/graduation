@@ -5,10 +5,10 @@
 
     <insert id="addDocument">
         INSERT INTO document(
-        title, content_url, created_date, created_user_id, last_modify_date,
+        title,document_desc, content_url, created_date, created_user_id, last_modify_date,
         last_modify_user_id
         ) VALUES (
-        #{title}, #{contentUrl}, #{createdDate}, #{createdUserId}, #{lastModifyDate}
+        #{title}, #{documentDesc},#{contentUrl}, #{createdDate}, #{createdUserId}, #{lastModifyDate}
         #{lastModifyUserId}
         );
     </insert>
@@ -20,6 +20,7 @@
     <update id="modifyDocument">
         UPDATE document SET
         document.title = #{title},
+        document.document_desc = #{documentDesc},
         document.content_url = #{contentUrl},
         document.created_date = #{createdDate},
         document.created_user_id = #{createdUserId},
@@ -32,6 +33,7 @@
         SELECT
         document_id as documentId,
         title,
+        document_desc = #{documentDesc},
         content_url as contentUrl,
         created_date as createdDate,
         created_user_id as createdUserId,
@@ -44,6 +46,7 @@
         SELECT
         document_id as documentId,
         title,
+        document_desc = #{documentDesc},
         content_url as contentUrl,
         created_date as createdDate,
         created_user_id as createdUserId,
@@ -56,6 +59,7 @@
         SELECT
         document_id as documentId,
         title,
+        document_desc = #{documentDesc},
         content_url as contentUrl,
         created_date as createdDate,
         created_user_id as createdUserId,
@@ -68,6 +72,7 @@
         SELECT
         document_id as documentId,
         title,
+        document_desc = #{documentDesc},
         content_url as contentUrl,
         created_date as createdDate,
         created_user_id as createdUserId,
@@ -80,6 +85,7 @@
         SELECT
         document_id as documentId,
         title,
+        document_desc = #{documentDesc},
         content_url as contentUrl,
         created_date as createdDate,
         created_user_id as createdUserId,

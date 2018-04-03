@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 @Controller
 public class MainController {
@@ -33,12 +34,15 @@ public class MainController {
     @RequestMapping("/")
     public String index(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null || cookies.length == 0) {
-            return "login";
+        for (Cookie cookie : cookies) {
+            if (Objects.equals(cookie.getName(), "isVerify") && Objects.equals(cookie.getValue(), "true")) {
+                // todo 这里是登录或注册成功后进入的主页
+                // todo 需要获取用户的信息，用户文档的所有信息(有分页)
+                return "test";
+            }
+
         }
-        Cookie cookie = new Cookie("param"+cookies.length, "logined");
-        response.addCookie(cookie);
-        return "test";
+        return "login";
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

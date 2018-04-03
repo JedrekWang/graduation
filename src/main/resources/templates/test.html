@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="../static/css/index.css">
+    <!--<link rel="stylesheet" href="../static/css/index.css">-->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <style>
         .navbar-brand {
             width: 400px;
@@ -12,23 +15,58 @@
             background-size: 60%;
             background-position: center center;
         }
+
         .test {
             margin-left: 200px;
         }
-        .image{
+
+        .image {
             border-radius: 15px;
         }
-        .main-card{
+
+        .main-card {
             margin-bottom: 50px;
+        }
+
+        #card {
+            margin-left: 20px;
+        }
+
+        #user_head {
+            margin-top: 5px;
+            width: 60px;
+            height: 50px;
+            background-image: url(static/img/gakki.jpg);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+
+        .user_head_a {
+            width: 100%;
+            height: 100%;
+        }
+
+        .helvetica {
+            font-size: 20px;
+            font-weight: bold;
+            font-family: "Helvetica Neue";
+        }
+        .desc {
+            font-size: 15px;
+            color: #666;
+            font-weight: lighter;
+        }
+        a {
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-<div id="app">
-
+<div id="app2">
     <el-container width="100%">
         <el-header>
-            <el-col :span="20">
+            <el-col :span="18">
                 <el-menu
                         :default-active="activeIndex2"
                         class="el-menu-demo"
@@ -40,9 +78,9 @@
                     <el-menu-item index="1">
                         DocumentKiller
                     </el-menu-item>
-                    <el-menu-item index="2">
-                        <i class="el-icon-tickets"></i>
-                    </el-menu-item>
+                    <!--<el-menu-item index="2">-->
+                    <!--<i class="el-icon-tickets"></i>-->
+                    <!--</el-menu-item>-->
                     <el-menu-item index="3">
                         <el-input v-model="input" placeholder="请输入文档关键字">
                             <i slot="suffix" class="el-icon-search"></i>
@@ -53,7 +91,7 @@
                     <el-menu-item index="7">小组管理</el-menu-item>
                 </el-menu>
             </el-col>
-            <el-col :span="4">
+            <el-col :span="6">
                 <el-menu
                         :default-active="activeIndex2"
                         class="el-menu-demo"
@@ -71,61 +109,97 @@
                     <el-menu-item index="10">
                         <i class="el-icon-star-on"></i>
                     </el-menu-item>
+                    <el-submenu index="11">
+                        <template slot="title">
+                            <a class="user_head_a" href="#">
+                                <div id="user_head">
+                                </div>
+                            </a>
+                        </template>
+                        <el-menu-item index="2-1">个人信息</el-menu-item>
+                        <el-menu-item index="2-2">个人文档</el-menu-item>
+                        <el-menu-item index="2-3">未知</el-menu-item>
+                    </el-submenu>
+                    <!--<el-menu-item>-->
+                    <!--<a class="user_head_a" href="#">-->
+                    <!--<div id="user_head">-->
+                    <!--</div>-->
+                    <!--</a>-->
+                    <!--</el-menu-item>-->
                 </el-menu>
             </el-col>
         </el-header>
         <el-container>
-            <el-aside width="40%">
-                <el-col :span="24">
-                    <el-card :body-style="{ padding: '50px' }">
+            <el-aside width="45%">
+                <el-col id="card" :span="20">
+                    <el-card :body-style="{ padding: '30px' }">
                         <img src="static/img/2-1.jpg" class="image">
                         <div style="padding: 14px;">
-                            <span>王杰</span>
+                                <p class="helvetica"><span>{{userMessage.userName}}</span></p>
+                            <!--<div class="line"></div>-->
+                            <!--<span>JedrekWang</span>-->
+                            <!--<div class="line"></div>-->
+                                <p class="desc"><span>{{userMessage.userDesc}}</span></p>
                             <div class="line"></div>
-                            <span>JedrekWang</span>
+                            <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
+                            <span>{{userMessage.school}}</span>
                             <div class="line"></div>
-                            <span>中南大学在校生</span>
+                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                            <span>
+                                <a :href="'mailto:' + userMessage.email">{{userMessage.email}}</a>
+                            </span>
                             <div class="line"></div>
-                            <span>学校</span>
-                            <div class="line"></div>
-                            <i class="el-icon-message"></i>
-                            <span>Jedekwang@gmail.com</span>
-                            <div class="line"></div>
-                            <span>小组信息</span>
-                            <div class="bottom clearfix">
-                                <time class="time">{{ currentDate }}</time>
-                                <el-button type="text" class="button">操作按钮</el-button>
-                            </div>
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            <span>
+                                <a href="#">{{userMessage.group}}</a>
+                            </span>
+                            <!--<div class="bottom clearfix">-->
+                                <!--&lt;!&ndash;<time class="time"></time>&ndash;&gt;-->
+                                <!--<el-button type="text" class="button">操作按钮</el-button>-->
+                            <!--</div>-->
                         </div>
                     </el-card>
                 </el-col>
             </el-aside>
             <el-container>
                 <el-main>
-                    <el-card class="box-card main-card">
+                    <!--<el-card class="box-card">-->
+                        <!--<div slot="header" class="clearfix">-->
+                            <!--<span>卡片名称</span>-->
+                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+                        <!--</div>-->
+                        <!--<div v-for="o in 4" :key="o" class="text item">-->
+                            <!--{{'列表内容 ' + o }}-->
+                        <!--</div>-->
+                    <!--</el-card>-->
+                    <el-card class="box-card" v-for="document in documents">
                         <div slot="header" class="clearfix">
-                            <span>文档一</span>
-                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                                <p class="helvetica"><span>{{document.title}}</span></p>
+                            <el-button style="float: right; padding: 3px 0" type="text">点击查看</el-button>
                         </div>
+                            <div class="text item">
+                                <p class="desc">{{document.contentUrl}}</p>
+                            </div>
                     </el-card>
-                    <el-card class="box-card main-card">
-                        <div slot="header" class="clearfix">
-                            <span>文档二</span>
-                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-                        </div>
-                    </el-card>
-                    <el-card class="box-card main-card">
-                        <div slot="header" class="clearfix">
-                            <span>文档三</span>
-                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-                        </div>
-                    </el-card>
-                    <el-card class="box-card main-card">
-                        <div slot="header" class="clearfix">
-                            <span>文档四</span>
-                            <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
-                        </div>
-                    </el-card>
+
+                    <!--<el-card class="box-card main-card">-->
+                        <!--<div slot="header" class="clearfix">-->
+                            <!--<span>文档二</span>-->
+                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+                        <!--</div>-->
+                    <!--</el-card>-->
+                    <!--<el-card class="box-card main-card">-->
+                        <!--<div slot="header" class="clearfix">-->
+                            <!--<span>文档三</span>-->
+                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+                        <!--</div>-->
+                    <!--</el-card>-->
+                    <!--<el-card class="box-card main-card">-->
+                        <!--<div slot="header" class="clearfix">-->
+                            <!--<span>文档四</span>-->
+                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
+                        <!--</div>-->
+                    <!--</el-card>-->
                 </el-main>
                 <el-footer>
                     @CopyRight 2017-1028 by Jedrek
@@ -138,13 +212,48 @@
 </body>
 <!-- import Vue before Element -->
 <script src="../static/js/vue.js"></script>
-<!-- import JavaScript -->
 <script src="../static/js/index.js"></script>
+<script src="../static/js/axios.js"></script>
 <script>
-    new Vue({
-        el: '#app',
-        data: function () {
-            return {visible: false}
+    // var vm = new Vue({
+    //     el: '#app',
+    //     data: {
+    //
+    //     }
+    // });
+
+    var vm2 = new Vue({
+        el: "#app2",
+        data: {
+            userMessage: {
+                userName: "",
+                userDesc: "",
+                school: "",
+                email: "",
+                group: ""
+            },
+            documents: []
+        },
+        mounted: function () {
+            obj = this;
+            axios.get('/account/1850715048@qq.com', {}).then(function (response) {
+                obj.userMessage.userName = response.data.userName;
+                obj.userMessage.userDesc = response.data.userDesc;
+                obj.userMessage.school = response.data.school;
+                obj.userMessage.email = response.data.email;
+                obj.userMessage.group = response.data.groupId;
+            }).catch(function (response) {
+                console.log(response);
+            });
+            axios.get('/3/documents').then(function (response) {
+                response.data.forEach(function(value, index, array){
+                    obj.documents.push(value);
+                    console.log("get it ???");
+                    console.log(value);
+                })
+            }).catch(function (response) {
+                console.log(response);
+            })
         }
     })
 </script>

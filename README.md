@@ -11,3 +11,5 @@ spring.thymeleaf.mode=LEGACYHTML5
 6. spring boot默认的访问静态文件和请求映射的动态url冲突导致静态资源无法访问，
 解决办法为通过配置类来重新映射
 7. 实体类的主键没写，实体类的配置文件标签写错了insert写为了select,忘记加@Mapper注解
+8. Vue实例的标签范围不能重叠
+9. JS的this指针隐性变换

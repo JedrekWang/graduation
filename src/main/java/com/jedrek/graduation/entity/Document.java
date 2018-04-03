@@ -12,6 +12,7 @@ import java.util.Date;
 public class Document {
     private Integer documentId;
     private String title;
+    private String documentDesc;
     private String contentUrl;
     private Date createdDate;
     private Integer createdUserId;

@@ -17,6 +17,8 @@ public interface UserMapper {
 
     User queryUser(Integer userId);
 
+    User queryUserByAccount(String account);
+
     List<User> queryUserByGroup(Integer groupId);
 
     List<User> queryUserBySchool(String school);

@@ -38,6 +38,10 @@ public class UserService {
         return userMapper.queryUser(userId);
     }
 
+    public User queryUserByAccount(String account) {
+        return userMapper.queryUserByAccount(account);
+    }
+
     public List<User> queryUserByGroup(Integer groupId) {
         return userMapper.queryUserByGroup(groupId);
     }
