@@ -21,6 +21,8 @@ public interface DocumentMapper {
 
     List<Document> queryDocumentByUser(Integer createdUserId);
 
+    List<Document> queryDocumentByUserName(String userName);
+
     List<Document> queryDocumentByModifyUser(Integer modifyUserId);
 
     List<Document> queryAllDocument();

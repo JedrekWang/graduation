@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
@@ -47,6 +46,7 @@ public class UserController {
             if (login != null && Objects.equals(login.getEmail(), email) &&
                     Objects.equals(login.getPassword(), password)) {
                 Cookie cookie = new Cookie("isVerify", "true");
+                Cookie cookie1 = new Cookie("userId", account);
                 response.addCookie(cookie);
                 return "redirect:/";  // 认证成功返回首页
             }
@@ -63,6 +63,13 @@ public class UserController {
     public Object getUserMessage(@PathVariable String account) {
         User user = userService.queryUserByAccount(account);
         return user;
+    }
+
+    @ResponseBody
+    @RequestMapping("login/{account}")
+    public Object getUserLoginMessage(@PathVariable String account) {
+        Login login = loginService.queryLoginByAccount(account);
+        return login;
     }
     /**
      * 修改指定用户的信息

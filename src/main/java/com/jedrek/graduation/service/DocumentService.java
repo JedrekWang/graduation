@@ -43,6 +43,10 @@ public class DocumentService {
         return documentMapper.queryDocumentByUser(createdUserId);
     }
 
+    public List<Document> queryDocumentByUserName(String userName) {
+        return documentMapper.queryDocumentByUserName(userName);
+    }
+
     public List<Document> queryDocumentByModifyUser(Integer modifyUserId) {
         return documentMapper.queryDocumentByModifyUser(modifyUserId);
     }

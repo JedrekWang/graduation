@@ -31,66 +31,79 @@
 
     <select id="queryDocument" resultType="com.jedrek.graduation.entity.Document">
         SELECT
-        document_id as documentId,
-        title,
-        document_desc = #{documentDesc},
-        content_url as contentUrl,
-        created_date as createdDate,
-        created_user_id as createdUserId,
-        last_modify_date as lastModifyDate,
-        last_modify_user_id as lastModifyUserId
+        document.document_id as documentId,
+        document.title,
+        document.document_desc as documentDesc,
+        document.content_url as contentUrl,
+        document.created_date as createdDate,
+        document.created_user_id as createdUserId,
+        document.last_modify_date as lastModifyDate,
+        document.last_modify_user_id as lastModifyUserId
         FROM document WHERE document_id = #{documentId}
     </select>
 
     <select id="queryDocumentByTitle" resultType="com.jedrek.graduation.entity.Document">
         SELECT
-        document_id as documentId,
-        title,
-        document_desc = #{documentDesc},
-        content_url as contentUrl,
-        created_date as createdDate,
-        created_user_id as createdUserId,
-        last_modify_date as lastModifyDate,
-        last_modify_user_id as lastModifyUserId
+        document.document_id as documentId,
+        document.title,
+        document.document_desc as documentDesc,
+        document.content_url as contentUrl,
+        document.created_date as createdDate,
+        document.created_user_id as createdUserId,
+        document.last_modify_date as lastModifyDate,
+        document.last_modify_user_id as lastModifyUserId
         FROM document WHERE title = #{title}
     </select>
 
+    <select id="queryDocumentByUserName" resultType="com.jedrek.graduation.entity.Document">
+        SELECT
+        document.document_id as documentId,
+        document.title,
+        document.document_desc as documentDesc,
+        document.content_url as contentUrl,
+        document.created_date as createdDate,
+        document.created_user_id as createdUserId,
+        document.last_modify_date as lastModifyDate,
+        document.last_modify_user_id as lastModifyUserId
+        FROM document,user WHERE document.created_user_id = user.user_id AND user_name = #{userName};
+    </select>
+    
     <select id="queryDocumentByUser" resultType="com.jedrek.graduation.entity.Document">
         SELECT
-        document_id as documentId,
-        title,
-        document_desc = #{documentDesc},
-        content_url as contentUrl,
-        created_date as createdDate,
-        created_user_id as createdUserId,
-        last_modify_date as lastModifyDate,
-        last_modify_user_id as lastModifyUserId
+        document.document_id as documentId,
+        document.title,
+        document.document_desc as documentDesc,
+        document.content_url as contentUrl,
+        document.created_date as createdDate,
+        document.created_user_id as createdUserId,
+        document.last_modify_date as lastModifyDate,
+        document.last_modify_user_id as lastModifyUserId
         FROM document WHERE created_user_id = #{createdUserId}
     </select>
 
     <select id="queryDocumentByModifyUser" resultType="com.jedrek.graduation.entity.Document">
         SELECT
-        document_id as documentId,
-        title,
-        document_desc = #{documentDesc},
-        content_url as contentUrl,
-        created_date as createdDate,
-        created_user_id as createdUserId,
-        last_modify_date as lastModifyDate,
-        last_modify_user_id as lastModifyUserId
+        document.document_id as documentId,
+        document.title,
+        document.document_desc as documentDesc,
+        document.content_url as contentUrl,
+        document.created_date as createdDate,
+        document.created_user_id as createdUserId,
+        document.last_modify_date as lastModifyDate,
+        document.last_modify_user_id as lastModifyUserId
         FROM document WHERE last_modify_user_id =#{modifyUserId}
     </select>
 
     <select id="queryAllDocument" resultType="com.jedrek.graduation.entity.Document">
         SELECT
-        document_id as documentId,
-        title,
-        document_desc = #{documentDesc},
-        content_url as contentUrl,
-        created_date as createdDate,
-        created_user_id as createdUserId,
-        last_modify_date as lastModifyDate,
-        last_modify_user_id as lastModifyUserId
+        document.document_id as documentId,
+        document.title,
+        document.document_desc as documentDesc,
+        document.content_url as contentUrl,
+        document.created_date as createdDate,
+        document.created_user_id as createdUserId,
+        document.last_modify_date as lastModifyDate,
+        document.last_modify_user_id as lastModifyUserId
         FROM document;
     </select>
 

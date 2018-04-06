@@ -1,8 +1,7 @@
 package com.jedrek.graduation.service;
 
-import com.jedrek.graduation.mapper.UserMapper;
 import com.jedrek.graduation.entity.User;
-import org.apache.ibatis.annotations.Param;
+import com.jedrek.graduation.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,11 +1,8 @@
 package com.jedrek.graduation.utils;
 
-import com.jedrek.graduation.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Component
 public class DocumentUtil {

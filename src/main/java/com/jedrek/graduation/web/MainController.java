@@ -1,18 +1,20 @@
 package com.jedrek.graduation.web;
 
 import com.jedrek.graduation.entity.Login;
-import com.jedrek.graduation.entity.User;
-import com.jedrek.graduation.mapper.LoginMapper;
 import com.jedrek.graduation.service.LoginService;
 import com.jedrek.graduation.service.UserService;
 import com.jedrek.graduation.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller
@@ -34,15 +36,14 @@ public class MainController {
     @RequestMapping("/")
     public String index(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (Objects.equals(cookie.getName(), "isVerify") && Objects.equals(cookie.getValue(), "true")) {
-                // todo 这里是登录或注册成功后进入的主页
-                // todo 需要获取用户的信息，用户文档的所有信息(有分页)
-                return "test";
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (Objects.equals(cookie.getName(), "isVerify") && Objects.equals(cookie.getValue(), "true")) {
+                    return "test";
+                }
             }
-
         }
-        return "login";
+        return "join";
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -65,7 +66,7 @@ public class MainController {
 //    @ResponseBody
 //    @RequestMapping(value = "/", method = RequestMethod.POST)
 //    public Object index_join(@RequestBody Map map) {
-//        System.out.println("username: "+map.get("username"));
+//        System.out.println("username: "+map.get("account"));
 //        System.out.println("password: "+map.get("password"));
 //        JSONObject json = new JSONObject();
 //        json.put("success", true);
@@ -79,34 +80,37 @@ public class MainController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String showLogin() {
-        return "new_login";
+        return "sign_in";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login() {
+    public String login(
+            @RequestParam("account") String account,
+            @RequestParam("password")  String password) {
         // todo 完成具体的登录验证工作
+        System.out.println("hello");
         return null;
     }
 
-    /**
-     * 提供注册功能
-     * @return
-     */
-    @RequestMapping(value = "/join", method = RequestMethod.GET)
-    public String showJoin() {
-        return "new_login";
-    }
-
-    @RequestMapping(value = "/join", method = RequestMethod.POST)
-    public String join() {
-        // todo 完成邮箱注册功能
-        return null;
-    }
-
-    @RequestMapping(value = "/news", method = RequestMethod.GET)
-    public String getNews() {
-        return "news";
-    }
+//    /**
+//     * 提供注册功能
+//     * @return
+//     */
+//    @RequestMapping(value = "/join", method = RequestMethod.GET)
+//    public String showJoin() {
+//        return "join";
+//    }
+//
+//    @RequestMapping(value = "/join", method = RequestMethod.POST)
+//    public String join() {
+//        // todo 完成邮箱注册功能
+//        return null;
+//    }
+//
+//    @RequestMapping(value = "/news", method = RequestMethod.GET)
+//    public String getNews() {
+//        return "news";
+//    }
 
 }
 

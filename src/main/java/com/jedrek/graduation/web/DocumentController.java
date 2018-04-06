@@ -46,9 +46,16 @@ public class DocumentController {
     }
 
     @ResponseBody
-    @RequestMapping("{userId}/documents")
-    public List<Document> getDocumentsByUser(@PathVariable Integer userId) {
-        List<Document> documents = documentService.queryDocumentByUser(userId);
+    @RequestMapping("{userName}/documents")
+    public List<Document> getDocumentsByUser(@PathVariable String userName) {
+        // todo 这里不应为userId，而为userName
+        //todo 首页只展示最近的三列数据
+        //todo 增加登录页面
+        //todo 增加添加文档的页面，修改用户信息的页面，展示用户所有的文档，展示用户所在组所有的文档，展示查看组所有成员的页面
+        //todo 点击某个具体文档的页面
+        // todo 上传路径和文档存放路径的规则需要调整
+        // todo 用户的头像上传功能
+        List<Document> documents = documentService.queryDocumentByUserName(userName);
         return documents;
     }
 

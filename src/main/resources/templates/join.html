@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>注册登录页面</title>
+    <title>注册页面</title>
     <link rel="stylesheet" href="../static/css/index.css">
     <link rel="stylesheet" href="../static/css/bootstrap.min.css">
     <style>
@@ -25,18 +25,23 @@
         .left-content {
             margin-top: 15%;
         }
-        .login-box {
-            width: 400px;
-            height: 450px;
+        .login-box{
             background-color: #ffffff;
-            margin-top: 25%;
             /*margin-right: 20%;*/
             border-radius:8px;
+        }
+        .content {
+            margin-top: 25%;
+            width: 400px;
+            height: 470px;
         }
         .less_login {
             margin: 30px;
         }
-
+        .hint {
+            font-size: 13px;
+            margin-left: 20%;
+        }
     </style>
 </head>
 <body>
@@ -49,20 +54,21 @@
                 </div>
             </el-col>
             <el-col :span="8" :offset="2">
-                <div class="login-box">
+                <div class="login-box content">
+                    <p class="hint">already have an account?<a href="/login">please Sign in </a></p>
                     <div class="less_login">
-                        <el-form :model="joinForm" ref="joinForm">
+                        <el-form :model="joinForm" ref="joinForm" method="post">
                             <el-form-item label="账号">
-                                <el-input  v-model="joinForm.account" placeholder="请输入账号或用户名">{{joinForm.account}}</el-input>
+                                <el-input  name="account" v-model="joinForm.account" placeholder="请输入账号或用户名"></el-input>
                             </el-form-item>
                             <el-form-item label="邮箱">
-                                <el-input v-model="joinForm.email" placeholder="请输入邮箱"></el-input>
+                                <el-input name="email" v-model="joinForm.email" placeholder="请输入邮箱"></el-input>
                             </el-form-item>
                             <el-form-item label="密码">
-                                <el-input type="password" v-model="joinForm.password" placeholder="请输入密码"></el-input>
+                                <el-input name="password" type="password" v-model="joinForm.password" placeholder="请输入密码"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <button type="button" @click="submitForm" class="btn btn-primary btn-lg btn-block">Signal Up</button>
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Signal Up"/>
                             </el-form-item>
                                 <p class="signup-message">{{login_prompt}}</p>
                         </el-form>
@@ -92,22 +98,23 @@
             login_prompt: "By clicking “Sign up for DocumentHub”We’ll occasionally send you account related emails"
         },
         methods: {
-            submitForm: function () {
-                fucking = this.joinForm;
-                axios.post('/', fucking)
-                    .then(function (response) {
-                        console.log(response);
-                        if (response.data.success) {
-                            console.log("后台接收到了你的数据");
-                        } else {
-                            console.log("fuck off");
-                            this.account = "fuck off"
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            }
+            // submitForm: function () {
+            //     fucking = this.joinForm;
+            //     console.log("fucking");
+            //     console.log(fucking);
+            //     axios.post('/', {"account":fucking.account, "email": fucking.email, "password": fucking.password})
+            //         .then(function (response) {
+            //             console.log(response);
+            //             if (response.data.success) {
+            //                 console.log("后台接收到了你的数据");
+            //             } else {
+            //                 console.log("fuck off");
+            //             }
+            //         })
+            //         .catch(function (error) {
+            //             console.log(error);
+            //         });
+            // }
         }
     })
 </script>

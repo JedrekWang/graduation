@@ -1,11 +1,10 @@
 package com.jedrek.graduation.utils;
 
-import java.security.*;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import java.security.SecureRandom;
 
 /**
  * DES加密算法
@@ -96,7 +95,7 @@ public class DESUtil {
         String hs = "";
         String stmp = "";
         for (int n = 0; n < b.length; n++) {
-            stmp = (java.lang.Integer.toHexString(b[n] & 0XFF));
+            stmp = (Integer.toHexString(b[n] & 0XFF));
             if (stmp.length() == 1)
                 hs = hs + "0" + stmp;
             else

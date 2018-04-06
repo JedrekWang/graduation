@@ -1,8 +1,6 @@
 package com.jedrek.graduation.entity;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 

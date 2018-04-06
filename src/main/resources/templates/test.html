@@ -120,12 +120,6 @@
                         <el-menu-item index="2-2">个人文档</el-menu-item>
                         <el-menu-item index="2-3">未知</el-menu-item>
                     </el-submenu>
-                    <!--<el-menu-item>-->
-                    <!--<a class="user_head_a" href="#">-->
-                    <!--<div id="user_head">-->
-                    <!--</div>-->
-                    <!--</a>-->
-                    <!--</el-menu-item>-->
                 </el-menu>
             </el-col>
         </el-header>
@@ -163,46 +157,18 @@
             </el-aside>
             <el-container>
                 <el-main>
-                    <!--<el-card class="box-card">-->
-                        <!--<div slot="header" class="clearfix">-->
-                            <!--<span>卡片名称</span>-->
-                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
-                        <!--</div>-->
-                        <!--<div v-for="o in 4" :key="o" class="text item">-->
-                            <!--{{'列表内容 ' + o }}-->
-                        <!--</div>-->
-                    <!--</el-card>-->
                     <el-card class="box-card" v-for="document in documents">
                         <div slot="header" class="clearfix">
                                 <p class="helvetica"><span>{{document.title}}</span></p>
                             <el-button style="float: right; padding: 3px 0" type="text">点击查看</el-button>
                         </div>
                             <div class="text item">
-                                <p class="desc">{{document.contentUrl}}</p>
+                                <p class="desc">{{document.documentDesc}}</p>
                             </div>
                     </el-card>
-
-                    <!--<el-card class="box-card main-card">-->
-                        <!--<div slot="header" class="clearfix">-->
-                            <!--<span>文档二</span>-->
-                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
-                        <!--</div>-->
-                    <!--</el-card>-->
-                    <!--<el-card class="box-card main-card">-->
-                        <!--<div slot="header" class="clearfix">-->
-                            <!--<span>文档三</span>-->
-                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
-                        <!--</div>-->
-                    <!--</el-card>-->
-                    <!--<el-card class="box-card main-card">-->
-                        <!--<div slot="header" class="clearfix">-->
-                            <!--<span>文档四</span>-->
-                            <!--<el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>-->
-                        <!--</div>-->
-                    <!--</el-card>-->
                 </el-main>
                 <el-footer>
-                    @CopyRight 2017-1028 by Jedrek
+                    {{footer}}
                     <i class="el-icon-success"></i>
                 </el-footer>
             </el-container>
@@ -215,13 +181,6 @@
 <script src="../static/js/index.js"></script>
 <script src="../static/js/axios.js"></script>
 <script>
-    // var vm = new Vue({
-    //     el: '#app',
-    //     data: {
-    //
-    //     }
-    // });
-
     var vm2 = new Vue({
         el: "#app2",
         data: {
@@ -232,28 +191,49 @@
                 email: "",
                 group: ""
             },
-            documents: []
+            documents: [],
+            footer: "@CopyRight 2017-1028 by Jedrek"
         },
         mounted: function () {
             obj = this;
-            axios.get('/account/1850715048@qq.com', {}).then(function (response) {
-                obj.userMessage.userName = response.data.userName;
-                obj.userMessage.userDesc = response.data.userDesc;
-                obj.userMessage.school = response.data.school;
+            // account = obj.getCookie("userId");
+            var account = "JedrekWang";
+            axios.get('login/'+account).then(function (response) {
                 obj.userMessage.email = response.data.email;
-                obj.userMessage.group = response.data.groupId;
-            }).catch(function (response) {
-                console.log(response);
-            });
-            axios.get('/3/documents').then(function (response) {
-                response.data.forEach(function(value, index, array){
-                    obj.documents.push(value);
-                    console.log("get it ???");
-                    console.log(value);
+                obj.userMessage.userName = response.data.account;
+                console.log("response.data.email");
+                console.log(response.data.email);
+            }).then(function (response) {
+                axios.get('/account/'+obj.userMessage.email).then(function (response) {
+                    obj.userMessage.userName = response.data.userName;
+                    obj.userMessage.userDesc = response.data.userDesc;
+                    obj.userMessage.school = response.data.school;
+                    obj.userMessage.email = response.data.email;
+                    obj.userMessage.group = response.data.groupId;
+                }).catch(function (response) {
+                    console.log(response);
+                });
+                axios.get('/'+account+'/documents').then(function (response) {
+                    response.data.forEach(function(value, index, array){
+                        obj.documents.push(value);
+                    })
+                }).catch(function (response) {
+                    console.log(response);
                 })
-            }).catch(function (response) {
-                console.log(response);
-            })
+            });
+        },
+        methods: {
+            //获取cookie
+            getCookie: function (cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+                }
+                return "";
+            }
         }
     })
 </script>
