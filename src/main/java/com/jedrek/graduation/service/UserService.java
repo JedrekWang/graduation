@@ -2,6 +2,7 @@ package com.jedrek.graduation.service;
 
 import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ public class UserService {
 
     private UserMapper userMapper;
 
+    @Autowired
     public UserService(UserMapper userMapper) {
         this.userMapper = userMapper;
     }

@@ -1,0 +1,28 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.UserGroupMapper">
+    <insert id="saveGroup" parameterType="com.jedrek.graduation.entity.UserGroup">
+        INSERT INTO user_group(group_name, group_desc)
+        VALUES (#{groupName}, #{groupDesc})
+    </insert>
+    
+    <select id="queryGroupById" resultType="com.jedrek.graduation.entity.UserGroup">
+        SELECT
+        user_group.group_name,
+        user_group.group_desc
+        FROM user_group WHERE group_id = #{groupId}
+    </select>
+    
+    <select id="queryAll" resultType="com.jedrek.graduation.entity.UserGroup">
+        SELECT
+        user_group.group_name,
+        user_group.group_desc
+         FROM user_group where 1=1
+    </select>
+    
+    <delete id="deleteGroup">
+        DELETE FROM user_group where group_id = #{groupId}
+    </delete>
+
+</mapper>

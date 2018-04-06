@@ -1,0 +1,15 @@
+/*.test {*/
+    /*margin-left: 200px;*/
+/*}*/
+#user_head {
+    width: 80px;
+    height: 55px;
+    background-image: url(../img/gakki.jpg);
+    background-repeat: no-repeat;
+    background-size: 70%;
+    background-position: center center;
+}
+/*.user_head_a {*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+/*}*/

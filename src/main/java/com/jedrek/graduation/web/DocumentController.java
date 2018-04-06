@@ -36,13 +36,21 @@ public class DocumentController {
     /**
      * 用户文档信息展示
      * @param userName
-     * @param documentName
+     * @param documentId
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "{userName}/{documentName}" , method = RequestMethod.GET)
-    public String showDocumentInfo(@PathVariable String userName, @PathVariable String documentName) {
+    @RequestMapping(value = "document/{userName}/{documentId}" , method = RequestMethod.GET)
+    public String showDocumentInfo(@PathVariable String userName, @PathVariable Integer documentId) {
+        Document document = documentService.queryDocument(documentId);
+        String contentUrl = document.getContentUrl();
+        String ansPath = Constant.documentPath + contentUrl;
         return null;
+    }
+
+    @RequestMapping("document/test")
+    public String getDoucmet() {
+        return "document";
     }
 
     @ResponseBody
