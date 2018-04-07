@@ -19,8 +19,13 @@ public class GroupController {
 
     @RequestMapping("/group/{groupId}")
     @ResponseBody
-    public String showGroup(@PathVariable Integer groupId) {
+    public String getGroup(@PathVariable Integer groupId) {
         UserGroup userGroup = userGroupService.queryGroupById(groupId);
         return userGroup.getGroupName();
+    }
+
+    @RequestMapping("/groups/{groupId}")
+    public String showGroup(@PathVariable Integer groupId) {
+        return "group";
     }
 }

@@ -1,6 +1,7 @@
 package com.jedrek.graduation.web;
 
 import com.jedrek.graduation.entity.Login;
+import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.service.LoginService;
 import com.jedrek.graduation.service.UserService;
 import com.jedrek.graduation.utils.MailUtil;
@@ -85,11 +86,21 @@ public class MainController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(
+            HttpServletResponse response,
             @RequestParam("account") String account,
             @RequestParam("password")  String password) {
         // todo 完成具体的登录验证工作
-        System.out.println("hello");
-        return null;
+        Login login = loginService.queryLoginByAccount(account);
+        String loginPassword = login.getPassword();
+        if (Objects.equals(loginPassword, password)) {
+            User user = userService.queryUserByAccount(account);
+            if (user != null) {
+                Cookie cookie = new Cookie("isVerify", "true");
+                response.addCookie(cookie);
+                return "redirect:/";
+            }
+        }
+        return "error";
     }
 
 //    /**

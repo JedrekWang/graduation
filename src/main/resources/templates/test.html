@@ -28,6 +28,9 @@
         a {
             text-decoration: none;
         }
+        a:hover {
+            text-decoration: none;
+        }
 
         .box-card a {
             color: #000000;
@@ -54,11 +57,8 @@
                         text-color="#fff"
                         active-text-color="#ffd04b">
                     <el-menu-item index="1">
-                        DocumentKiller
+                        <a href="/">DocumentKiller</a>
                     </el-menu-item>
-                    <!--<el-menu-item index="2">-->
-                    <!--<i class="el-icon-tickets"></i>-->
-                    <!--</el-menu-item>-->
                     <el-menu-item index="3">
                         <el-input placeholder="请输入文档关键字">
                             <i slot="suffix" class="el-icon-search"></i>
@@ -87,14 +87,14 @@
                     </el-menu-item>
                     <el-submenu index="11">
                         <template slot="title">
-                            <a class="user_head_a" href="#">
+                            <a class="user_head_a" :href="'/'+ userMessage.userName">
                                 <div id="user_head">
                                 </div>
                             </a>
                         </template>
-                        <el-menu-item index="2-1">个人信息</el-menu-item>
+                        <el-menu-item index="2-1"><a :href="'/'+ userMessage.userName">个人信息</a></el-menu-item>
                         <el-menu-item index="2-2">个人文档</el-menu-item>
-                        <el-menu-item index="2-3">未知</el-menu-item>
+                        <el-menu-item index="2-3">新建文档</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </el-col>
@@ -121,7 +121,7 @@
                             <div class="line"></div>
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                             <span>
-                                <a href="#">{{userMessage.userGroup}}</a>
+                                <a :href="'/groups/'+ userMessage.groupId">{{userMessage.userGroup}}</a>
                             </span>
                         </div>
                     </el-card>
@@ -174,7 +174,7 @@
                 obj.userMessage.email = response.data.email;
                 obj.userMessage.userName = response.data.account;
             }).then(function (response) {
-                axios.get('/account/'+obj.userMessage.email).then(function (response) {
+                axios.get('/account/'+obj.userMessage.userName).then(function (response) {
                     obj.userMessage.userName = response.data.userName;
                     obj.userMessage.userDesc = response.data.userDesc;
                     obj.userMessage.school = response.data.school;

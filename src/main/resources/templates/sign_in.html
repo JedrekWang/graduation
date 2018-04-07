@@ -56,16 +56,15 @@
     <div id="app">
         <h1 class="title">Sign in to DocumentHub</h1>
         <div class="well content" >
-        <el-form :model="loginForm" ref="loginForm" label-position="top" label-width="80px">
+        <el-form :model="loginForm" ref="loginForm" label-position="top" label-width="80px" method="post">
             <el-form-item label="姓名或邮箱">
-                <el-input v-model="loginForm.account" placeholder="请输入姓名或邮箱"></el-input>
+                <el-input name="account" v-model="loginForm.account" placeholder="请输入姓名或邮箱"></el-input>
             </el-form-item>
             <el-form-item label="密码">
-                <el-input v-model="loginForm.password" type="password" placeholder="请输入密码"></el-input>
+                <el-input name="password" v-model="loginForm.password" type="password" placeholder="请输入密码"></el-input>
             </el-form-item>
             <el-form-item>
-                <input type="submit" value="GO">
-                <!--<button type="button" @click="submitForm" class="btn btn-primary btn-lg btn-block">Signal In</button>-->
+                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Signal In"/>
             </el-form-item>
         </el-form>
         </div>
