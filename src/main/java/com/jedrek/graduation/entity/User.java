@@ -11,12 +11,12 @@ import java.util.Date;
 public class User {
     private Integer userId;   // 自增
     private Integer groupId; // 用户所在的小组
-    private String userName; //用户姓名
+    private String userName; //用户姓名， 该字段是否和account重复
     private String account;
     private String tel;
     private String sex;
     private String email;
-    private String birth;
+    private String birth;  // 需要吗？？？
     private String school;
     private String userDesc; // 用户一句话自我描述
     private Integer authorityTableId;

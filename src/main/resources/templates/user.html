@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户首页</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <style>
+        .content {
+            width: 1000px;
+            height: 800px;
+            background-color: #f6f6f6;
+        }
+        .user_header {
+            margin-left: 30px;
+            background-color: #f6f6f6;
+            width: 150px;
+            height: 150px;
+            margin-top: 80px;
+            border-radius: 100px;
+            background-image: url(../static/img/gakki.jpg);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .user_name {
+            margin-top: 120px;
+        }
+        .item {
+            font-size: 15px;
+            color: #444;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-col :span="18">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="1">
+                        DocumentKiller
+                    </el-menu-item>
+                    <!--<el-menu-item index="2">-->
+                    <!--<i class="el-icon-tickets"></i>-->
+                    <!--</el-menu-item>-->
+                    <el-menu-item index="3">
+                        <el-input placeholder="请输入文档关键字">
+                            <i slot="suffix" class="el-icon-search"></i>
+                        </el-input>
+                    </el-menu-item>
+                    <el-menu-item index="5">我的工作台</el-menu-item>
+                    <el-menu-item index="6">消息中心</el-menu-item>
+                    <el-menu-item index="7">小组管理</el-menu-item>
+                </el-menu>
+            </el-col>
+            <el-col :span="6">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="8" class="test">
+                        <i class="el-icon-bell"></i>
+                    </el-menu-item>
+                    <el-menu-item index="9">
+                        <i class="el-icon-plus"></i>
+                    </el-menu-item>
+                    <el-menu-item index="10">
+                        <i class="el-icon-star-on"></i>
+                    </el-menu-item>
+                    <el-submenu index="11">
+                        <template slot="title" class="head_temp">
+                            <a class="user_head_a" href="#">
+                                <div id="user_head">
+                                </div>
+                            </a>
+                        </template>
+                        <el-menu-item index="2-1">个人信息</el-menu-item>
+                        <el-menu-item index="2-2">个人文档</el-menu-item>
+                        <el-menu-item index="2-3">未知</el-menu-item>
+                    </el-submenu>
+                </el-menu>
+            </el-col>
+        </el-header>
+        <el-container>
+            <el-col :span="18" :offset="3">
+                <div class="content">
+                    <el-container>
+                        <el-col :span="2">
+                            <a href="">
+                                <div class="user_header"></div>
+                            </a>
+                        </el-col>
+                        <el-col :span="6" :offset="3">
+                            <h1 class="user_name">{{userMessage.userName}}</h1>
+                        </el-col>
+                    </el-container>
+                    <div>
+                        <el-card class="box-card">
+                        <div class="text item">
+                            <el-container>
+                                <el-col :offset="4" :span="5">
+                                    <h2 class="item">性别</h2>
+                                </el-col>
+                                <el-col :offset="2">
+                                    <h2 class="item">{{userMessage.sex == "male" ? '男': '女'}}</h2>
+                                </el-col>
+                            </el-container>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        </div>
+                        <div class="text item">
+                            <el-container>
+                                <el-col :offset="4" :span="5">
+                                    <h2 class="item">个人介绍</h2>
+                                </el-col>
+                                <el-col :offset="2">
+                                    <h2 class="item">{{userMessage.userDesc}}</h2>
+                                </el-col>
+                            </el-container>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        </div>
+                        <div class="text item">
+                            <el-container>
+                                <el-col :offset="4" :span="5">
+                                    <h2 class="item">学校</h2>
+                                </el-col>
+                                <el-col :offset="2">
+                                    <h2 class="item">{{userMessage.school}}</h2>
+                                </el-col>
+                            </el-container>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        </div>
+                        <div class="text item">
+                            <el-container>
+                                <el-col :offset="4" :span="5">
+                                    <h2 class="item">电话</h2>
+                                </el-col>
+                                <el-col :offset="2">
+                                    <h2 class="item">{{userMessage.tel}}</h2>
+                                </el-col>
+                            </el-container>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        </div>
+                            <div class="text item">
+                                <el-container>
+                                    <el-col :offset="4" :span="5">
+                                        <h2 class="item">邮箱</h2>
+                                    </el-col>
+                                    <el-col :offset="2">
+                                        <h2 class="item">{{userMessage.email}}</h2>
+                                    </el-col>
+                                </el-container>
+                                <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                            </div>
+                            <div class="text item">
+                                <el-container>
+                                    <el-col :offset="4" :span="5">
+                                        <h2 class="item">小组编号</h2>
+                                    </el-col>
+                                    <el-col :offset="2">
+                                        <h2 class="item">{{userMessage.group}}</h2>
+                                    </el-col>
+                                </el-container>
+                                <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                            </div>
+                    </el-card>
+                    </div>
+                </div>
+            </el-col>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script src="../static/js/vue.js"></script>
+<script src="../static/js/index.js"></script>
+<script src="../static/js/axios.js"></script>
+<script src="../static/js/pdfobject.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            userMessage: {
+                userName: "",
+                userDesc: "",
+                sex: "",
+                school: "",
+                tel : "",
+                email: "",
+                group: ""
+            }
+        },
+        mounted: function () {
+            obj = this;
+            var url = window.location.href;
+            var account = url.split("/")[3];
+            axios.get("/account/"+account).then(function (response) {
+                obj.userMessage.userName = response.data.userName;
+                obj.userMessage.userDesc = response.data.userDesc;
+                obj.userMessage.sex = response.data.sex;
+                obj.userMessage.school = response.data.school;
+                obj.userMessage.tel = response.data.tel;
+                obj.userMessage.email = response.data.email;
+                obj.userMessage.group = response.data.groupId;
+            }).catch(function (response) {
+                console.log(response);
+            })
+        }
+    })
+</script>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>用户首页</title>
     <!--<link rel="stylesheet" href="../static/css/index.css">-->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
@@ -131,7 +131,7 @@
                 <el-main>
                     <el-card class="box-card" v-for="document in documents">
                         <div slot="header" class="clearfix">
-                            <a :href="'/document/'+userMessage.userName+'/'+document.documentId"><p class="helvetica"><span>{{document.title}}</span></p></a>
+                            <a :href="userMessage.userName+'/'+document.documentId"><p class="helvetica"><span>{{document.title}}</span></p></a>
                         </div>
                             <div class="text item">
                                 <p class="desc">{{document.documentDesc}}</p>

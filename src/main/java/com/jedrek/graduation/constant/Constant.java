@@ -11,7 +11,7 @@ public class Constant {
 
     public static final String uploadPath = rootPath + "/static/upload/";
 
-    public static final String documentPath = "D:/documentSystem/";
+    public static final String documentPath = "../static/pdf/";
 
 
 }

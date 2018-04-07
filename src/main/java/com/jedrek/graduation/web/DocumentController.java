@@ -3,7 +3,9 @@ package com.jedrek.graduation.web;
 import com.alibaba.fastjson.JSON;
 import com.jedrek.graduation.constant.Constant;
 import com.jedrek.graduation.entity.Document;
+import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.service.DocumentService;
+import com.jedrek.graduation.service.UserService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +29,12 @@ import java.util.Map;
 public class DocumentController {
 
     private DocumentService documentService;
+    private UserService userService;
 
     @Autowired
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService, UserService userService) {
         this.documentService = documentService;
+        this.userService = userService;
     }
 
     /**
@@ -39,18 +43,29 @@ public class DocumentController {
      * @param documentId
      * @return
      */
-    @ResponseBody
-    @RequestMapping(value = "document/{userName}/{documentId}" , method = RequestMethod.GET)
+    @RequestMapping(value = "/{userName}/{documentId}" , method = RequestMethod.GET)
     public String showDocumentInfo(@PathVariable String userName, @PathVariable Integer documentId) {
-        Document document = documentService.queryDocument(documentId);
-        String contentUrl = document.getContentUrl();
-        String ansPath = Constant.documentPath + contentUrl;
-        return null;
+        return "document";
     }
 
-    @RequestMapping("document/test")
-    public String getDoucmet() {
-        return "document";
+    @ResponseBody
+    @RequestMapping("document/{documentId}")
+    public Map getDocument(
+            @PathVariable Integer documentId) {
+        Document document = documentService.queryDocument(documentId);
+        Date createdDate = document.getCreatedDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日发布");
+        String dateString = formatter.format(createdDate);
+        Integer userId = document.getCreatedUserId();
+        User user = userService.queryUserById(userId);
+        String contentUrl = document.getContentUrl();
+        String finalPath = Constant.documentPath + contentUrl;
+        Map ans = new HashMap();
+        ans.put("user", user);
+        ans.put("document", document);
+        ans.put("finalPath", finalPath);
+        ans.put("dateString", dateString);
+        return ans;
     }
 
     @ResponseBody

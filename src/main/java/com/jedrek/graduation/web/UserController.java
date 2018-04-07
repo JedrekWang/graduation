@@ -58,8 +58,14 @@ public class UserController {
      * @param account
      * @return
      */
+    @RequestMapping(value = "{account}", method = RequestMethod.GET)
+    public Object showUserMessage(@PathVariable String account) {
+
+        return "user";
+    }
+
     @ResponseBody
-    @RequestMapping(value = "account/{account}", method = RequestMethod.GET)
+    @RequestMapping("account/{account}")
     public Object getUserMessage(@PathVariable String account) {
         User user = userService.queryUserByAccount(account);
         return user;
