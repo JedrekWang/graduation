@@ -9,9 +9,9 @@ public class Constant {
     @NotNull
     public static final String rootPath = ClassUtils.getDefaultClassLoader().getResource("").getPath();
 
-    public static final String uploadPath = rootPath + "/static/upload/";
+    public static final String uploadPath = "D:/documentSystem/";
 
-    public static final String documentPath = "../static/pdf/";
+    public static final String documentPath = "/system/";
 
 
 }
