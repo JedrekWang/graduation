@@ -159,14 +159,17 @@
                 documentDesc: "",
                 createdDate: "",
                 finalPath: ""
+            },
+            userMessage: {
+                userName: ""
             }
         },
         mounted: function () {
             obj = this;
+            obj.userMessage.userName = obj.getCookie("currentUser");
             var param = window.location.href;
             var documentId = param.split("/")[4];
-            // console.log(documentId);
-            // var documentId = 1;
+            console.log(document.cookie);
             axios.get("/document/"+documentId).then(function (response) {
                 obj.document.finalPath = response.data.finalPath;
                 // console.log(response.data.user.userName);
@@ -183,7 +186,22 @@
             }).catch(function (reason) {
                 console.log(reason)
             })
-
+        },
+        methods: {
+            //获取cookie
+            getCookie: function (cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+                }
+                return "";
+            },
+            format_url: function (url) {
+                return url.split(" ").join("_")
+            }
         }
     })
 </script>

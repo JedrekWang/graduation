@@ -69,6 +69,10 @@ public class DocumentController {
                 }
                 uploadFile.createNewFile();
                 file.transferTo(uploadFile);
+                // todo 如果为word格式需要在相同路径下面转为pdf
+                if (Objects.equals(filename.split("\\.")[1], "docx")) {
+                    DocumentUtil.wordToPdf(uploadFile);
+                }
                 return "redirect:/";
             }
 
@@ -106,7 +110,8 @@ public class DocumentController {
         Integer userId = document.getCreatedUserId();
         User user = userService.queryUserById(userId);
         String contentUrl = document.getContentUrl();
-        String finalPath = Constant.documentPath + contentUrl;
+        String finalContentUrl = contentUrl.split("\\.", 2)[0];
+        String finalPath = Constant.documentPath + finalContentUrl +".pdf";
         Map ans = new HashMap();
         ans.put("user", user);
         ans.put("document", document);
@@ -119,11 +124,19 @@ public class DocumentController {
     @RequestMapping("{userName}/documents")
     public List<Document> getDocumentsByUser(@PathVariable String userName) {
         //todo 首页只展示最近的三列数据
-        //todo 增加登录页面
         //todo 增加添加文档的页面，修改用户信息的页面，展示用户所有的文档，展示用户所在组所有的文档，展示查看组所有成员的页面
-        //todo 点击某个具体文档的页面
-        // todo 上传路径和文档存放路径的规则需要调整
         // todo 用户的头像上传功能
+        // todo 对文档版本的管理，查看所有版本的页面
+        // todo 组员讨论的管理，显示讨论的内容
+        // todo 文档的搜索功能
+        // todo 首页我的工作台为显示自己创建的所有文档和自己参与修改的文档
+        // todo 首页消息中心和别人在自己创建文档上的相关讨论信息，如保留所有讨论的内容
+        // todo 小组管理，管理员身份显示，可以增加组员，删除组员，更改权限等操作
+        // todo 首页的铃铛显示别人发给自己的所有消息(用于交流)
+        // todo 首页的加号为新建文档，貌似功能重复了？？？
+        // todo 首页的星星按钮，显示自己收藏的所有文档，功能未要求，不是优选项
+        //todo 文档的查看讨论为显示当前文档的讨论内容，每一个组员都可以添加内容
+        //todo 查看历史版本可以看到所有的版本，通过点击对应的版本,显示的pdf文档页对应改变
         List<Document> documents = documentService.queryDocumentByUserName(userName);
         return documents;
     }
@@ -192,7 +205,6 @@ public class DocumentController {
     @ResponseBody
     @RequestMapping(value = "document/upload", method = RequestMethod.POST)
     public String uploadDocument123(MultipartFile file) {
-        // todo 简单的上传文件，需要添加路径的散列算法以及文件名的修改
         Date day = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String uploadDate = df.format(day);

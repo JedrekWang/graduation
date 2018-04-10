@@ -168,8 +168,7 @@
         },
         mounted: function () {
             obj = this;
-            // account = obj.getCookie("userId");
-            var account = "JedrekWang";
+            var account = obj.getCookie("currentUser");
             axios.get('login/'+account).then(function (response) {
                 obj.userMessage.email = response.data.email;
                 obj.userMessage.userName = response.data.account;
