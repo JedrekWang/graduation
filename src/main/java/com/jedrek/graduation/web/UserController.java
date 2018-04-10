@@ -46,8 +46,9 @@ public class UserController {
             if (login != null && Objects.equals(login.getEmail(), email) &&
                     Objects.equals(login.getPassword(), password)) {
                 Cookie cookie = new Cookie("isVerify", "true");
-                Cookie cookie1 = new Cookie("userId", account);
+                Cookie cookie1 = new Cookie("currentUser", account);
                 response.addCookie(cookie);
+                response.addCookie(cookie1);
                 return "redirect:/";  // 认证成功返回首页
             }
         }
@@ -60,7 +61,6 @@ public class UserController {
      */
     @RequestMapping(value = "{account}", method = RequestMethod.GET)
     public Object showUserMessage(@PathVariable String account) {
-
         return "user";
     }
 
@@ -81,6 +81,7 @@ public class UserController {
      * 修改指定用户的信息
      * @param userName
      * @return
+     * @deprecated
      */
     @RequestMapping(value = "{userName}", method = RequestMethod.POST)
     public String updateUserMessage(@PathVariable String userName) {

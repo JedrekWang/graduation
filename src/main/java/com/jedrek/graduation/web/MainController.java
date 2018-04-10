@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.Objects;
 
@@ -86,42 +87,25 @@ public class MainController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(
+            HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam("account") String account,
             @RequestParam("password")  String password) {
-        // todo 完成具体的登录验证工作
         Login login = loginService.queryLoginByAccount(account);
         String loginPassword = login.getPassword();
         if (Objects.equals(loginPassword, password)) {
             User user = userService.queryUserByAccount(account);
             if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", account);
                 Cookie cookie = new Cookie("isVerify", "true");
+                Cookie cookie2 = new Cookie("currentUser", account);
                 response.addCookie(cookie);
+                response.addCookie(cookie2);
                 return "redirect:/";
             }
         }
         return "error";
     }
-
-//    /**
-//     * 提供注册功能
-//     * @return
-//     */
-//    @RequestMapping(value = "/join", method = RequestMethod.GET)
-//    public String showJoin() {
-//        return "join";
-//    }
-//
-//    @RequestMapping(value = "/join", method = RequestMethod.POST)
-//    public String join() {
-//        // todo 完成邮箱注册功能
-//        return null;
-//    }
-//
-//    @RequestMapping(value = "/news", method = RequestMethod.GET)
-//    public String getNews() {
-//        return "news";
-//    }
-
 }
 

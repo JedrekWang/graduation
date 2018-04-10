@@ -2,34 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>小组页面</title>
+    <title>新建文档</title>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/css/header.css">
     <style>
         .content {
+            background-color: #ffffff;
+            margin-top: 50px;
             width: 1000px;
-            height: 900px;
-            background-color: #f6f6f6;
-            border: #ebeef5 1px solid;
+            height: 600px;
         }
-        el-card {
-            height: 400px;
-        }
-        .users el-col {
-            height: 300px;
-        }
-        .user_picture {
-            background-color: #f6f6f6;
-            width: 100%;
-            height: 150px;
-            background-image: url(../static/img/gakki2.jpg);
-            background-repeat: no-repeat;
-            background-size: 100%;
-            background-position: center center;
-        }
-        span {
-            margin-left: 40%;
+        .upload-demo {
+            margin-left: 10%;
         }
     </style>
 </head>
@@ -88,55 +74,37 @@
                 </el-col>
             </el-header>
             <el-container>
-                <el-col :span="18" :offset="3">
+                <el-col :span="10" :offset="4">
                     <div class="content">
-                        <el-container>
-                            <el-col :span="18" :offset="3">
-                                <h1 class="user_name">实验一组</h1>
-                                <h4 style="color: grey">该小组为大数据人工智能区块链小组</h4>
-                                <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
-                            </el-col>
-                        </el-container>
-                        <el-container class="users">
-                            <el-col :span="4" :offset="3">
-                                <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
-                                    </div>
-                                    <span>Timo</span>
-                                </el-card>
-                            </el-col>
-                            <el-col :span="4" :offset="1">
-                                <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
-                                    </div>
-                                    <div>
-                                        <span>Timo</span>
-                                    </div>
-                                </el-card>
-                            </el-col>
-                            <el-col :span="4" :offset="1">
-                                <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
-                                    </div>
-                                    <div>
-                                        <span>Timo</span>
-                                    </div>
-                                </el-card>
-                            </el-col>
-                            <el-col :span="4" :offset="1">
-                                <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
-                                    </div>
-                                    <div>
-                                        <span>Timo</span>
-                                    </div>
-                                </el-card>
-                            </el-col>
-                        </el-container>
+                        <el-form enctype="multipart/form-data" label-width="80px" method="post">
+                            <el-form-item label="标题">
+                                <el-input name="title" placeholder="请输入标题" size="medium"></el-input>
+                            </el-form-item>
+                            <el-form-item label="文档描述">
+                                <el-input name="documentDesc" placeholder="请输入描述" size="medium"></el-input>
+                            </el-form-item>
+                            <el-form-item label="上传文档">
+                                <input type="file" name="file" class="btn btn-primary">
+                                <!--<el-upload-->
+                                        <!--name="file"-->
+                                        <!--class="upload-demo"-->
+                                        <!--action="upload_document"-->
+                                        <!--drag-->
+                                        <!--multiple>-->
+                                    <!--<i class="el-icon-upload"></i>-->
+                                    <!--<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+                                    <!--<div class="el-upload__tip" slot="tip">文档支持pdf和word格式</div>-->
+                                <!--</el-upload>-->
+                            </el-form-item>
+                            <el-form-item>
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Upload"/>
+                            </el-form-item>
+                        </el-form>
                     </div>
                 </el-col>
             </el-container>
         </el-container>
+
     </div>
 </body>
 <script src="../static/js/vue.js"></script>

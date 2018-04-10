@@ -6,6 +6,8 @@ import com.jedrek.graduation.entity.Document;
 import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.service.DocumentService;
 import com.jedrek.graduation.service.UserService;
+import com.jedrek.graduation.utils.CookieUtil;
+import com.jedrek.graduation.utils.DocumentUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,14 +18,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class DocumentController {
@@ -37,16 +37,63 @@ public class DocumentController {
         this.userService = userService;
     }
 
-    /**
-     * 用户文档信息展示
-     * @param userName
-     * @param documentId
-     * @return
-     */
+    @RequestMapping("document/test")
+    public String showCreateDocument() {
+        return "create_document";
+    }
+
+    @RequestMapping(value = "document/test", method = RequestMethod.POST)
+    public String uploadCreateDocument(
+            HttpServletRequest request,
+            @RequestParam String title,
+            @RequestParam String documentDesc,
+            @RequestParam MultipartFile file) throws IOException {
+        if (!file.isEmpty()) {
+            String filename = file.getOriginalFilename();
+            Document document = new Document();
+            document.setTitle(title);
+            document.setDocumentDesc(documentDesc);
+            String currentUser = CookieUtil.getCookieValue(request, "currentUser");
+            if (currentUser != null) {
+                User user = userService.queryUserByAccount(currentUser);
+                document.setCreatedUserId(user.getUserId());
+                document.setCreatedDate(new Date());
+                String path = DocumentUtil.handleDocumentPath(filename, document.getCreatedDate());
+                document.setContentUrl(path);
+                documentService.addDocument(document);
+                String uploadPath = Constant.uploadPath + path;
+                File uploadFile = new File(uploadPath);
+                File parentFile = uploadFile.getParentFile();
+                if (!parentFile.exists()) {
+                    parentFile.mkdirs();
+                }
+                uploadFile.createNewFile();
+                file.transferTo(uploadFile);
+                return "redirect:/";
+            }
+
+        }
+        return "null";
+    }
+
+    @RequestMapping("upload_document")
+    public String uploadDocument(MultipartFile file) {
+        System.out.println("test");
+        return "null";
+    }
+
+        /**
+         * 用户文档信息展示
+         * @param userName
+         * @param documentId
+         * @return
+         */
     @RequestMapping(value = "/{userName}/{documentId}" , method = RequestMethod.GET)
     public String showDocumentInfo(@PathVariable String userName, @PathVariable Integer documentId) {
         return "document";
     }
+
+
 
     @ResponseBody
     @RequestMapping("document/{documentId}")
@@ -144,7 +191,7 @@ public class DocumentController {
      */
     @ResponseBody
     @RequestMapping(value = "document/upload", method = RequestMethod.POST)
-    public String uploadDocument(MultipartFile file) {
+    public String uploadDocument123(MultipartFile file) {
         // todo 简单的上传文件，需要添加路径的散列算法以及文件名的修改
         Date day = new Date();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

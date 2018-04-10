@@ -45,11 +45,8 @@
                             text-color="#fff"
                             active-text-color="#ffd04b">
                         <el-menu-item index="1">
-                            DocumentKiller
+                            <a href="/">DocumentKiller</a>
                         </el-menu-item>
-                        <!--<el-menu-item index="2">-->
-                        <!--<i class="el-icon-tickets"></i>-->
-                        <!--</el-menu-item>-->
                         <el-menu-item index="3">
                             <el-input placeholder="请输入文档关键字">
                                 <i slot="suffix" class="el-icon-search"></i>
@@ -77,15 +74,15 @@
                             <i class="el-icon-star-on"></i>
                         </el-menu-item>
                         <el-submenu index="11">
-                            <template slot="title" class="head_temp">
+                            <template slot="title">
                                 <a class="user_head_a" href="#">
                                     <div id="user_head">
                                     </div>
                                 </a>
                             </template>
-                            <el-menu-item index="2-1">个人信息</el-menu-item>
+                            <el-menu-item index="2-1"><a :href="'/'+ userMessage.userName">个人信息</a></el-menu-item>
                             <el-menu-item index="2-2">个人文档</el-menu-item>
-                            <el-menu-item index="2-3">未知</el-menu-item>
+                            <el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>
                         </el-submenu>
                     </el-menu>
                 </el-col>
@@ -178,8 +175,10 @@
                 obj.document.documentDesc = response.data.document.documentDesc;
                 obj.document.createdDate = response.data.dateString;
                 obj.document.finalPath = response.data.finalPath;
+                console.log("final path");
+                console.log(obj);
                 console.log(obj.document.finalPath);
-                // var filename = "../static/pdf/aqs.pdf";
+                // var filename = "/system/2018/04/10/test1.pdf";
                 PDFObject.embed(obj.document.finalPath, ".document");
             }).catch(function (reason) {
                 console.log(reason)

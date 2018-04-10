@@ -5,11 +5,9 @@
 
     <insert id="addDocument">
         INSERT INTO document(
-        title,document_desc, content_url, created_date, created_user_id, last_modify_date,
-        last_modify_user_id
+        title,document_desc, content_url, created_date, created_user_id
         ) VALUES (
-        #{title}, #{documentDesc},#{contentUrl}, #{createdDate}, #{createdUserId}, #{lastModifyDate}
-        #{lastModifyUserId}
+        #{title}, #{documentDesc},#{contentUrl}, #{createdDate}, #{createdUserId}
         );
     </insert>
 
