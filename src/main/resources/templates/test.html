@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="../static/css/header.css">
     <style>
         .image {
-            border-radius: 15px;
+            width: 350px;
+            height: 350px;
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+            border-radius: 26px;
         }
         #card {
             margin-left: 20px;
@@ -88,7 +93,7 @@
                     <el-submenu index="11">
                         <template slot="title">
                             <a class="user_head_a" href="#">
-                                <div id="user_head">
+                                <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}">
                                 </div>
                             </a>
                         </template>
@@ -103,7 +108,7 @@
             <el-aside width="45%">
                 <el-col id="card" :span="20">
                     <el-card :body-style="{ padding: '30px' }">
-                        <img src="static/img/2-1.jpg" class="image">
+                        <div class="image"  :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}"></div>
                         <div style="padding: 14px;">
                                 <p class="helvetica"><span>{{userMessage.userName}}</span></p>
                             <!--<div class="line"></div>-->

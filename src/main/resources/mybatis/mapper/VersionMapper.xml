@@ -1,0 +1,33 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.VersionMapper">
+
+    <select id="queryVersionsByDocumentId" resultType="com.jedrek.graduation.entity.Version">
+        SELECT
+        version_id as versionId,
+        version_key as versionKey,
+        document_id as documentId,
+        version_desc as versionDesc
+        FROM version WHERE document_id = #{documentId}
+    </select>
+    
+    <select id="queryVersionByKey" resultType="com.jedrek.graduation.entity.Version">
+        SELECT
+        version_id as versionId,
+        version_key as versionKey,
+        document_id as documentId,
+        version_desc as versionDesc
+        FROM version WHERE version_key = #{versionKey}
+    </select>
+
+    <insert id="addVersion" parameterType="com.jedrek.graduation.entity.Version">
+        INSERT INTO version(version_key, document_id, version_desc)
+        VALUES (#{versionKey}, #{documentId}, #{versionDesc})
+    </insert>
+    
+    <delete id="deleteVersion">
+        DELETE FROM version where version_key = #{versionKey}
+    </delete>
+
+</mapper>
