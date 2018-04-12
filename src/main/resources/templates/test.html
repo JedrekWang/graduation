@@ -48,6 +48,21 @@
         .el-menu-demo {
             height: 60px;
         }
+        .folder{
+            width: 80px;
+            height: 60px;
+            /*background-color: #4cae4c;*/
+            background-image: url(../static/img/folder.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .folder-card{
+            border: 0px;
+        }
+        .folder-card:hover{
+            background-color: #eff4f8;
+        }
     </style>
 </head>
 <body>
@@ -85,7 +100,7 @@
                         <i class="el-icon-bell"></i>
                     </el-menu-item>
                     <el-menu-item index="9">
-                        <i class="el-icon-plus"></i>
+                        <i class="el-icon-plus" @click="addFolder"></i>
                     </el-menu-item>
                     <el-menu-item index="10">
                         <i class="el-icon-star-on"></i>
@@ -134,14 +149,17 @@
             </el-aside>
             <el-container>
                 <el-main>
-                    <el-card class="box-card" v-for="document in documents">
-                        <div slot="header" class="clearfix">
-                            <a :href="userMessage.userName+'/'+document.documentId"><p class="helvetica"><span>{{document.title}}</span></p></a>
-                        </div>
-                            <div class="text item">
-                                <p class="desc">{{document.documentDesc}}</p>
-                            </div>
-                    </el-card>
+                    <el-row :gutter="120" v-for="x in folderRow">
+                        <el-col :span="6" v-for="(folder,index) in folders" v-if="calculateCol(x, index)">
+                            <el-card class="folder-card">
+                                <div class="folder"></div>
+                                <div class="text item">
+                                    <p>{{folder.folderName}}</p>
+                                </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                    <!--<hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />-->
                 </el-main>
                 <el-footer>
                     {{footer}}
@@ -161,6 +179,7 @@
         el: "#app2",
         data: {
             userMessage: {
+                userId:"",
                 userName: "",
                 userDesc: "",
                 school: "",
@@ -169,16 +188,23 @@
                 groupId: ""
             },
             documents: [],
+            folders: [],
             footer: "@CopyRight 2017-1028 by Jedrek"
         },
+        computed: {
+            folderRow: function () {
+                return Math.ceil(this.folders.length/4);
+            }
+        },
         mounted: function () {
-            obj = this;
+            var obj = this;
             var account = obj.getCookie("currentUser");
             axios.get('login/'+account).then(function (response) {
                 obj.userMessage.email = response.data.email;
                 obj.userMessage.userName = response.data.account;
             }).then(function (response) {
                 axios.get('/account/'+obj.userMessage.userName).then(function (response) {
+                    obj.userMessage.userId = response.data.userId;
                     obj.userMessage.userName = response.data.userName;
                     obj.userMessage.userDesc = response.data.userDesc;
                     obj.userMessage.school = response.data.school;
@@ -186,11 +212,19 @@
                     obj.userMessage.groupId = response.data.groupId;
                 }).then(function (response) {
                     console.log("groupId",obj.userMessage.groupId);
-                   axios.get('/group/'+obj.userMessage.groupId).then(function (response) {
+                    axios.get('/group/'+obj.userMessage.groupId).then(function (response) {
                        console.log("groupName");
                        console.log(response);
                        obj.userMessage.userGroup = response.data;
                    })
+                    axios.get('/'+obj.userMessage.userName+'/rootFolders').then(function (response) {
+                        response.data.forEach(function (value, index, array) {
+                            obj.folders.push(value);
+                        });
+                        console.log(obj.folders)
+                    }).catch(function (response) {
+                        console.log(response);
+                    });
                 }).catch(function (response) {
                     console.log("error");
                     console.log(response);
@@ -218,6 +252,20 @@
             },
             format_url: function (url) {
                 return url.split(" ").join("_")
+            },
+            addFolder: function() {
+                var number = 10;
+                this.folders.push({
+                    "folderName": "课题项目"+number++,
+                    "folderDesc": "课题项目"+number++,
+                    "createdUserId": 3,
+                    "createdUserDate": 1523543959000
+                });
+                console.log(this.folders)
+            },
+            calculateCol: function(x, index) {
+                // 通过行数和数组的索引判断每行渲染的folder数目
+                return index + 1 <= x * 4 && index + 1 > Math.max(0, (x-1)*4);
             }
         }
     })

@@ -13,7 +13,7 @@ public interface FolderMapper {
 
     int deleteFolder(Integer folderId);
 
-    List<Folder> queryFolderByUser(Integer createdUserId);
+    List<Folder> queryRootFolderByUser(Integer createdUserId);
 
     int updateFolderName(
             @Param("folderId") Integer folderId,

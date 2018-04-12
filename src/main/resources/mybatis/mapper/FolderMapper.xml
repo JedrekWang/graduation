@@ -22,15 +22,16 @@
         DELETE FROM folder where folder_id = #{folderId}
     </delete>
 
-    <select id="queryFolderByUser" resultType="com.jedrek.graduation.entity.Folder">
+    <select id="queryRootFolderByUser" resultType="com.jedrek.graduation.entity.Folder">
         SELECT
+        folder_id AS folderId,
         folder_name AS folderName,
         folder_desc AS folderDesc,
         parent_folder_id AS parentFolderId,
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate
-        FROM folder WHERE created_user_id = #{createdUserId}
+        FROM folder WHERE created_user_id = #{createdUserId} AND parent_folder_id is NULL
     </select>
     
     <update id="updateFolderName">

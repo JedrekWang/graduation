@@ -28,11 +28,11 @@ public class FolderService {
         return folderMapper.deleteFolder(folderId);
     }
 
-    List<Folder> queryFolderByUser(Integer createdUserId) {
-        return folderMapper.queryFolderByUser(createdUserId);
+    public List<Folder> queryRootFolderByUser(Integer createdUserId) {
+        return folderMapper.queryRootFolderByUser(createdUserId);
     }
 
-    int updateFolderName(Integer folderId, String newName) {
+    public int updateFolderName(Integer folderId, String newName) {
         return folderMapper.updateFolderName(folderId, newName);
     }
 }
