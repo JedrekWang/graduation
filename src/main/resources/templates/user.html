@@ -113,19 +113,23 @@
                                     <h2 class="item">{{userMessage.sex == "male" ? '男': '女'}}</h2>
                                 </el-col>
                                 <el-col :offset="2">
-                                    <button v-if="test" type="button" id="button1" hidden="hidden">修改</button>
-                                    <button v-else="test" type="button">修改</button>
+                                    <button v-if="hidden" type="button" hidden="hidden">修改</button>
+                                    <button v-else="hidden" type="button">修改</button>
                                 </el-col>
                             </el-container>
                             <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
                         </div>
-                        <div class="text item">
+                        <div class="text item" @mouseover="showButton" @mouseleave="hiddenButton">
                             <el-container>
                                 <el-col :offset="4" :span="5">
                                     <h2 class="item">个人介绍</h2>
                                 </el-col>
                                 <el-col :offset="2">
                                     <h2 class="item">{{userMessage.userDesc}}</h2>
+                                </el-col>
+                                <el-col :offset="2">
+                                    <button v-if="hidden" type="button" hidden="hidden">修改</button>
+                                    <button v-else="hidden" type="button">修改</button>
                                 </el-col>
                             </el-container>
                             <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
@@ -199,7 +203,7 @@
                 email: "",
                 group: ""
             },
-            test: true
+            hidden: true
         },
         mounted: function () {
             obj = this;
@@ -218,18 +222,12 @@
             })
         },
         methods: {
-            say: function (message) {
-                alert(message)
-            },
             showButton: function() {
-                console.log("showButton");
-                // var button = document.getElementById("button1").hidden;
-                this.test = false;
+                this.hidden = false;
             },
             hiddenButton: function() {
-                //todo 现在可以实现，但能不能修改hidden属性而不是使用两个差不多的button
-                console.log("hiddenButton");
-                this.test = true;
+                // bug 所有的标签共享了一个变量导致所有button同时显示同时消失
+                this.hidden = true;
             }
         }
     })

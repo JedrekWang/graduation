@@ -1,0 +1,54 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.FileInfoMapper">
+
+    <insert id="addFile" parameterType="com.jedrek.graduation.entity.FileInfo">
+        INSERT INTO file_info(
+        file_name AS fileName,
+        format,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId
+        )VALUES (
+        #{fileName},
+        #{format},
+        #{parentFolderId},
+        #{contentUrl},
+        #{createdUserId}
+        )
+    </insert>
+
+    <delete id="deleteFile">
+        DELETE FROM file_info WHERE file_id = #{fileId}
+    </delete>
+
+    <select id="queryFileByUserId" resultType="com.jedrek.graduation.entity.FileInfo">
+        SELECT
+        file_name AS fileName,
+        format,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate
+        FROM file_info WHERE created_user_id = #{createdUserId}
+    </select>
+    
+    <select id="queryFileByFolder" resultType="com.jedrek.graduation.entity.FileInfo">
+        SELECT
+        file_name AS fileName,
+        format,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate
+        FROM file_info WHERE parent_folder_id = #{parentFolderId}
+    </select>
+
+    <update id="updateFileInfoName">
+        UPDATE file_info SET
+        file_name = #{newFileName}
+        WHERE file_id = #{fileId}
+    </update>
+    
+</mapper>

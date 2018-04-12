@@ -1,0 +1,43 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.FolderMapper">
+
+    <insert id="addFolder" parameterType="com.jedrek.graduation.entity.Folder">
+        INSERT INTO folder(
+        folder_name AS folderName,
+        folder_desc AS folderDesc,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId)
+        VALUES (
+        #{folderName},
+        #{folderDesc},
+        #{parentFolderId},
+        #{contentUrl},
+        #{createdUserId});
+    </insert>
+    
+    <delete id="deleteFolder" parameterType="com.jedrek.graduation.entity.Folder">
+        DELETE FROM folder where folder_id = #{folderId}
+    </delete>
+
+    <select id="queryFolderByUser" resultType="com.jedrek.graduation.entity.Folder">
+        SELECT
+        folder_name AS folderName,
+        folder_desc AS folderDesc,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate
+        FROM folder WHERE created_user_id = #{createdUserId}
+    </select>
+    
+    <update id="updateFolderName">
+      UPDATE folder SET
+      folder_name = #{newName}
+      WHERE folder_id = #{folderId}
+    </update>
+    
+</mapper>
+
