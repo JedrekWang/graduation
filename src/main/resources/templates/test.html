@@ -58,6 +58,16 @@
             background-size: 100%;
             background-position: center center;
         }
+        .file{
+            width: 80px;
+            height: 60px;
+            margin: auto;
+            /*background-color: #4cae4c;*/
+            background-image: url(../static/img/word.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
         .folder-card{
             border: 0px;
         }
@@ -177,27 +187,43 @@
                             <el-button @click="dialogFormVisible = false">取 消</el-button>
                         </div>
                     </el-dialog>
-                    <el-row :gutter="10" v-for="x in folderRow">
-                        <el-col :span="6" v-for="(folder,index) in folders" v-if="calculateCol(x, index)">
-                            <el-card class="folder-card" :title="folder.folderDesc">
-                                <div class="folder"  @click="showFolderContent(folder)"></div>
+                    <el-row :gutter="10" v-for="x in allRow">
+                        <el-col :span="6" v-for="(stuff,index) in allData" v-if="calculateCol(x, index)">
+                            <el-card v-if="stuff.folderDesc" class="folder-card" :title="stuff.folderDesc">
+                                <div class="folder"  @click="showFolderContent(stuff)"></div>
                                 <div class="text item folder-name" >
-                                    <el-row v-if="folder.isNew">
+                                    <el-row v-if="stuff.isNew">
                                         <el-col :span="16">
-                                            <el-input v-model="folder.folderName" :value="folder.folderName" size="mini" autofocus></el-input>
+                                            <el-input v-model="stuff.folderName" :value="stuff.folderName" size="mini" autofocus></el-input>
                                         </el-col>
                                         <el-col :span="3">
-                                            <el-button class="button-right" @click="createFolder(folder)" type="primary" icon="el-icon-success" size="mini"></el-button>
+                                            <el-button class="button-right" @click="createFolder(stuff)" type="primary" icon="el-icon-success" size="mini"></el-button>
                                         </el-col>
                                         <el-col :span="3" :offset="2">
-                                            <el-button class="button-right" @click="deleteFolder(folder)" type="primary" icon="el-icon-error" size="mini"></el-button>
+                                            <el-button class="button-right" @click="deleteFolder(stuff)" type="primary" icon="el-icon-error" size="mini"></el-button>
                                         </el-col>
                                     </el-row>
-                                    <p style="margin-left: 40%;" v-else="folder.isNew">{{folder.folderName}}</p>
+                                    <p style="margin-left: 40%;" v-else="stuff.isNew">{{stuff.folderName}}</p>
+                                </div>
+                            </el-card>
+                            <el-card v-else="stuff.folderDesc" :title="stuff.fileName">
+                                <div class="file"></div>
+                                <div class="text item folder-name" >
+                                    <p style="margin-left: 40%;">{{stuff.fileName}}</p>
                                 </div>
                             </el-card>
                         </el-col>
                     </el-row>
+                    <!--<el-row :gutter="10" v-for="x in allRow">-->
+                        <!--<el-col :span="6" v-for="(file,index) in files" v-if="calculateCol(x, index)">-->
+                            <!--<el-card :title="file.fileName">-->
+                                <!--<div class="file"></div>-->
+                                <!--<div class="text item folder-name" >-->
+                                    <!--<p style="margin-left: 40%;">{{file.fileName}}</p>-->
+                                <!--</div>-->
+                            <!--</el-card>-->
+                        <!--</el-col>-->
+                    <!--</el-row>-->
                     <!--<hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />-->
                 </el-main>
                 <el-footer>
@@ -228,6 +254,7 @@
             },
             documents: [],
             folders: [],
+            files: [],
             currentFolderId: "",
             currentFolder: "",
             dialogFormVisible: false,
@@ -238,6 +265,12 @@
         computed: {
             folderRow: function () {
                 return Math.ceil(this.folders.length/4);
+            },
+            allRow: function () {
+                return Math.ceil((this.folders.length+this.files.length)/4);
+            },
+            allData: function () {
+                return this.folders.concat(this.files);
             }
         },
         mounted: function () {
@@ -265,6 +298,14 @@
                     }).catch(function (response) {
                         console.log(response);
                     });
+                    axios.get('/'+obj.userMessage.userName+'/rootFiles').then(function (response) {
+                        response.data.forEach(function (value, index, array) {
+                            obj.files.push(value);
+                        });
+                        console.log(obj.files)
+                    }).catch(function (reason) {
+                        console.log(reason)
+                    })
                 }).catch(function (response) {
                     console.log(response);
                 });
@@ -338,7 +379,6 @@
                 console.log(folder.folderName);
                 folder.isNew = false;
                 console.log(this.folders);
-                // todo 异步更新文件夹
                 axios.post('/'+this.userMessage.userName+"/rootFolders", folder).then(function (response) {
                     console.log(response);
                 }).then(function (response) {
@@ -365,3 +405,25 @@
     })
 </script>
 </html>
+
+<!--<el-row :gutter="10" v-for="x in allRow">-->
+    <!--<el-col :span="6" v-for="(folder,index) in folders" v-if="calculateCol(x, index)">-->
+        <!--<el-card class="folder-card" :title="folder.folderDesc">-->
+            <!--<div class="folder"  @click="showFolderContent(folder)"></div>-->
+            <!--<div class="text item folder-name" >-->
+                <!--<el-row v-if="folder.isNew">-->
+                    <!--<el-col :span="16">-->
+                        <!--<el-input v-model="folder.folderName" :value="folder.folderName" size="mini" autofocus></el-input>-->
+                    <!--</el-col>-->
+                    <!--<el-col :span="3">-->
+                        <!--<el-button class="button-right" @click="createFolder(folder)" type="primary" icon="el-icon-success" size="mini"></el-button>-->
+                    <!--</el-col>-->
+                    <!--<el-col :span="3" :offset="2">-->
+                        <!--<el-button class="button-right" @click="deleteFolder(folder)" type="primary" icon="el-icon-error" size="mini"></el-button>-->
+                    <!--</el-col>-->
+                <!--</el-row>-->
+                <!--<p style="margin-left: 40%;" v-else="folder.isNew">{{folder.folderName}}</p>-->
+            <!--</div>-->
+        <!--</el-card>-->
+    <!--</el-col>-->
+<!--</el-row>-->

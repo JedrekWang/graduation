@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -64,5 +65,13 @@ public class FileInfoController {
             }
         }
         return null;
+    }
+
+    @ResponseBody
+    @RequestMapping("{userName}/rootFiles")
+    public Object getRootFiles(@PathVariable String userName) {
+        User user = userService.queryUserByAccount(userName);
+        List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId());
+        return fileInfos;
     }
 }

@@ -28,8 +28,8 @@ public class FileInfoService {
         return fileInfoMapper.deleteFile(fileId);
     }
 
-    public List<FileInfo> queryFileByUserId(Integer createdUserId) {
-        return fileInfoMapper.queryFileByUserId(createdUserId);
+    public List<FileInfo> queryRootFileByUserId(Integer createdUserId) {
+        return fileInfoMapper.queryRootFileByUserId(createdUserId);
     }
 
     public List<FileInfo> queryFileByFolder(Integer parentFolderId) {
