@@ -62,6 +62,8 @@ public class DocumentController {
                 document.setContentUrl(path);
                 documentService.addDocument(document);
                 String uploadPath = Constant.uploadPath + path;
+
+
                 File uploadFile = new File(uploadPath);
                 File parentFile = uploadFile.getParentFile();
                 if (!parentFile.exists()) {

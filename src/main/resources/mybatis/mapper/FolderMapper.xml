@@ -5,16 +5,18 @@
 
     <insert id="addFolder" parameterType="com.jedrek.graduation.entity.Folder">
         INSERT INTO folder(
-        folder_name AS folderName,
-        folder_desc AS folderDesc,
-        parent_folder_id AS parentFolderId,
-        content_url AS contentUrl,
-        created_user_id AS createdUserId)
+        folder_name,
+        folder_desc,
+        <if test="parentFolderId != null">
+            parent_folder_id,
+        </if>
+        created_user_id)
         VALUES (
         #{folderName},
         #{folderDesc},
-        #{parentFolderId},
-        #{contentUrl},
+        <if test="parentFolderId != null">
+            #{parentFolderId},
+        </if>
         #{createdUserId});
     </insert>
     
@@ -32,6 +34,18 @@
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate
         FROM folder WHERE created_user_id = #{createdUserId} AND parent_folder_id is NULL
+    </select>
+    
+    <select id="querySubFolder" resultType="com.jedrek.graduation.entity.Folder">
+        SELECT
+        folder_id AS folderId,
+        folder_name AS folderName,
+        folder_desc AS folderDesc,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate
+        FROM folder where parent_folder_id = #{parentFolderId}
     </select>
     
     <update id="updateFolderName">

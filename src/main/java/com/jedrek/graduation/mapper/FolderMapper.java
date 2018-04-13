@@ -15,6 +15,8 @@ public interface FolderMapper {
 
     List<Folder> queryRootFolderByUser(Integer createdUserId);
 
+    List<Folder> querySubFolder(Integer parentFolderId);
+
     int updateFolderName(
             @Param("folderId") Integer folderId,
             @Param("newName") String newName);

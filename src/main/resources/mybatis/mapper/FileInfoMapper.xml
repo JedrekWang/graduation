@@ -5,11 +5,11 @@
 
     <insert id="addFile" parameterType="com.jedrek.graduation.entity.FileInfo">
         INSERT INTO file_info(
-        file_name AS fileName,
+        file_name,
         format,
-        parent_folder_id AS parentFolderId,
-        content_url AS contentUrl,
-        created_user_id AS createdUserId
+        parent_folder_id,
+        content_url,
+        created_user_id
         )VALUES (
         #{fileName},
         #{format},

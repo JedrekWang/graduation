@@ -32,6 +32,10 @@ public class FolderService {
         return folderMapper.queryRootFolderByUser(createdUserId);
     }
 
+    public List<Folder> querySubFolder(Integer parentFolderId) {
+        return folderMapper.querySubFolder(parentFolderId);
+    }
+
     public int updateFolderName(Integer folderId, String newName) {
         return folderMapper.updateFolderName(folderId, newName);
     }
