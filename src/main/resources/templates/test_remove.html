@@ -146,8 +146,8 @@
                     <el-card :body-style="{ padding: '30px' }">
                         <div class="image"  :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}"></div>
                         <div style="padding: 14px;">
-                            <p class="helvetica"><span>{{userMessage.userName}}</span></p>
-                            <p class="desc"><span>{{userMessage.userDesc}}</span></p>
+                                <p class="helvetica"><span>{{userMessage.userName}}</span></p>
+                                <p class="desc"><span>{{userMessage.userDesc}}</span></p>
                             <div class="line"></div>
                             <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
                             <span>{{userMessage.school}}</span>
@@ -238,17 +238,16 @@
                 userGroup: "",
                 groupId: ""
             },
+            documents: [],
             folders: [],  //当前页所有的文件夹
             files: [],         //当前页所有的文件
             previousFolders: [], //前一页所有的文件夹
             previousFiles: [],      //前一页的所有的文件
             currentFolderId: "", //前一页点击进去的文件夹id
             currentFolder: "",     //前一页点击进去的文件夹
-            parentFolder:"",
-            file: "",    //上传文件
-
-            //useless
+            // parentFolder:"",
             dialogFormVisible: false,
+            file: "",
             formLabelWidth: '100px',
             footer: "@CopyRight 2017-2018 by Jedrek"
         },
@@ -279,8 +278,8 @@
                     obj.userMessage.groupId = response.data.groupId;
                 }).then(function (response) {
                     axios.get('/group/'+obj.userMessage.groupId).then(function (response) {
-                        obj.userMessage.userGroup = response.data;
-                    });
+                       obj.userMessage.userGroup = response.data;
+                   });
                     axios.get('/'+obj.userMessage.userName+'/rootFolders').then(function (response) {
                         response.data.forEach(function (value, index, array) {
                             obj.folders.push(value);
@@ -299,6 +298,13 @@
                 }).catch(function (response) {
                     console.log(response);
                 });
+                axios.get('/'+account+'/documents').then(function (response) {
+                    response.data.forEach(function(value, index, array){
+                        obj.documents.push(value);
+                    })
+                }).catch(function (response) {
+                    console.log(response);
+                })
             });
         },
         methods: {
@@ -321,9 +327,11 @@
                 this.folders.push({
                     "folderName": "课题项目",
                     "folderDesc": "课题项目",
-                    "createdUserId": this.userMessage.userId,
+                    "createdUserId": 3,
                     "isNew": true,
+                    "createdUserDate": 1523543959000
                 });
+                console.log(this.folders)
             },
             uploadFile: function(event) {
                 var obj = this;
@@ -331,6 +339,7 @@
                 var formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('parentFolderId', this.currentFolderId);
+                console.log(this.file);
                 var config = {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -338,16 +347,17 @@
                 };
                 axios.post('/file/test', formData, config).then(function (response) {
                     console.log(response);
+                    // this.dialogFormVisible = false;
                 }).then(function (value) {
                     obj.dialogFormVisible = false;
-                    //fixme 更新的不是根文件，而是指定目录下的文件
-                    axios.get('/'+obj.userMessage.userName+'/parentFolder/'+obj.currentFolderId).then(function (response) {
+                    axios.get('/'+obj.userMessage.userName+'/rootFiles').then(function (response) {
                         obj.files = response.data;
                     }).catch(function (reason) {
                         console.log(reason)
                     })
                 }).catch(function (reason) {
                     console.log(reason);
+                    // this.dialogFormVisible = false;
                 })
             },
             getFile: function(event) {
@@ -360,18 +370,23 @@
                 return index + 1 <= x * 4 && index + 1 > Math.max(0, (x-1)*4);
             },
             createFolder: function(folder) {
-                var uploadFolder = folder;
-                uploadFolder.parentFolderId = this.currentFolderId;
+                //todo 现在的问题是新建的文件夹的id号没有，导致查询子文件夹和文件失败
+                var subFolder = folder;
+                subFolder.parentFolderId = this.currentFolderId;
+                console.log(folder.folderName);
                 folder.isNew = false;
-                axios.post('/'+this.userMessage.userName+"/folder", uploadFolder).then(function (response) {
-                    uploadFolder.folderId = response.data;
+                console.log(this.folders);
+                axios.post('/'+this.userMessage.userName+"/rootFolders", subFolder).then(function (response) {
+                    console.log("folderId");
+                    subFolder.folderId = response.data;
                     folder.folderId = response.data;
-                    console.log("获取的文件夹id为"+response.data);
+                    console.log(response.data);
+                    location.reload()
                     // 更新文件夹信息
                 }).then(function (response) {
                     console.log("subFolder");
-                    console.log(uploadFolder);
-                    axios.get('/folders/'+uploadFolder.folderId).then(function (response) {
+                    console.log(subFolder);
+                    axios.get('/folders/'+subFolder.folderId).then(function (response) {
                         obj.folders = response.data;
                     }).catch(function (reason) {
                         console.log(reason);
@@ -385,6 +400,8 @@
             },
             showFolderContent: function (folder) {
                 var obj = this;
+                console.log(">><><><>");
+                console.log(folder);
                 obj.previousFolders = obj.folders;
                 obj.previousFiles = obj.files;
                 obj.currentFolder = folder;
@@ -405,24 +422,21 @@
                 this.folders = this.previousFolders;
                 this.files = this.previousFiles;
                 var folder = this.currentFolder;
+                console.log("Test");
                 console.log(this.currentFolder);
                 var parentFolderId = folder.parentFolderId;
                 var obj = this;
                 axios.get('/folder/'+parentFolderId).then(function (response) {
-                    if (response.data != "error") {
-                        obj.currentFolder = response.data;
-                        obj.currentFolderId = obj.currentFolder.folderId;
-                    } else {
-                        obj.currentFolder = "";
-                        obj.currentFolderId = "";
-                    }
+                    // obj.parentFolder = response.data;
+                    obj.currentFolder = response.data;
+                    obj.currentFolderId = obj.currentFolder.folderId;
                 }).then(function (response) {
-                    axios.get('/folders/'+obj.currentFolder.parentFolderId).then(function (response) {
+                    axios.get('/folders/'+obj.parentFolder.parentFolderId).then(function (response) {
                         obj.previousFolders = response.data;
                     }).catch(function (reason) {
                         console.log(reason);
                     });
-                    axios.get('/files/'+obj.currentFolder.parentFolderId).then(function (response) {
+                    axios.get('/files/'+obj.parentFolder.parentFolderId).then(function (response) {
                         obj.previousFiles  = response.data;
                     }).catch(function (response) {
                         console.log(response)

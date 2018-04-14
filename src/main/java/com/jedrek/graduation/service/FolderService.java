@@ -28,12 +28,22 @@ public class FolderService {
         return folderMapper.deleteFolder(folderId);
     }
 
+    public Folder queryFolderById(Integer folderId) {
+        return folderMapper.queryFolderById(folderId);
+    }
+
     public List<Folder> queryRootFolderByUser(Integer createdUserId) {
         return folderMapper.queryRootFolderByUser(createdUserId);
     }
 
     public List<Folder> querySubFolder(Integer parentFolderId) {
         return folderMapper.querySubFolder(parentFolderId);
+    }
+
+    public Folder queryFolder(
+            @Param("parentFolderId") Integer parentFolderId,
+            @Param("folderName") String folderName) {
+        return folderMapper.queryFolder(parentFolderId, folderName);
     }
 
     public int updateFolderName(Integer folderId, String newName) {

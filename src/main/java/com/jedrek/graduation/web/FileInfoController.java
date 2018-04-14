@@ -2,6 +2,7 @@ package com.jedrek.graduation.web;
 
 import com.jedrek.graduation.constant.Constant;
 import com.jedrek.graduation.entity.FileInfo;
+import com.jedrek.graduation.entity.Folder;
 import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.service.FileInfoService;
 import com.jedrek.graduation.service.UserService;
@@ -71,6 +72,32 @@ public class FileInfoController {
     @RequestMapping("{userName}/rootFiles")
     public Object getRootFiles(@PathVariable String userName) {
         User user = userService.queryUserByAccount(userName);
+        List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId());
+        return fileInfos;
+    }
+
+    @ResponseBody
+    @RequestMapping("{userName}/parentFolder/{parentFolderId}")
+    public Object getParentFolderFiles(
+            @PathVariable String userName,
+            @PathVariable Integer parentFolderId) {
+        User user = userService.queryUserByAccount(userName);
+        List<FileInfo> fileInfos = fileInfoService.queryFilesByUserAndParentFolder(user.getUserId(), parentFolderId);
+        return fileInfos;
+    }
+
+    @ResponseBody
+    @RequestMapping("files/{parentFolderId}")
+    public Object getSubFolder(@PathVariable Integer parentFolderId) {
+        List<FileInfo> fileInfos = fileInfoService.queryFileByFolder(parentFolderId);
+        return fileInfos;
+    }
+
+    @ResponseBody
+    @RequestMapping("files/null")
+    public Object getSubFolder(HttpServletRequest request) {
+        String currentUser = CookieUtil.getCookieValue(request, "currentUser");
+        User user = userService.queryUserByAccount(currentUser);
         List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId());
         return fileInfos;
     }

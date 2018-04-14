@@ -32,6 +32,10 @@ public class FileInfoService {
         return fileInfoMapper.queryRootFileByUserId(createdUserId);
     }
 
+    public List<FileInfo> queryFilesByUserAndParentFolder(Integer createdUserId, Integer parentFolderId) {
+        return fileInfoMapper.queryFilesByUserAndParentFolder(createdUserId, parentFolderId);
+    }
+
     public List<FileInfo> queryFileByFolder(Integer parentFolderId) {
         return fileInfoMapper.queryFileByFolder(parentFolderId);
     }

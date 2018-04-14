@@ -17,6 +17,10 @@ public interface FileInfoMapper {
 
     List<FileInfo> queryRootFileByUserId(Integer createdUserId);
 
+    List<FileInfo> queryFilesByUserAndParentFolder(
+            @Param("createdUserId") Integer createdUserId,
+            @Param("parentFolderId") Integer parentFolderId);
+
     List<FileInfo> queryFileByFolder(Integer parentFolderId);
 
     int updateFileInfoName(
