@@ -189,7 +189,6 @@
                 <el-breadcrumb separator="/" class="breadcrumb">
                     <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
                     <el-breadcrumb-item>{{currentFolder.folderName}}</el-breadcrumb-item>
-                    <el-breadcrumb-item><button type="button" @click="execBefore">Before</button></el-breadcrumb-item>
                 </el-breadcrumb>
                 <el-main>
                     <el-dialog title="新建文件" :visible.sync="dialogFormVisible">
@@ -207,19 +206,23 @@
                     <el-dialog
                             title="删除操作"
                             :visible.sync="dialogVisible"
-                            width="20%"
-                            :before-close="handleClose">
+                            width="20%">
                         <span>是否删除该文件或文件夹?</span>
                         <span slot="footer" class="dialog-footer">
-                            <el-button type="primary" @click="deleteStuff">确 定</el-button>
+                            <el-button type="primary" @click="removeStuff">确 定</el-button>
                             <el-button @click="dialogVisible = false">取 消</el-button>
                         </span>
                     </el-dialog>
 
+                    <el-row>
+                        <el-col :span="4" style="margin-bottom: 5px ">
+                            <el-button @click="execBefore">Before</el-button>
+                        </el-col>
+                    </el-row>
                     <el-row :gutter="10" v-for="x in allRow">
                         <el-col :span="6" v-for="(stuff,index) in allData" v-if="calculateCol(x, index)">
                             <el-card v-if="stuff.folderDesc" class="folder-card" :title="stuff.folderDesc">
-                                <div class="folder"  @dblclick="showFolderContent(stuff)" @click.right="dialogVisible = true"></div>
+                                <div class="folder"  @dblclick="showFolderContent(stuff)" @click.right="setPressStuff(stuff)"></div>
                                 <div class="text item folder-name" >
                                     <el-row v-if="stuff.isNew">
                                         <el-col :span="16">
@@ -237,9 +240,9 @@
                             </el-card>
 
                             <el-card v-else="stuff.folderDesc" class="folder-card" :title="stuff.fileName">
-                                <a v-if="stuff.format == 'pdf' " :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="file"></div></a>
-                                <a v-else-if="stuff.format == 'docx'"  :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="word"></div></a>
-                                <div v-else class="other-file"></div>
+                                <a v-if="stuff.format == 'pdf' " :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="file" @click.right="setPressStuff(stuff)"></div></a>
+                                <a v-else-if="stuff.format == 'docx'"  :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="word" @click.right="setPressStuff(stuff)" ></div></a>
+                                <div v-else class="other-file" @click.right="setPressStuff(stuff)"></div>
 
                                 <div class="text item folder-name" >
                                     <p style="margin-left: 40%;">{{stuff.fileName}}</p>
@@ -284,6 +287,7 @@
             file: "",    //上传文件
 
             //useless
+            pressStuff: "",
             dialogVisible: false,
             dialogFormVisible: false,
             formLabelWidth: '100px',
@@ -441,8 +445,68 @@
                     console.log(response)
                 })
             },
-            showTest: function() {
-                alert("test");
+            setPressStuff: function (stuff) {
+                this.dialogVisible = true;
+                this.pressStuff = stuff;
+                console.log(this.pressStuff);
+            },
+            removeStuff: function() {
+                var obj = this;
+                var noFolder = false;
+                var noFile = false;
+                if ('folderId' in this.pressStuff) {
+                    for (var i = 0; i < this.folders.length; i++) {
+                        if (this.folders[i].folderId == this.pressStuff.folderId) {
+                            this.folders.splice(i, 1);
+                            break;
+                        }
+                    }
+                    axios.get('/folders/'+obj.pressStuff.parentFolderId).then(function (response) {
+                        if (response.data == null) {
+                            noFolder = true;
+                        }
+                    }).then(function (response) {
+                        axios.get('/files/'+obj.pressStuff.parentFolderId).then(function (response) {
+                            if (response.data == null) {
+                                noFile = true;
+                            }
+                        }).then(function (response) {
+                            axios.get("/deleteFolder/"+ obj.pressStuff.folderId).then(function (response) {
+                                if(response.data == "success") {
+                                    console.log("成功删除文件夹");
+                                } else {
+                                    console.log("删除文件夹失败");
+                                }
+                            }).catch(function (response) {
+                                console.log(response);
+                            })
+                        }).catch(function (response) {
+                            console.log(response)
+                        });
+                    }).catch(function (reason) {
+                        console.log(reason);
+                    });
+
+
+
+                } else if('fileId' in this.pressStuff) {
+                    for (var j = 0; j < this.files.length; j++) {
+                        if (this.files[j].fileId == this.pressStuff.fileId) {
+                            this.files.splice(j, 1);
+                            break;
+                        }
+                    }
+                    axios.get("/deleteFile/"+ obj.pressStuff.fileId).then(function (response) {
+                        if(response.data == "success") {
+                            console.log("成功删除文件");
+                        } else {
+                            console.log("删除文件失败");
+                        }
+                    }).catch(function (response) {
+                        console.log(response);
+                    })
+                }
+                this.dialogVisible = false;
             },
             showFileContent: function(file) {
                 console.log("file");

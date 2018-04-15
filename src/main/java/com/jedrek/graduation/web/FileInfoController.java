@@ -130,4 +130,14 @@ public class FileInfoController {
         List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId());
         return fileInfos;
     }
+
+    @ResponseBody
+    @RequestMapping("deleteFile/{fileId}")
+    public Object deleteFile(@PathVariable Integer fileId) {
+        int i = fileInfoService.deleteFile(fileId);
+        if (i > 0) {
+            return "success";
+        }
+        return "error";
+    }
 }

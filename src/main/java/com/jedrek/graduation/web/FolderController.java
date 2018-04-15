@@ -91,4 +91,14 @@ public class FolderController {
         return "error";
     }
 
+    @ResponseBody
+    @RequestMapping("deleteFolder/{folderId}")
+    public Object deleteFile(@PathVariable Integer folderId) {
+        int i = folderService.deleteFolder(folderId);
+        if (i > 0) {
+            return "success";
+        }
+        return "error";
+    }
+
 }
