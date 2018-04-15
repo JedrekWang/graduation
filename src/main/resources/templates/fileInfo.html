@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文档展示页</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <style>
+        .pdfobject-container {
+            height: 650px;
+            width: 100%;
+        }
+
+        .pdfobject {
+            border: 1px solid #666;
+        }
+
+        .title {
+            width: 100%;
+            height: 100px;
+            background-color: #ffffff;
+        }
+
+        .creator-logo {
+            background-color: #4cae4c;
+            width: 100px;
+            height: 100px;
+            margin-top: 40px;
+            border-radius: 45px;
+            background-image: url(/static/img/gakki.jpg);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-col :span="18">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="1">
+                        <a href="/">DocumentKiller</a>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <el-input placeholder="请输入文档关键字">
+                            <i slot="suffix" class="el-icon-search"></i>
+                        </el-input>
+                    </el-menu-item>
+                    <el-menu-item index="5">我的工作台</el-menu-item>
+                    <el-menu-item index="6">消息中心</el-menu-item>
+                    <el-menu-item index="7">小组管理</el-menu-item>
+                </el-menu>
+            </el-col>
+            <el-col :span="6">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="8" class="test">
+                        <i class="el-icon-bell"></i>
+                    </el-menu-item>
+                    <el-menu-item index="9">
+                        <i class="el-icon-plus"></i>
+                    </el-menu-item>
+                    <el-menu-item index="10">
+                        <i class="el-icon-star-on"></i>
+                    </el-menu-item>
+                    <el-submenu index="11">
+                        <template slot="title">
+                            <a class="user_head_a" href="#">
+                                <div id="user_head"
+                                     :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}">
+                                </div>
+                            </a>
+                        </template>
+                        <el-menu-item index="2-1"><a :href="'/'+ userMessage.userName">个人信息</a></el-menu-item>
+                        <el-menu-item index="2-2">个人文档</el-menu-item>
+                        <el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>
+                    </el-submenu>
+                </el-menu>
+            </el-col>
+        </el-header>
+        <el-container>
+            <el-col :span="4" :offset="1">
+                <el-aside>
+                    <el-menu
+                            default-active="2"
+                            class="el-menu-vertical-demo"
+                        <el-menu-item index="2">
+                            <i class="el-icon-menu"></i>
+                            <span slot="title">查看原文</span>
+                        </el-menu-item>
+                        <el-menu-item index="3">
+                            <i class="el-icon-document"></i>
+                            <span slot="title">查看讨论</span>
+                        </el-menu-item>
+                        <el-menu-item index="4">
+                            <i class="el-icon-document"></i>
+                            <span>
+                                <!--<a href="/document/test">建立新版本</a>-->
+                                <el-button type="text" @click="dialogFormVisible = true">建立新版本</el-button>
+                                <el-dialog title="文档信息" :visible.sync="dialogFormVisible">
+                                    <el-form enctype="multipart/form-data" label-width="80px" method="post">
+                                        <el-form-item label="版本标题">
+                                            <el-input name="title" placeholder="请输入标题" size="medium"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="版本描述">
+                                            <el-input name="documentDesc" placeholder="请输入描述" size="medium"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="上传文档">
+                                            <input type="file" name="file" class="btn btn-primary">
+                                        </el-form-item>
+                                    </el-form>
+                                  <div slot="footer" class="dialog-footer">
+                                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                                  </div>
+                                </el-dialog>
+                            </span>
+                        </el-menu-item>
+                        <el-submenu index="1">
+                            <template slot="title">
+                                <i class="el-icon-location"></i>
+                                <span>查看历史版本</span>
+                            </template>
+                            <el-menu-item-group>
+                                <template slot="title">分组一</template>
+                                <!--<el-menu-item v-for="version in versions" :index="version.versionId">-->
+                                    <!--{{version.versionKey}}-->
+                                <!--</el-menu-item>-->
+                            </el-menu-item-group>
+                        </el-submenu>
+                        </el-submenu>
+                    </el-menu>
+                </el-aside>
+            </el-col>
+            <el-col :span="2" :offset="2">
+                <a href="#">
+                    <div class="creator-logo"></div>
+                </a>
+            </el-col>
+            <el-col :span="11" :offset="0">
+                <el-main>
+                    <div class="title">
+                        <h2>{{document.title}}</h2>
+                        <h4 style="color: grey">{{document.documentDesc}}</h4>
+                        <div class="creator">
+                            <a :href="'/'+creator.userName"><p style="float: left;">{{creator.userName}}</p></a>
+                            <p style="float: left; margin-left: 55%;">{{document.createdDate}}</p>
+                        </div>
+                    </div>
+                    <div class="document"></div>
+                </el-main>
+            </el-col>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/index.js"></script>
+<script src="/static/js/axios.js"></script>
+<script src="/static/js/pdfobject.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            creator: {
+                userName: ""
+            },
+            document: {
+                title: "",
+                createdDate: "",
+                finalPath: ""
+            },
+            userMessage: {
+                userName: ""
+            },
+            versions: [],
+            dialogFormVisible: false,
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            formLabelWidth: '120px'
+        },
+        mounted: function () {
+            obj = this;
+            obj.userMessage.userName = obj.getCookie("currentUser");
+            var param = window.location.href;
+            var fileId = param.split("/")[5];
+            console.log("fileId"+fileId);
+            axios.get("/fileInfo/" + fileId).then(function (response) {
+                obj.document.finalPath = response.data.finalPath;
+                obj.creator.userName = response.data.user.userName;
+                obj.document.title = response.data.fileInfo.fileName;
+                obj.document.createdDate = response.data.dateString;
+                // var filename = "/system/2018/04/10/test1.pdf";
+                PDFObject.embed(obj.document.finalPath, ".document");
+            }).catch(function (reason) {
+                console.log(reason)
+            });
+            axios.get("/" + documentId + "/version").then(function (response) {
+                response.data.forEach(function (value, index, array) {
+                    obj.versions.push(value);
+                })
+            }).catch(function (response) {
+                console.log(response);
+            })
+        },
+        methods: {
+            //获取cookie
+            getCookie: function (cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+                }
+                return "";
+            },
+            format_url: function (url) {
+                return url.split(" ").join("_")
+            }
+        }
+    })
+</script>
+</html>

@@ -30,7 +30,7 @@ public class MainController {
     }
 
     /**
-     * 首页，左边展示网站功能，右边是注册登录功能
+     * 首页
      * @return
      */
     @RequestMapping("/")
@@ -43,10 +43,15 @@ public class MainController {
                 }
             }
         }
+        return "redirect:/signup";
+    }
+
+    @RequestMapping("/signup")
+    public String showSignUp() {
         return "join";
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public String show_index(
             @RequestParam("account") String account,
             @RequestParam("email") String email,

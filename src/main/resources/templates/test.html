@@ -63,7 +63,27 @@
             height: 60px;
             margin: auto;
             /*background-color: #4cae4c;*/
+            background-image: url(../static/img/pdf.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .word{
+            width: 80px;
+            height: 60px;
+            margin: auto;
+            /*background-color: #4cae4c;*/
             background-image: url(../static/img/word.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .other-file {
+            width: 80px;
+            height: 60px;
+            margin: auto;
+            /*background-color: #4cae4c;*/
+            background-image: url(../static/img/other.png);
             background-repeat: no-repeat;
             background-size: 100%;
             background-position: center center;
@@ -184,10 +204,22 @@
                         </div>
                     </el-dialog>
 
+                    <el-dialog
+                            title="删除操作"
+                            :visible.sync="dialogVisible"
+                            width="20%"
+                            :before-close="handleClose">
+                        <span>是否删除该文件或文件夹?</span>
+                        <span slot="footer" class="dialog-footer">
+                            <el-button type="primary" @click="deleteStuff">确 定</el-button>
+                            <el-button @click="dialogVisible = false">取 消</el-button>
+                        </span>
+                    </el-dialog>
+
                     <el-row :gutter="10" v-for="x in allRow">
                         <el-col :span="6" v-for="(stuff,index) in allData" v-if="calculateCol(x, index)">
                             <el-card v-if="stuff.folderDesc" class="folder-card" :title="stuff.folderDesc">
-                                <div class="folder"  @dblclick="showFolderContent(stuff)"></div>
+                                <div class="folder"  @dblclick="showFolderContent(stuff)" @click.right="dialogVisible = true"></div>
                                 <div class="text item folder-name" >
                                     <el-row v-if="stuff.isNew">
                                         <el-col :span="16">
@@ -203,8 +235,12 @@
                                     <p style="margin-left: 40%;" v-else="stuff.isNew">{{stuff.folderName}}</p>
                                 </div>
                             </el-card>
-                            <el-card v-else="stuff.folderDesc" :title="stuff.fileName">
-                                <div class="file"></div>
+
+                            <el-card v-else="stuff.folderDesc" class="folder-card" :title="stuff.fileName">
+                                <a v-if="stuff.format == 'pdf' " :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="file"></div></a>
+                                <a v-else-if="stuff.format == 'docx'"  :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="word"></div></a>
+                                <div v-else class="other-file"></div>
+
                                 <div class="text item folder-name" >
                                     <p style="margin-left: 40%;">{{stuff.fileName}}</p>
                                 </div>
@@ -248,6 +284,7 @@
             file: "",    //上传文件
 
             //useless
+            dialogVisible: false,
             dialogFormVisible: false,
             formLabelWidth: '100px',
             footer: "@CopyRight 2017-2018 by Jedrek"
@@ -264,6 +301,9 @@
             }
         },
         mounted: function () {
+            document.oncontextmenu = function() {
+                return false;
+            }
             var obj = this;
             var account = obj.getCookie("currentUser");
             axios.get('login/'+account).then(function (response) {
@@ -400,6 +440,14 @@
                 }).catch(function (response) {
                     console.log(response)
                 })
+            },
+            showTest: function() {
+                alert("test");
+            },
+            showFileContent: function(file) {
+                console.log("file");
+                console.log(file);
+                window.location.open("http://localhost:8088/"+this.userMessage.userName+'/'+file.fileId);
             },
             execBefore: function () {
                 this.folders = this.previousFolders;

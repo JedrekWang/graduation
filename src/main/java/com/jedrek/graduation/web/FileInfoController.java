@@ -16,10 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 public class FileInfoController {
@@ -32,6 +30,34 @@ public class FileInfoController {
         this.fileInfoService = fileInfoService;
         this.userService = userService;
     }
+
+    @RequestMapping("{userName}/file/{fileId}")
+    public String showDoucment(
+            @PathVariable String userName,
+            @PathVariable Integer fileId) {
+        return "fileInfo";
+    }
+
+    @ResponseBody
+    @RequestMapping("fileInfo/{fileId}")
+    public Object getFileInfo(@PathVariable Integer fileId) {
+        FileInfo fileInfo = fileInfoService.queryFileByFileId(fileId);
+        Date createdDate = fileInfo.getCreatedUserDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年MM月dd日发布");
+        String dateString = formatter.format(createdDate);
+        Integer userId = fileInfo.getCreatedUserId();
+        User user = userService.queryUserById(userId);
+        String contentUrl = fileInfo.getContentUrl();
+        String finalContentUrl = contentUrl.split("\\.", 2)[0];
+        String finalPath = Constant.documentPath + finalContentUrl +".pdf";
+        Map ans = new HashMap();
+        ans.put("user", user);
+        ans.put("fileInfo", fileInfo);
+        ans.put("finalPath", finalPath);
+        ans.put("dateString", dateString);
+        return ans;
+    }
+
 
     @RequestMapping(value = "file/test", method = RequestMethod.POST)
     @ResponseBody
@@ -62,6 +88,9 @@ public class FileInfoController {
                 }
                 uploadFile.createNewFile();
                 file.transferTo(uploadFile);
+                if (Objects.equals(filename.split("\\.")[1], "docx")) {
+                    DocumentUtil.wordToPdf(uploadFile);
+                }
                 return "code and message";
             }
         }

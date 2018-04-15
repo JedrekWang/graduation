@@ -15,7 +15,7 @@ public class FileInfo {
     private String format;
     private Integer parentFolderId;
     private String contentUrl;
-    private Date createdDate;
+    private Date createdUserDate;
     private Integer createdUserId;
 
 }

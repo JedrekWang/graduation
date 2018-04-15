@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>登录页面</title>
@@ -63,13 +63,14 @@
             <el-form-item label="密码">
                 <el-input name="password" v-model="loginForm.password" type="password" placeholder="请输入密码"></el-input>
             </el-form-item>
+            <!--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
             <el-form-item>
                 <input type="submit" class="btn btn-primary btn-lg btn-block" value="Signal In"/>
             </el-form-item>
         </el-form>
         </div>
         <div class="well footer">
-            <p>new to DocumentHub?<a href="#">Create an account</a></p>.
+            <p>new to DocumentHub?<a href="/signup">Create an account</a></p>.
         </div>
     </div>
 </body>

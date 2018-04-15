@@ -15,6 +15,8 @@ public interface FileInfoMapper {
 
     int deleteFile(Integer fileId);
 
+    FileInfo queryFileByFileId(Integer fileId);
+
     List<FileInfo> queryRootFileByUserId(Integer createdUserId);
 
     List<FileInfo> queryFilesByUserAndParentFolder(

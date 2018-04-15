@@ -23,6 +23,18 @@
         DELETE FROM file_info WHERE file_id = #{fileId}
     </delete>
 
+    <select id="queryFileByFileId" resultType="com.jedrek.graduation.entity.FileInfo">
+        SELECT
+        file_id AS fileId,
+        file_name AS fileName,
+        format,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate
+        FROM file_info WHERE file_id = #{fileId}
+    </select>
+    
     <select id="queryRootFileByUserId" resultType="com.jedrek.graduation.entity.FileInfo">
         SELECT
         file_id AS fileId,

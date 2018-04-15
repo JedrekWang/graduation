@@ -28,6 +28,10 @@ public class FileInfoService {
         return fileInfoMapper.deleteFile(fileId);
     }
 
+    public FileInfo queryFileByFileId(Integer fileId) {
+        return fileInfoMapper.queryFileByFileId(fileId);
+    }
+
     public List<FileInfo> queryRootFileByUserId(Integer createdUserId) {
         return fileInfoMapper.queryRootFileByUserId(createdUserId);
     }
