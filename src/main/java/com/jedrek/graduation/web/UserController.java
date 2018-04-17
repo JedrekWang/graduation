@@ -5,6 +5,7 @@ import com.jedrek.graduation.constant.Constant;
 import com.jedrek.graduation.entity.Login;
 import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.service.LoginService;
+import com.jedrek.graduation.service.UserGroupConService;
 import com.jedrek.graduation.service.UserService;
 import com.jedrek.graduation.utils.CookieUtil;
 import com.jedrek.graduation.utils.MailUtil;
@@ -25,11 +26,13 @@ import java.util.Objects;
 public class UserController {
     private UserService userService;
     private LoginService loginService;
+    private UserGroupConService userGroupConService;
 
     @Autowired
-    public UserController(UserService userService, LoginService loginService) {
+    public UserController(UserService userService, LoginService loginService, UserGroupConService userGroupConService) {
         this.userService = userService;
         this.loginService = loginService;
+        this.userGroupConService = userGroupConService;
     }
 
 
@@ -169,6 +172,21 @@ public class UserController {
         List<User> userByGroup = userService.queryUserByGroup(groupId);
         return userByGroup;
     }
+
+    @ResponseBody
+    @RequestMapping("user/group")
+    public Object addUserAGroup(
+            @RequestParam String account,
+            @RequestParam Integer groupId) {
+        User user = userService.queryUserByAccount(account);
+        int i = userGroupConService.userAddGroup(user.getUserId(), groupId);
+        if (i > 0) {
+            return "success";
+        } else {
+            return "error";
+        }
+    }
+
 
     /**
      * 修改指定用户的信息

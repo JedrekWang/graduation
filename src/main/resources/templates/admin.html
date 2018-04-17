@@ -87,12 +87,12 @@
                             <el-option
                                     v-for="item in options"
                                     :key="item.account"
-                                    :label="item.account"
-                                    :value="item.userName">
+                                    :label="item.userName"
+                                    :value="item.account">
                             </el-option>
                         </el-select>
                         <span slot="footer" class="dialog-footer">
-                            <el-button type="primary" @click="addGroupUser(item.account)">确 定</el-button>
+                            <el-button type="primary" @click="addGroupUser">确 定</el-button>
                             <el-button @click="dialogVisible = false">取 消</el-button>
                         </span>
                     </el-dialog>
@@ -165,8 +165,7 @@
             axios.get('/users').then(function (response) {
                 obj.options = response.data;
             }).catch(function (response) {
-
-            })
+            });
         },
         methods: {
             getUsers: function (group) {
@@ -178,8 +177,23 @@
                     console.log(response);
                 });
             },
-            addGroupUser: function (account) {
-                
+            addGroupUser: function () {
+                var obj = this;
+                axios.get('user/group?account='+obj.selectUser + '&groupId='+obj.currentPressGroup.groupId).then(function (response) {
+                    if(response.data === "success") {
+                        console.log("小组添加成员成功");
+                        axios.get('/group/'+obj.currentPressGroup.groupId).then(function (response) {
+                            obj.users = response.data;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                    } else {
+                        console.log("小组添加成员失败");
+                    }
+                }).catch(function (response) {
+                    console.log(response)
+                });
+                obj.dialogVisible = false;
             }
         }
     })

@@ -64,18 +64,18 @@
         user_name AS userName,
         account,tel,sex,email,school,
         user_desc as userDesc,
-         created_date as createdDate,
+         created_date as createdDate
          FROM user WHERE user.account = #{account}
     </select>
     
     <select id="queryUserByGroup" resultType="com.jedrek.graduation.entity.User">
         SELECT
-        user_id AS userId,
+        user.user_id AS userId,
         user_name AS userName,
         account,tel,sex,email,school,
         user_desc as userDesc,
          created_date as createdDate
-         FROM user,user_group_con WHERE user_group_con.group_id = #{groupId}
+         FROM user,user_group_con WHERE user.user_id = user_group_con.user_id AND user_group_con.group_id = #{groupId}
     </select>
 
     <select id="queryUserBySchool" resultType="com.jedrek.graduation.entity.User">
