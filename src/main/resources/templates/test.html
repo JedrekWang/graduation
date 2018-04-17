@@ -149,11 +149,11 @@
                     <el-submenu index="11">
                         <template slot="title">
                             <a class="user_head_a" href="#">
-                                <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}">
+                                <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}">
                                 </div>
                             </a>
                         </template>
-                        <el-menu-item index="2-1"><a :href="'/'+ userMessage.userName">个人信息</a></el-menu-item>
+                        <el-menu-item index="2-1"><a :href="'/'+ userMessage.account">个人信息</a></el-menu-item>
                         <el-menu-item index="2-2">个人文档</el-menu-item>
                         <el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>
                     </el-submenu>
@@ -164,7 +164,7 @@
             <el-aside width="35%">
                 <el-col id="card" :span="20">
                     <el-card :body-style="{ padding: '30px' }">
-                        <div class="image"  :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}"></div>
+                        <div class="image"  :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}"></div>
                         <div style="padding: 14px;">
                             <p class="helvetica"><span>{{userMessage.userName}}</span></p>
                             <p class="desc"><span>{{userMessage.userDesc}}</span></p>
@@ -240,8 +240,8 @@
                             </el-card>
 
                             <el-card v-else="stuff.folderDesc" class="folder-card" :title="stuff.fileName">
-                                <a v-if="stuff.format == 'pdf' " :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="file" @click.right="setPressStuff(stuff)"></div></a>
-                                <a v-else-if="stuff.format == 'docx'"  :href="'/'+userMessage.userName+'/file/'+stuff.fileId"><div class="word" @click.right="setPressStuff(stuff)" ></div></a>
+                                <a v-if="stuff.format == 'pdf' " :href="'/'+userMessage.account+'/file/'+stuff.fileId"><div class="file" @click.right="setPressStuff(stuff)"></div></a>
+                                <a v-else-if="stuff.format == 'docx'"  :href="'/'+userMessage.account+'/file/'+stuff.fileId"><div class="word" @click.right="setPressStuff(stuff)" ></div></a>
                                 <div v-else class="other-file" @click.right="setPressStuff(stuff)"></div>
 
                                 <div class="text item folder-name" >
@@ -270,6 +270,7 @@
         data: {
             userMessage: {
                 userId:"",
+                account: "",
                 userName: "",
                 userDesc: "",
                 school: "",
@@ -312,9 +313,9 @@
             var account = obj.getCookie("currentUser");
             axios.get('login/'+account).then(function (response) {
                 obj.userMessage.email = response.data.email;
-                obj.userMessage.userName = response.data.account;
+                obj.userMessage.account = response.data.account;
             }).then(function (response) {
-                axios.get('/account/'+obj.userMessage.userName).then(function (response) {
+                axios.get('/account/'+obj.userMessage.account).then(function (response) {
                     obj.userMessage.userId = response.data.userId;
                     obj.userMessage.userName = response.data.userName;
                     obj.userMessage.userDesc = response.data.userDesc;
@@ -325,14 +326,14 @@
                     axios.get('/group/'+obj.userMessage.groupId).then(function (response) {
                         obj.userMessage.userGroup = response.data;
                     });
-                    axios.get('/'+obj.userMessage.userName+'/rootFolders').then(function (response) {
+                    axios.get('/'+obj.userMessage.account+'/rootFolders').then(function (response) {
                         response.data.forEach(function (value, index, array) {
                             obj.folders.push(value);
                         });
                     }).catch(function (response) {
                         console.log(response);
                     });
-                    axios.get('/'+obj.userMessage.userName+'/rootFiles').then(function (response) {
+                    axios.get('/'+obj.userMessage.account+'/rootFiles').then(function (response) {
                         response.data.forEach(function (value, index, array) {
                             obj.files.push(value);
                         });
@@ -385,7 +386,7 @@
                 }).then(function (value) {
                     obj.dialogFormVisible = false;
                     //fixme 更新的不是根文件，而是指定目录下的文件
-                    axios.get('/'+obj.userMessage.userName+'/parentFolder/'+obj.currentFolderId).then(function (response) {
+                    axios.get('/'+obj.userMessage.account+'/parentFolder/'+obj.currentFolderId).then(function (response) {
                         obj.files = response.data;
                     }).catch(function (reason) {
                         console.log(reason)
@@ -405,22 +406,26 @@
             },
             createFolder: function(folder) {
                 var uploadFolder = folder;
-                uploadFolder.parentFolderId = this.currentFolderId;
+                if (this.currentFolderId !== "") {
+                    uploadFolder.parentFolderId = this.currentFolderId;
+                }
                 folder.isNew = false;
-                axios.post('/'+this.userMessage.userName+"/folder", uploadFolder).then(function (response) {
-                    uploadFolder.folderId = response.data;
-                    folder.folderId = response.data;
-                    console.log("获取的文件夹id为"+response.data);
-                    // 更新文件夹信息
-                }).then(function (response) {
-                    console.log("subFolder");
-                    console.log(uploadFolder);
-                    axios.get('/folders/'+uploadFolder.folderId).then(function (response) {
-                        obj.folders = response.data;
-                    }).catch(function (reason) {
-                        console.log(reason);
-                    });
-                })
+                axios.post('/'+this.userMessage.account+"/folder", uploadFolder).then(function (response) {
+                    if(response.data === "rootFolder") {
+                        //为根目录.无需操作
+                    } else {
+                        // 为子目录,更新文件夹信息
+                        uploadFolder.folderId = response.data;
+                        folder.folderId = response.data;
+                        console.log("获取的文件夹id为"+response.data);
+                        axios.get('/folders/'+uploadFolder.folderId).then(function (response) {
+                            obj.folders = response.data;
+                        }).catch(function (reason) {
+                            console.log(reason);
+                        });
+                    }
+
+                });
             },
             deleteFolder: function (folder) {
                 console.log(folder);
@@ -448,6 +453,7 @@
             setPressStuff: function (stuff) {
                 this.dialogVisible = true;
                 this.pressStuff = stuff;
+                console.log("pressStuff");
                 console.log(this.pressStuff);
             },
             removeStuff: function() {
@@ -507,11 +513,6 @@
                     })
                 }
                 this.dialogVisible = false;
-            },
-            showFileContent: function(file) {
-                console.log("file");
-                console.log(file);
-                window.location.open("http://localhost:8088/"+this.userMessage.userName+'/'+file.fileId);
             },
             execBefore: function () {
                 this.folders = this.previousFolders;

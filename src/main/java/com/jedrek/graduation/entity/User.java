@@ -16,10 +16,8 @@ public class User {
     private String tel;
     private String sex;
     private String email;
-    private String birth;  // 需要吗？？？
     private String school;
     private String userDesc; // 用户一句话自我描述
-    private Integer authorityTableId;
     private Date createdDate;
     private Date lastLoginDate;
 

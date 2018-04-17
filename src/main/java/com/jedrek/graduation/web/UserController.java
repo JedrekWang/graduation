@@ -5,12 +5,14 @@ import com.jedrek.graduation.entity.Login;
 import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.service.LoginService;
 import com.jedrek.graduation.service.UserService;
+import com.jedrek.graduation.utils.CookieUtil;
 import com.jedrek.graduation.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
@@ -42,15 +44,20 @@ public class UserController {
         if (userMessage.length == 3) {
             String account = userMessage[0];
             String password = userMessage[2];
-            Login login = loginService.queryLoginByAccount(account);
-            if (login != null && Objects.equals(login.getEmail(), email) &&
-                    Objects.equals(login.getPassword(), password)) {
-                Cookie cookie = new Cookie("isVerify", "true");
-                Cookie cookie1 = new Cookie("currentUser", account);
-                response.addCookie(cookie);
-                response.addCookie(cookie1);
-                return "redirect:/";  // 认证成功返回首页
-            }
+            Login loginUser = new Login();
+            loginUser.setAccount(account);
+            loginUser.setEmail(email);
+            loginUser.setPassword(password);
+            loginService.saveLogin(loginUser);
+//            Login login = loginService.queryLoginByAccount(account);
+//            if (login != null && Objects.equals(login.getEmail(), email) &&
+//                    Objects.equals(login.getPassword(), password)) {
+            Cookie cookie = new Cookie("isVerify", "true");
+            Cookie cookie1 = new Cookie("currentUser", account);
+            response.addCookie(cookie);
+            response.addCookie(cookie1);
+            return "redirect:/login";  // 认证成功返回登录页
+
         }
         return "error";
     }
@@ -76,6 +83,40 @@ public class UserController {
     public Object getUserLoginMessage(@PathVariable String account) {
         Login login = loginService.queryLoginByAccount(account);
         return login;
+    }
+
+
+    @RequestMapping("upload_user")
+    public String showCreateUser() {
+        return "create_user";
+    }
+
+    @RequestMapping(value = "upload_user", method = RequestMethod.POST)
+    public String uploadUserMessage(
+            HttpServletRequest request,
+            @RequestParam String userName,
+            @RequestParam String userDesc,
+            @RequestParam String sex,
+            @RequestParam String school,
+            @RequestParam String tel,
+            @RequestParam Integer groupId) {
+        String account = CookieUtil.getCookieValue(request, "currentUser");
+        Login login = loginService.queryLoginByAccount(account);
+        String email = login.getEmail();
+        User user = new User();
+        user.setUserName(userName);
+        user.setAccount(account);
+        user.setEmail(email);
+        user.setUserDesc(userDesc);
+        user.setSchool(school);
+        user.setSex(sex);
+        user.setTel(tel);
+        user.setGroupId(groupId);
+        int i = userService.addUser(user);
+        if (i > 0) {
+            return "redirect:/";
+        }
+        return "error";
     }
     /**
      * 修改指定用户的信息

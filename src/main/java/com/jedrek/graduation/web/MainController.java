@@ -56,11 +56,6 @@ public class MainController {
             @RequestParam("account") String account,
             @RequestParam("email") String email,
             @RequestParam("password") String password) {
-        Login loginUser = new Login();
-        loginUser.setAccount(account);
-        loginUser.setEmail(email);
-        loginUser.setPassword(password);
-        loginService.saveLogin(loginUser);
         String data = String.format("%s+%s+%s",account,email,password);
         // 向指定用户发送一封邮件
         MailUtil.sendMail(email, data);
@@ -98,14 +93,19 @@ public class MainController {
         String loginPassword = login.getPassword();
         if (Objects.equals(loginPassword, password)) {
             User user = userService.queryUserByAccount(account);
+            HttpSession session = request.getSession();
+            session.setAttribute("currentUser", account);
+            Cookie cookie = new Cookie("isVerify", "true");
+            Cookie cookie2 = new Cookie("currentUser", account);
+            response.addCookie(cookie);
+            response.addCookie(cookie2);
+            if (Objects.equals(account, "admin")) {
+                return "admin";
+            }
             if (user != null) {
-                HttpSession session = request.getSession();
-                session.setAttribute("currentUser", account);
-                Cookie cookie = new Cookie("isVerify", "true");
-                Cookie cookie2 = new Cookie("currentUser", account);
-                response.addCookie(cookie);
-                response.addCookie(cookie2);
                 return "redirect:/";
+            } else {
+                return "redirect:/upload_user";
             }
         }
         return "error";

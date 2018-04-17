@@ -61,6 +61,7 @@
     
     <select id="queryFileByFolder" resultType="com.jedrek.graduation.entity.FileInfo">
         SELECT
+        file_id AS fileId,
         file_name AS fileName,
         format,
         parent_folder_id AS parentFolderId,

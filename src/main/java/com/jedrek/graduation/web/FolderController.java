@@ -48,18 +48,21 @@ public class FolderController {
         String folderName = (String)map.get("folderName");
         String folderDesc = (String)map.get("folderDesc");
         Integer createdUserId = (Integer)map.get("createdUserId");
-        Integer parentFolderId = (Integer)map.get("parentFolderId");
+        Integer parentFolderId = null;
+        if (map.containsKey("parentFolderId")) {
+            parentFolderId = (Integer) map.get("parentFolderId");
+        }
         Folder folder = new Folder();
         folder.setFolderName(folderName);
         folder.setFolderDesc(folderDesc);
         folder.setCreatedUserId(createdUserId);
         folder.setParentFolderId(parentFolderId);
         int i = folderService.addFolder(folder);
-        if (i > 0) {
+        if (i > 0 && parentFolderId != null) {
             Folder queryFolder = folderService.queryFolder(parentFolderId, folderName);
             return queryFolder.getFolderId();
         }
-        return "error";
+        return "rootFolder";
     }
 
     @ResponseBody

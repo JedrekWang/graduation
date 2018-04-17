@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>创建用户信息</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <style>
+        .content {
+            background-color: #ffffff;
+            margin-top: 50px;
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-col :span="18">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="1">
+                        <a href="/">DocumentKiller</a>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <el-input placeholder="请输入文档关键字">
+                            <i slot="suffix" class="el-icon-search"></i>
+                        </el-input>
+                    </el-menu-item>
+                    <el-menu-item index="5">我的工作台</el-menu-item>
+                    <el-menu-item index="6">消息中心</el-menu-item>
+                    <el-menu-item index="7">小组管理</el-menu-item>
+                </el-menu>
+            </el-col>
+            <el-col :span="6">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="8" class="test">
+                        <i class="el-icon-bell"></i>
+                    </el-menu-item>
+                    <el-menu-item index="9">
+                        <i class="el-icon-plus"></i>
+                    </el-menu-item>
+                    <el-menu-item index="10">
+                        <i class="el-icon-star-on"></i>
+                    </el-menu-item>
+                    <el-submenu index="11">
+                        <template slot="title">
+                            <a class="user_head_a" href="#">
+                                <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}">
+                                </div>
+                            </a>
+                        </template>
+                        <el-menu-item index="2-1"><a :href="'/'+ userMessage.userName">个人信息</a></el-menu-item>
+                        <el-menu-item index="2-2">个人文档</el-menu-item>
+                        <el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>
+                    </el-submenu>
+                </el-menu>
+            </el-col>
+        </el-header>
+        <el-container>
+            <el-col :span="10" :offset="4">
+                <div class="content">
+                    <el-form enctype="multipart/form-data" label-width="80px" method="post">
+                        <el-form-item label="姓名">
+                            <el-input name="userName" placeholder="请输入姓名" size="medium"></el-input>
+                        </el-form-item>
+                        <el-form-item label="个人描述">
+                            <el-input name="userDesc" placeholder="请输入个人描述" size="medium"></el-input>
+                        </el-form-item>
+                        <el-form-item label="性别">
+                            <el-input name="sex" placeholder="请输入性别" size="medium"></el-input>
+                        </el-form-item>
+                        <el-form-item label="学校">
+                            <el-input name="school" placeholder="请输入学校" size="medium"></el-input>
+                        </el-form-item>
+                        <el-form-item label="电话">
+                            <el-input name="tel" placeholder="请输入电话" size="medium"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属小组">
+                            <el-input name="groupId" placeholder="请输入所属小组编号" size="medium"></el-input>
+                        </el-form-item>
+
+                        <el-form-item>
+                            <input type="submit" class="btn btn-primary btn-lg btn-block" value="Upload"/>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </el-col>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script src="../static/js/vue.js"></script>
+<script src="../static/js/index.js"></script>
+<script src="../static/js/axios.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            userMessage: {
+                userName: "Timo"
+            }
+
+        }
+    })
+</script>
+</html>
