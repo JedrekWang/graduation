@@ -11,6 +11,8 @@ public class Constant {
 
     public static final String uploadPath = "D:/documentSystem/";
 
+    public static final String headerPath = "D:/documentSystem/img/";
+
     public static final String documentPath = "/system/";
 
 

@@ -276,7 +276,7 @@
                 school: "",
                 email: "",
                 userGroup: "",
-                groupId: ""
+                groupId: 1, //此处暂时写死
             },
             folders: [],  //当前页所有的文件夹
             files: [],         //当前页所有的文件
@@ -321,9 +321,10 @@
                     obj.userMessage.userDesc = response.data.userDesc;
                     obj.userMessage.school = response.data.school;
                     obj.userMessage.email = response.data.email;
-                    obj.userMessage.groupId = response.data.groupId;
+                    // obj.userMessage.groupId = response.data.groupId;
                 }).then(function (response) {
-                    axios.get('/group/'+obj.userMessage.groupId).then(function (response) {
+                    //todo 此处的groupId未获取到
+                    axios.get('/groupName/'+obj.userMessage.groupId).then(function (response) {
                         obj.userMessage.userGroup = response.data;
                     });
                     axios.get('/'+obj.userMessage.account+'/rootFolders').then(function (response) {

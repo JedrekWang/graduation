@@ -100,7 +100,7 @@ public class MainController {
             response.addCookie(cookie);
             response.addCookie(cookie2);
             if (Objects.equals(account, "admin")) {
-                return "admin";
+                return "redirect:/admin";
             }
             if (user != null) {
                 return "redirect:/";

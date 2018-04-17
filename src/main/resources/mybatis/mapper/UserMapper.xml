@@ -7,7 +7,6 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        group_id as groupId,
         account,tel,sex,email,school,
         user_desc as userDesc,
          created_date as createdDate
@@ -18,7 +17,6 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        group_id as groupId,
         account,tel,sex,email,school,
         user_desc as userDesc,
          created_date as createdDate
@@ -27,7 +25,6 @@
 
     <insert id="addUser" parameterType="com.jedrek.graduation.entity.User">
         INSERT INTO user(
-        group_id,
         user_name,
         account,
         tel,
@@ -36,7 +33,6 @@
         school,
         user_desc)
         VALUES (
-        #{groupId},
         #{userName},
         #{account},
         #{tel},
@@ -52,7 +48,6 @@
 
     <update id="modifyUser">
         UPDATE "user" SET
-        user.group_id = #{groupId},
         user.user_name = #{userName},
         user.account = #{account},
         user.tel = #{tel},
@@ -67,10 +62,9 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        group_id as groupId,
         account,tel,sex,email,school,
         user_desc as userDesc,
-         created_date as createdDate
+         created_date as createdDate,
          FROM user WHERE user.account = #{account}
     </select>
     
@@ -78,18 +72,16 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        group_id as groupId,
         account,tel,sex,email,school,
         user_desc as userDesc,
          created_date as createdDate
-         FROM user WHERE user.groupId = #{groupId}
+         FROM user,user_group_con WHERE user_group_con.group_id = #{groupId}
     </select>
 
     <select id="queryUserBySchool" resultType="com.jedrek.graduation.entity.User">
         SELECT
         user_id AS userId,
         user_name AS userName,
-        group_id as groupId,
         account,tel,sex,email,school,
         user_desc as userDesc,
          created_date as createdDate

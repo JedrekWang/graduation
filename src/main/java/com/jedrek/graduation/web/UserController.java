@@ -1,6 +1,7 @@
 package com.jedrek.graduation.web;
 
 
+import com.jedrek.graduation.constant.Constant;
 import com.jedrek.graduation.entity.Login;
 import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.service.LoginService;
@@ -10,10 +11,14 @@ import com.jedrek.graduation.utils.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -85,12 +90,33 @@ public class UserController {
         return login;
     }
 
+    @RequestMapping("admin")
+    public String showAdmin(HttpServletRequest request) {
+        String currentUser = CookieUtil.getCookieValue(request, "currentUser");
+        if (Objects.equals(currentUser, "admin")) {
+            return "admin";
+        } else {
+            return "error";
+        }
+    }
+
 
     @RequestMapping("upload_user")
     public String showCreateUser() {
         return "create_user";
     }
 
+    /**
+     * 新建用户
+     * @param request
+     * @param userName
+     * @param userDesc
+     * @param sex
+     * @param school
+     * @param tel
+     * @param groupId
+     * @return
+     */
     @RequestMapping(value = "upload_user", method = RequestMethod.POST)
     public String uploadUserMessage(
             HttpServletRequest request,
@@ -99,7 +125,8 @@ public class UserController {
             @RequestParam String sex,
             @RequestParam String school,
             @RequestParam String tel,
-            @RequestParam Integer groupId) {
+            @RequestParam Integer groupId,
+            @RequestParam MultipartFile file) throws IOException {
         String account = CookieUtil.getCookieValue(request, "currentUser");
         Login login = loginService.queryLoginByAccount(account);
         String email = login.getEmail();
@@ -111,13 +138,38 @@ public class UserController {
         user.setSchool(school);
         user.setSex(sex);
         user.setTel(tel);
-        user.setGroupId(groupId);
         int i = userService.addUser(user);
         if (i > 0) {
+            // 将用户上传的头像存入文件系统
+            String filename = file.getOriginalFilename();
+            String[] split = filename.split("\\.", 2);
+            String headerUploadPath = Constant.headerPath + account + "."+ split[1];
+            File uploadFile = new File(headerUploadPath);
+            File parentFile = uploadFile.getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
+            uploadFile.createNewFile();
+            file.transferTo(uploadFile);
             return "redirect:/";
         }
         return "error";
     }
+    @ResponseBody
+    @RequestMapping("users")
+    public Object getAllUsers() {
+        List<User> users = userService.queryAllUser();
+        return users;
+    }
+
+
+    @ResponseBody
+    @RequestMapping("group/{groupId}")
+    public Object getUsersByGroup(@PathVariable Integer groupId) {
+        List<User> userByGroup = userService.queryUserByGroup(groupId);
+        return userByGroup;
+    }
+
     /**
      * 修改指定用户的信息
      * @param userName
