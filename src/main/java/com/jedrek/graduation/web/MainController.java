@@ -36,10 +36,18 @@ public class MainController {
     @RequestMapping("/")
     public String index(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
+
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (Objects.equals(cookie.getName(), "isVerify") && Objects.equals(cookie.getValue(), "true")) {
-                    return "test";
+//                    return "test";
+                    for(Cookie cookie1 : cookies) {
+                        if (Objects.equals(cookie1.getName(), "currentUser") && !Objects.equals(cookie1.getValue(), "admin")) {
+                            return "test";
+                        } else if(Objects.equals(cookie1.getName(), "currentUser") && Objects.equals(cookie1.getValue(), "admin")){
+                            return "admin";
+                        }
+                    }
                 }
             }
         }
