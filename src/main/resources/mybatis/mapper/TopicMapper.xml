@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.TopicMapper">
+    <insert id="addTopic" parameterType="com.jedrek.graduation.entity.Topic">
+        INSERT INTO topic(topic_start_account, file_info_id, finish)
+        VALUES (#{topicStartAccount}, #{fileInfoId}, #{finish})
+    </insert>
+
+    <select id="queryTopicById" resultType="com.jedrek.graduation.entity.Topic">
+        SELECT
+        topic.topic_id AS topicId,
+        topic.topic_start_account as topicStartAccount,
+        topic.file_info_id as fileInfoId,
+        topic.topic_start_date AS topicStartDate,
+        topic.finish
+        FROM topic WHERE topic_id = #{topicId}
+    </select>
+    
+    <select id="queryTopicByAccount" resultType="com.jedrek.graduation.entity.Topic">
+        SELECT
+        topic.topic_id AS topicId,
+        topic.topic_start_account as topicStartAccount,
+        topic.file_info_id as fileInfoId,
+        topic.topic_start_date AS topicStartDate,
+        topic.finish
+        FROM topic WHERE topic_start_account = #{topicStartAccount}
+    </select>
+    
+    <update id="updateTopicStatus">
+        UPDATE topic SET
+        topic.finish = 1
+        WHERE topic_id = #{topicId}
+    </update>
+
+
+</mapper>

@@ -127,7 +127,7 @@
                     </el-menu-item>
                     <el-menu-item index="5" disabled>我的工作台</el-menu-item>
                     <el-menu-item index="6" disabled>消息中心</el-menu-item>
-                    <el-menu-item index="7" disabled>小组管理</el-menu-item>
+                    <el-menu-item index="7">讨论组</el-menu-item>
                 </el-menu>
             </el-col>
             <el-col :span="6">
@@ -186,10 +186,14 @@
                 </el-col>
             </el-aside>
             <el-container>
-                <el-breadcrumb separator="/" class="breadcrumb">
-                    <el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>
-                    <el-breadcrumb-item>{{currentFolder.folderName}}</el-breadcrumb-item>
-                </el-breadcrumb>
+                <!--<el-breadcrumb separator="/" class="breadcrumb">-->
+                    <!--<el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>-->
+                    <!--<el-breadcrumb-item>{{currentFolder.folderName}}</el-breadcrumb-item>-->
+                <!--</el-breadcrumb>-->
+                <el-tabs v-model="activeTab" type="card" @tab-click="tabClick">
+                    <el-tab-pane label="课题小组" name="first"></el-tab-pane>
+                    <el-tab-pane label="公共文件" name="second"></el-tab-pane>
+                </el-tabs>
                 <el-main>
                     <el-dialog title="新建文件" :visible.sync="dialogFormVisible">
                         <el-form label-width="80px">
@@ -288,6 +292,7 @@
             file: "",    //上传文件
 
             //useless
+            activeTab: "first",
             pressStuff: "",
             dialogVisible: false,
             dialogFormVisible: false,
@@ -516,6 +521,10 @@
                 this.dialogVisible = false;
             },
             execBefore: function () {
+                if (this.currentFolder.folderName === "" || this.currentFolder.folderName == null) {
+                    console.log("无法继续before")
+                    return;
+                }
                 this.folders = this.previousFolders;
                 this.files = this.previousFiles;
                 var folder = this.currentFolder;
@@ -542,6 +551,15 @@
                         console.log(response)
                     })
                 });
+            },
+            tabClick: function(tab, event) {
+                if(tab.name === "first") {
+                    console.log("点击了第一个tab")
+                } else if (tab.name === 'second') {
+                    console.log("点击了第二个tab")
+                } else {
+                    console.log("点击了第三个tab")
+                }
             }
         }
     })

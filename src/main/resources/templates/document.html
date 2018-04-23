@@ -108,54 +108,54 @@
                             <i class="el-icon-document"></i>
                             <span slot="title">查看讨论</span>
                         </el-menu-item>
-                        <el-menu-item index="4">
-                            <i class="el-icon-document"></i>
-                            <span>
-                                <!--<a href="/document/test">建立新版本</a>-->
-                                <el-button type="text" @click="dialogFormVisible = true">建立新版本</el-button>
-                                <el-dialog title="文档信息" :visible.sync="dialogFormVisible">
-                                    <el-form enctype="multipart/form-data" label-width="80px" method="post">
-                                        <el-form-item label="版本标题">
-                                            <el-input name="title" placeholder="请输入标题" size="medium"></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="版本描述">
-                                            <el-input name="documentDesc" placeholder="请输入描述" size="medium"></el-input>
-                                        </el-form-item>
-                                        <el-form-item label="上传文档">
-                                            <input type="file" name="file" class="btn btn-primary">
-                                        </el-form-item>
-                                    </el-form>
-                                    <!--<el-form :model="form">-->
-                                    <!--<el-form-item label="活动名称" :label-width="formLabelWidth">-->
-                                    <!--<el-input v-model="form.name" auto-complete="off"></el-input>-->
-                                    <!--</el-form-item>-->
-                                    <!--<el-form-item label="活动区域" :label-width="formLabelWidth">-->
-                                    <!--<el-select v-model="form.region" placeholder="请选择活动区域">-->
-                                    <!--<el-option label="区域一" value="shanghai"></el-option>-->
-                                    <!--<el-option label="区域二" value="beijing"></el-option>-->
-                                    <!--</el-select>-->
-                                    <!--</el-form-item>-->
+                        <!--todo -->
+                        <!--<el-menu-item index="4">-->
+                            <!--<i class="el-icon-document"></i>-->
+                            <!--<span>-->
+                                <!--<el-button type="text" @click="dialogFormVisible = true">建立新版本</el-button>-->
+                                <!--<el-dialog title="文档信息" :visible.sync="dialogFormVisible">-->
+                                    <!--<el-form enctype="multipart/form-data" label-width="80px" method="post">-->
+                                        <!--<el-form-item label="版本标题">-->
+                                            <!--<el-input name="title" placeholder="请输入标题" size="medium"></el-input>-->
+                                        <!--</el-form-item>-->
+                                        <!--<el-form-item label="版本描述">-->
+                                            <!--<el-input name="documentDesc" placeholder="请输入描述" size="medium"></el-input>-->
+                                        <!--</el-form-item>-->
+                                        <!--<el-form-item label="上传文档">-->
+                                            <!--<input type="file" name="file" class="btn btn-primary">-->
+                                        <!--</el-form-item>-->
                                     <!--</el-form>-->
-                                  <div slot="footer" class="dialog-footer">
-                                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-                                  </div>
-                                </el-dialog>
-                            </span>
-                        </el-menu-item>
-                        <el-submenu index="1">
-                            <template slot="title">
-                                <i class="el-icon-location"></i>
-                                <span>查看历史版本</span>
-                            </template>
-                            <el-menu-item-group>
-                                <template slot="title">分组一</template>
-                                <el-menu-item v-for="version in versions" :index="version.versionId">
-                                    {{version.versionKey}}
-                                </el-menu-item>
-                            </el-menu-item-group>
-                        </el-submenu>
-                        </el-submenu>
+                                    <!--&lt;!&ndash;<el-form :model="form">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<el-form-item label="活动名称" :label-width="formLabelWidth">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<el-input v-model="form.name" auto-complete="off"></el-input>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<el-form-item label="活动区域" :label-width="formLabelWidth">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<el-select v-model="form.region" placeholder="请选择活动区域">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<el-option label="区域一" value="shanghai"></el-option>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<el-option label="区域二" value="beijing"></el-option>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</el-select>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</el-form>&ndash;&gt;-->
+                                  <!--<div slot="footer" class="dialog-footer">-->
+                                    <!--<el-button @click="dialogFormVisible = false">取 消</el-button>-->
+                                    <!--<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
+                                  <!--</div>-->
+                                <!--</el-dialog>-->
+                            <!--</span>-->
+                        <!--</el-menu-item>-->
+                        <!--<el-submenu index="5">-->
+                            <!--<template slot="title">-->
+                                <!--<i class="el-icon-location"></i>-->
+                                <!--<span>查看历史版本</span>-->
+                            <!--</template>-->
+                            <!--<el-menu-item-group>-->
+                                <!--<template slot="title">分组一</template>-->
+                                <!--<el-menu-item v-for="version in versions" :index="version.versionId">-->
+                                    <!--{{version.versionKey}}-->
+                                <!--</el-menu-item>-->
+                            <!--</el-menu-item-group>-->
+                        <!--</el-submenu>-->
+                        <!--</el-submenu>-->
                     </el-menu>
                 </el-aside>
             </el-col>

@@ -1,0 +1,51 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.TopicMemberMapper">
+
+    <insert id="addTopicMember" parameterType="com.jedrek.graduation.entity.TopicMember">
+        INSERT INTO topic_member(account, topic_id)
+        VALUES (#{account}, #{topicId})
+    </insert>
+
+    <select id="queryAllMembers" resultType="com.jedrek.graduation.entity.TopicMember">
+        SELECT
+        topic_member.topic_member_id AS topicMemberId,
+        topic_member.topic_id AS topicId,
+        topic_member.account
+        FROM topic_member
+        WHERE topic_id = #{topicId}
+    </select>
+    
+    <select id="queryAllTopicByAccount" resultType="com.jedrek.graduation.entity.TopicMember">
+        SELECT
+        topic_member.topic_member_id AS topicMemberId,
+        topic_member.topic_id AS topicId,
+        topic_member.account
+        FROM topic_member
+        WHERE account = #{account}
+    </select>
+    
+    <select id="queryFinishedTopicByAccount" resultType="com.jedrek.graduation.entity.TopicMember">
+        SELECT
+        topic_member.topic_member_id AS topicMemberId,
+        topic_member.topic_id AS topicId,
+        topic_member.account
+        topic.finish
+        FROM topic_member,topic
+        WHERE topic_member.topic_id = topic.topic_id
+        AND account = #{account} AND topic.finish = 1
+    </select>
+    
+    <select id="queryNotFinishedTopicByAccount" resultType="com.jedrek.graduation.entity.TopicMember">
+        SELECT
+        topic_member.topic_member_id AS topicMemberId,
+        topic_member.topic_id AS topicId,
+        topic_member.account
+        topic.finish
+        FROM topic_member,topic
+        WHERE topic_member.topic_id = topic.topic_id
+        AND account = #{account} AND topic.finish = 0
+    </select>
+
+</mapper>

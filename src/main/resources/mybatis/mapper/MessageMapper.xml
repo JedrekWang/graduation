@@ -1,0 +1,22 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jedrek.graduation.mapper.MessageMapper">
+
+    <insert id="addMessage" parameterType="com.jedrek.graduation.entity.Message">
+        INSERT INTO message(send_account, receive_account, content, send_date, topic_id)
+        VALUES (#{sendAccount}, #{receiveAccount}, #{content}, #{sendDate},#{topicId})
+    </insert>
+
+    <select id="queryMessageByTopicId" resultType="com.jedrek.graduation.entity.Message">
+        SELECT
+        send_account AS sendAccount,
+        receive_account AS receiveAccount,
+        content AS content,
+        send_date AS sendDate,
+        topic_id AS topicId
+        FROM message
+        WHERE topic_id = #{topicId}
+    </select>
+
+</mapper>

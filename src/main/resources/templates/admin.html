@@ -105,7 +105,7 @@
                                         <el-col :span="6">
                                             <div class="image"  :style="{backgroundImage: 'url(/system/img/' +user.account+ '.jpg)'}"></div>
                                             <div style="padding: 14px;">
-                                        <p class="helvetica"><span>{{user.userName}}</span></p>
+                                        <p class="helvetica"><span><a :href="'/'+user.account">{{user.userName}}</a></span></p>
                                         <p class="desc"><span>{{user.userDesc}}</span></p>
                                         <div class="line"></div>
                                         <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
