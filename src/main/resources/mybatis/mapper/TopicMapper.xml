@@ -5,7 +5,6 @@
     <insert id="addTopic" parameterType="com.jedrek.graduation.entity.Topic">
         INSERT INTO topic(topic_start_account, file_info_id)
         VALUES (#{topicStartAccount}, #{fileInfoId});
-        select last_insert_id();
     </insert>
 
     <select id="queryTopicById" resultType="com.jedrek.graduation.entity.Topic">
@@ -33,6 +32,10 @@
         topic.finish = 1
         WHERE topic_id = #{topicId}
     </update>
+
+    <select id="selectLastInsert" resultType="java.lang.Integer">
+        SELECT last_insert_id();
+    </select>
 
 
 </mapper>

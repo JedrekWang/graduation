@@ -8,8 +8,7 @@ import java.util.Date;
 public class Message {
     private  Integer messageId;
     private String sendAccount;
-    private String receiveAccount;
     private String content;
     private Date sendDate;
-    private Integer topic_id;
+    private Integer topicId;
 }

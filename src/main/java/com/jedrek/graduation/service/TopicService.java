@@ -20,8 +20,12 @@ public class TopicService {
     }
 
     public int addTopic(Topic topic) {
-       return topicMapper.addTopic(topic);
-   }
+        int i = topicMapper.addTopic(topic);
+        if(i > 0) {
+            return topicMapper.selectLastInsert();
+        }
+        return -1;
+    }
 
    public Topic queryTopicById(Integer topicId) {
         return topicMapper.queryTopicById(topicId);

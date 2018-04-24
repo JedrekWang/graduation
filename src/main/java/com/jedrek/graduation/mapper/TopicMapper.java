@@ -16,4 +16,6 @@ public interface TopicMapper {
 
     int updateTopicStatus(Integer topicId);
 
+    int selectLastInsert();
+
 }
