@@ -1,7 +1,11 @@
 package com.jedrek.graduation.service;
 
+import com.jedrek.graduation.entity.Message;
 import com.jedrek.graduation.entity.Topic;
+import com.jedrek.graduation.entity.TopicMember;
+import com.jedrek.graduation.mapper.MessageMapper;
 import com.jedrek.graduation.mapper.TopicMapper;
+import com.jedrek.graduation.mapper.TopicMemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,11 +17,16 @@ import java.util.List;
 public class TopicService {
 
     private TopicMapper topicMapper;
+    private TopicMemberMapper topicMemberMapper;
+    private MessageMapper messageMapper;
 
     @Autowired
-    public TopicService(TopicMapper topicMapper) {
+    public TopicService(TopicMapper topicMapper, TopicMemberMapper topicMemberMapper, MessageMapper messageMapper) {
         this.topicMapper = topicMapper;
+        this.topicMemberMapper = topicMemberMapper;
+        this.messageMapper = messageMapper;
     }
+
 
     public int addTopic(Topic topic) {
         int i = topicMapper.addTopic(topic);
@@ -37,5 +46,10 @@ public class TopicService {
 
    public int updateTopicStatus(Integer topicId) {
        return topicMapper.updateTopicStatus(topicId);
+   }
+
+   public List<Message> getTopicAllContent(Integer topicId) {
+       List<Message> messages = messageMapper.queryMessageByTopicId(topicId);
+       return messages;
    }
 }

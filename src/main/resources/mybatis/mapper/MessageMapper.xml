@@ -4,14 +4,14 @@
 <mapper namespace="com.jedrek.graduation.mapper.MessageMapper">
 
     <insert id="addMessage" parameterType="com.jedrek.graduation.entity.Message">
-        INSERT INTO message(send_account, receive_account, content, send_date, topic_id)
-        VALUES (#{sendAccount}, #{receiveAccount}, #{content}, #{sendDate},#{topicId})
+        INSERT INTO message(send_account, content, send_date, topic_id)
+        VALUES (#{sendAccount}, #{content}, #{sendDate},#{topicId})
     </insert>
 
     <select id="queryMessageByTopicId" resultType="com.jedrek.graduation.entity.Message">
         SELECT
+        message_id AS messageId,
         send_account AS sendAccount,
-        receive_account AS receiveAccount,
         content AS content,
         send_date AS sendDate,
         topic_id AS topicId

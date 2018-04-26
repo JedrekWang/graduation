@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/css/header.css">
     <style>
+        .comment_user {
+            width: 30px;
+            height: 30px;
+            background-image: url("../static/img/gakki.jpg");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 100%;
+        }
         .image {
             width: 350px;
             height: 350px;
@@ -53,6 +61,13 @@
             width: 100%;
             height: 150px;
         }
+
+        .inputBox{
+            margin-bottom: 30px;
+        }
+        /*.el-card {*/
+            /*border: 0px;*/
+        /*}*/
 
     </style>
 </head>
@@ -112,41 +127,88 @@
             </el-col>
         </el-header>
         <el-container>
-            <el-aside width="35%">
-                <el-col id="card" :span="20">
-                    <el-card :body-style="{ padding: '30px' }">
-                        <div class="image"  :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}"></div>
-                        <div style="padding: 14px;">
-                            <p class="helvetica"><span>{{userMessage.userName}}</span></p>
-                            <p class="desc"><span>{{userMessage.userDesc}}</span></p>
-                            <div class="line"></div>
-                            <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
-                            <span>{{userMessage.school}}</span>
-                            <div class="line"></div>
-                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-                            <span>
-                                <a :href="'mailto:' + userMessage.email">{{userMessage.email}}</a>
-                            </span>
-                            <div class="line"></div>
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                            <span>
-                                <a :href="'/groups/'+ userMessage.groupId">{{userMessage.userGroup}}</a>
-                            </span>
-                        </div>
-                    </el-card>
-                </el-col>
-            </el-aside>
-            <el-container>
+
+            <el-dialog title="文档信息" :visible.sync="dialogFormVisible">
+                <el-form enctype="multipart/form-data" label-width="80px" method="post">
+                    <el-form-item label="版本标题">
+                        <el-input name="title" placeholder="请输入标题" size="medium"></el-input>
+                    </el-form-item>
+                    <el-form-item label="版本描述">
+                        <el-input name="documentDesc" placeholder="请输入描述" size="medium"></el-input>
+                    </el-form-item>
+                    <el-form-item label="上传文档">
+                        <input type="file" name="file" class="btn btn-primary">
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                </div>
+            </el-dialog>
+
+            <el-dialog title="上传资料" :visible.sync="dialogFormVisible">
+                <el-form label-width="80px">
+                    <el-form-item label="上传类型">
+                        <el-radio-group v-model="version">
+                            <el-radio-button label="版本文档"></el-radio-button>
+                            <el-radio-button label="普通资料"></el-radio-button>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="上传">
+                        <input type="file" name="file" class="btn btn-primary">
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="startDiscuss">确 定</el-button>
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                </div>
+            </el-dialog>
+
+            <el-col :span="4" :offset="1">
+                <el-aside>
+                    <el-menu
+                            default-active="0"
+                            class="el-menu-vertical-demo">
+                    <el-menu-item v-for="(topic,index) in topics"  :index="index+''">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">由{{topic.topicStartAccount}}发起的{{topic.topicId}}</span>
+                    </el-menu-item>
+                    </el-menu>
+                </el-aside>
+            </el-col>
+            <el-col :span="18" :offset="1">
                 <el-main>
-                <el-card class="box-card" v-for="topic in topics">
-                    <div slot="header" class="clearfix">
-                        <a href="/topics/topic/1"><h3>{{topic.topicStartAccount}}发起了关于的讨论</h3></a>
-                    </div>
-                </el-card>
+                    <el-row>
+                        <el-col :span="15" :offset="0">
+                            <el-input  v-model="currentMessage" placeholder="请输入内容"></el-input>
+                        </el-col>
+                        <el-col :span="8" :offset="1">
+                            <el-button type="primary" @click="sendMessage">评论</el-button>
+                            <el-button type="primary" @click="dialogFormVisible = true">上传</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-card class="box-card" v-for="message in messages">
+                                    <el-row>
+                                        <el-col :span="1">
+                                            <div class="comment_user"></div>
+                                        </el-col>
+                                        <el-col :span="2">
+                                            <p>{{message.sendAccount}}</p>
+                                        </el-col>
+                                        <el-col :span="4" :offset="16">
+                                            <p>{{parseDate(message.sendDate)}}</p>
+                                        </el-col>
+                                    </el-row>
+                                <div class="messageContent">
+                                    <p>{{message.content}}</p>
+                                </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
                 </el-main>
-                <el-footer>
-                </el-footer>
-            </el-container>
+            </el-col>
         </el-container>
     </el-container>
 </div>
@@ -169,7 +231,13 @@
                 userGroup: "",
                 groupId: 1, //此处暂时写死
             },
-            topics: []
+            topics: [],
+            messages: [],
+            currentMessage: "",
+            currentTopic: "",
+
+            dialogFormVisible: false,
+            version: "版本文档"
         },
         mounted: function () {
             document.oncontextmenu = function() {
@@ -191,6 +259,14 @@
                 }).then(function (response) {
                    axios.get("/topics/"+account).then(function (response) {
                         obj.topics = response.data;
+                   }).then(function (response) {
+                       var firstTopicId = obj.topics[0].topicId;
+                       obj.currentTopic = firstTopicId;
+                       axios.get("/topicDetail/"+firstTopicId).then(function (response) {
+                            obj.messages = response.data;
+                       }).catch(function (response) {
+                            console.log(response)
+                       })
                    })
                 }).catch(function (response) {
                     console.log(response);
@@ -405,6 +481,30 @@
                 } else {
                     console.log("点击了第三个tab")
                 }
+            },
+            sendMessage: function () {
+                obj = this;
+                var param = {
+                    message: obj.currentMessage,
+                    sendAccount: obj.userMessage.account,
+                    topicId: obj.currentTopic
+                };
+                axios.post("/message", param).then(function (response) {
+                    axios.get("/topicDetail/"+obj.currentTopic).then(function (response) {
+                        obj.messages = response.data;
+                        obj.currentMessage = "";
+                    }).catch(function (response) {
+                        console.log(response)
+                    })
+                }).catch(function (response) {
+
+                })
+            },
+            parseDate: function(time) {
+                var datetime = new Date();
+                datetime.setTime(time);
+                return datetime.getFullYear() + "年" + (datetime.getMonth()+1) + "月" + datetime.getDay() + "日";
+
             }
         }
     })

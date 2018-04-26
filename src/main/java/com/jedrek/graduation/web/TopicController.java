@@ -73,4 +73,24 @@ public class TopicController {
         return "success";
 
     }
+
+    @ResponseBody
+    @RequestMapping("topicDetail/{topicId}")
+    public Object showTopicDetail(@PathVariable Integer topicId) {
+        //获取该话题的讨论内容
+        List<Message> messages = topicService.getTopicAllContent(topicId);
+        return messages;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "message", method = RequestMethod.POST)
+    public String submitTopicMessage(@RequestBody Map map) {
+        System.out.println("hello");
+        Message message = new Message();
+        message.setContent((String)map.get("message"));
+        message.setSendAccount((String)map.get("sendAccount"));
+        message.setTopicId((Integer)map.get("topicId"));
+        messageService.addMessage(message);
+        return "success";
+    }
 }
