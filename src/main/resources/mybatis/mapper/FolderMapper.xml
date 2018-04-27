@@ -10,14 +10,16 @@
         <if test="parentFolderId != null">
             parent_folder_id,
         </if>
-        created_user_id)
+        created_user_id,
+        mode)
         VALUES (
         #{folderName},
         #{folderDesc},
         <if test="parentFolderId != null">
             #{parentFolderId},
         </if>
-        #{createdUserId});
+        #{createdUserId},
+        #{mode});
     </insert>
     
     <delete id="deleteFolder" parameterType="com.jedrek.graduation.entity.Folder">
@@ -32,8 +34,13 @@
         parent_folder_id AS parentFolderId,
         content_url AS contentUrl,
         created_user_id AS createdUserId,
-        created_user_date AS createdUserDate
-        FROM folder WHERE created_user_id = #{createdUserId} AND parent_folder_id is NULL
+        created_user_date AS createdUserDate,
+        mode
+        FROM folder
+        WHERE
+         created_user_id = #{createdUserId}
+         AND parent_folder_id is NULL
+         AND mode = #{mode}
     </select>
     
     <select id="queryFolderById" resultType="com.jedrek.graduation.entity.Folder">
@@ -44,7 +51,8 @@
         parent_folder_id AS parentFolderId,
         content_url AS contentUrl,
         created_user_id AS createdUserId,
-        created_user_date AS createdUserDate
+        created_user_date AS createdUserDate,
+        mode
         FROM folder WHERE folder_id = #{folderId}
     </select>
     
@@ -56,7 +64,8 @@
         parent_folder_id AS parentFolderId,
         content_url AS contentUrl,
         created_user_id AS createdUserId,
-        created_user_date AS createdUserDate
+        created_user_date AS createdUserDate,
+        mode
         FROM folder where parent_folder_id = #{parentFolderId}
     </select>
 
@@ -68,7 +77,8 @@
         parent_folder_id AS parentFolderId,
         content_url AS contentUrl,
         created_user_id AS createdUserId,
-        created_user_date AS createdUserDate
+        created_user_date AS createdUserDate,
+        mode
         FROM folder WHERE folder_name=#{folderName} AND parent_folder_id = #{parentFolderId}
     </select>
     

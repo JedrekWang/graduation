@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface VersionMapper {
 
-    List<Version> queryVersionsByFileId(Integer fileId);
+    List<Version> queryVersionsByRawFileId(Integer rawFileId);
 
     Version queryVersionByKey(String versionKey);
 

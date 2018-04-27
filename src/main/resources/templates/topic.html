@@ -9,6 +9,15 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/css/header.css">
     <style>
+        .pdfobject-container {
+            height: 650px;
+            width: 100%;
+        }
+
+        .pdfobject {
+            border: 1px solid #666;
+        }
+
         .comment_user {
             width: 30px;
             height: 30px;
@@ -38,21 +47,21 @@
             color: #666;
             font-weight: lighter;
         }
-        a {
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: none;
-        }
+        /*a {*/
+            /*text-decoration: none;*/
+        /*}*/
+        /*a:hover {*/
+            /*text-decoration: none;*/
+        /*}*/
 
-        .box-card a {
-            color: #000000;
-            text-decoration: none;
-        }
-        .box-card a:hover {
-            color: #175199;
-            text-decoration: none;
-        }
+        /*.box-card a {*/
+            /*color: #000000;*/
+            /*text-decoration: none;*/
+        /*}*/
+        /*.box-card a:hover {*/
+            /*color: #175199;*/
+            /*text-decoration: none;*/
+        /*}*/
         .el-menu-demo {
             height: 60px;
         }
@@ -147,11 +156,10 @@
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
             </el-dialog>
-
             <el-col :span="4" :offset="1">
                 <el-aside>
                     <el-menu
-                            default-active="0"
+                            default-active="10"
                             class="el-menu-vertical-demo"
                             @select="pressAside">
                     <el-menu-item v-for="(topic,index) in topics"  :index="topic.topicId+''">
@@ -163,18 +171,22 @@
             </el-col>
             <el-col :span="18" :offset="1">
                 <el-main>
-                    {{currentTopic}}
                     <el-row>
-                        <el-col :span="15" :offset="0">
+                        <el-col :span="20" :offset="2">
+                            <div class="document" style="margin-bottom: 30px"></div>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="13" :offset="2">
                             <el-input  v-model="currentMessage" placeholder="请输入内容"></el-input>
                         </el-col>
-                        <el-col :span="8" :offset="1">
+                        <el-col :span="6" :offset="0">
                             <el-button type="primary" @click="sendMessage">评论</el-button>
                             <el-button type="primary" @click="dialogFormVisible = true">上传</el-button>
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-col :span="24">
+                        <el-col :span="20" :offset="2">
                             <el-card class="box-card" v-for="message in messages">
                                     <el-row>
                                         <el-col :span="1">
@@ -189,6 +201,7 @@
                                     </el-row>
                                 <div class="messageContent">
                                     <p>{{message.content}}</p>
+                                    <a v-if="message.mode == 1" :href="getUploadFilePath(message.messageId)">预览</a>
                                 </div>
                             </el-card>
                         </el-col>
@@ -203,6 +216,7 @@
 <script src="../static/js/vue.js"></script>
 <script src="../static/js/index.js"></script>
 <script src="../static/js/axios.js"></script>
+<script src="/static/js/pdfobject.js"></script>
 <script>
     var vm2 = new Vue({
         el: "#app2",
@@ -217,9 +231,21 @@
                 userGroup: "",
                 groupId: 1, //此处暂时写死
             },
+            creator: {
+                userName: ""
+            },
+            document: {
+                userName: "",
+                finalPath: "",
+                title: "",
+                createdData: "",
+                mode: ""
+            },
             topics: [],
             messages: [],
+            uploadPathMessages: [],
             currentMessage: "",
+            currentTopicId: "",
             currentTopic: "",
 
             dialogFormVisible: false,
@@ -250,10 +276,34 @@
                         obj.topics = response.data;
                    }).then(function (response) {
                        var firstTopicId = obj.topics[0].topicId;
-                       obj.currentTopic = firstTopicId;
+                       obj.currentTopicId = firstTopicId;
+                       axios.get("/justTopic/"+firstTopicId).then(function (response) {
+                          obj.currentTopic = response.data;
+                           axios.get("/fileInfo/" + obj.currentTopic.fileInfoId).then(function (response) {
+                               obj.document.finalPath = response.data.finalPath;
+                               obj.creator.userName = response.data.user.userName;
+                               obj.document.title = response.data.fileInfo.fileName;
+                               obj.document.createdDate = response.data.dateString;
+                               obj.document.mode = response.data.fileInfo.mode;
+                               PDFObject.embed(obj.document.finalPath, ".document");
+                           })
+                       });
                        axios.get("/topicDetail/"+firstTopicId).then(function (response) {
                             obj.messages = response.data;
-                       }).catch(function (response) {
+                       }).then(function (response) {
+                           var param = {
+                               "messages": obj.messages
+                           }
+                           var config = {
+                               headers: {
+                                   'Content-Type': 'application/json'
+                               }
+                           };
+                           axios.post("/message/uploadPath/", param).then(function (response) {
+                               obj.uploadPathMessages = response.data;
+                           })
+                       })
+                           .catch(function (response) {
                             console.log(response)
                        })
                    })
@@ -274,24 +324,15 @@
                 }
                 return "";
             },
-            tabClick: function(tab, event) {
-                if(tab.name === "first") {
-                    console.log("点击了第一个tab")
-                } else if (tab.name === 'second') {
-                    console.log("点击了第二个tab")
-                } else {
-                    console.log("点击了第三个tab")
-                }
-            },
             sendMessage: function () {
                 obj = this;
                 var param = {
                     message: obj.currentMessage,
                     sendAccount: obj.userMessage.account,
-                    topicId: parseInt(obj.currentTopic)
+                    topicId: parseInt(obj.currentTopicId)
                 };
                 axios.post("/message", param).then(function (response) {
-                    axios.get("/topicDetail/"+obj.currentTopic).then(function (response) {
+                    axios.get("/topicDetail/"+obj.currentTopicId).then(function (response) {
                         obj.messages = response.data;
                         obj.currentMessage = "";
                     }).catch(function (response) {
@@ -310,7 +351,19 @@
             pressAside: function (index, indexPath) {
                 var obj = this;
                 var topicId = index;
-                obj.currentTopic = index;
+                obj.currentTopicId = index;
+                axios.get("/justTopic/"+topicId).then(function (response) {
+                    obj.currentTopic = response.data;
+                }).then(function (response) {
+                    axios.get("/fileInfo/" + obj.currentTopic.fileInfoId).then(function (response) {
+                        obj.document.finalPath = response.data.finalPath;
+                        obj.creator.userName = response.data.user.userName;
+                        obj.document.title = response.data.fileInfo.fileName;
+                        obj.document.createdDate = response.data.dateString;
+                        obj.document.mode = response.data.fileInfo.mode;
+                        PDFObject.embed(obj.document.finalPath, ".document");
+                    })
+                });
                 axios.get("/topicDetail/"+topicId).then(function (response) {
                     obj.messages = response.data;
                 }).catch(function (response) {
@@ -325,7 +378,8 @@
                 formData.append('file', obj.file);
                 formData.append('version', obj.version);
                 formData.append('comment', obj.comment);
-                formData.append('topicId', obj.currentTopic);
+                formData.append('topicId', obj.currentTopicId);
+                formData.append('fileInfoId', obj.currentTopic.fileInfoId);
                 var config = {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -334,7 +388,7 @@
                 axios.post('/file/comment', formData, config).then(function (response) {
                     console.log(response)
                 }).then(function (response) {
-                    axios.get("/topicDetail/"+obj.currentTopic).then(function (response) {
+                    axios.get("/topicDetail/"+obj.currentTopicId).then(function (response) {
                         obj.dialogFormVisible = false;
                         obj.messages = response.data;
                     }).catch(function (response) {
@@ -349,6 +403,26 @@
                 this.file = event.target.files[0];
                 console.log("file");
                 console.log(this.file);
+            },
+            getUploadFilePath: function (messageId) {
+                console.log(messageId);
+                var obj = this;
+                console.log("start getUploadFilePath");
+                console.log(obj.uploadPathMessages);
+                // for(var message in obj.uploadPathMessages) {
+                //     console.log("message is"+message);
+                //     if (message.messageId == messageId) {
+                //         console.log(message.uploadPath);
+                //         return message.uploadPath;
+                //     }
+                // }
+                for(var i=0;i<obj.uploadPathMessages.length;i++){
+                    console.log(obj.uploadPathMessages[i]);
+                    if(obj.uploadPathMessages[i].messageId == messageId) {
+                        return obj.uploadPathMessages[i].uploadPath;
+                    }
+                }
+                
             }
         }
     })

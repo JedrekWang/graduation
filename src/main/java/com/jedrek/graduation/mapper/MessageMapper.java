@@ -13,5 +13,7 @@ public interface MessageMapper {
     //列出讨论内容
     List<Message> queryMessageByTopicId(Integer topicId);
 
+    Message queryMessageById(Integer messageId);
+
 
 }

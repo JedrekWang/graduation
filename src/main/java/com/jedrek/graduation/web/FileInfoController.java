@@ -1,11 +1,11 @@
 package com.jedrek.graduation.web;
 
 import com.jedrek.graduation.constant.Constant;
-import com.jedrek.graduation.entity.FileInfo;
-import com.jedrek.graduation.entity.Folder;
-import com.jedrek.graduation.entity.User;
+import com.jedrek.graduation.entity.*;
 import com.jedrek.graduation.service.FileInfoService;
+import com.jedrek.graduation.service.MessageService;
 import com.jedrek.graduation.service.UserService;
+import com.jedrek.graduation.service.VersionService;
 import com.jedrek.graduation.utils.CookieUtil;
 import com.jedrek.graduation.utils.DocumentUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +24,15 @@ public class FileInfoController {
 
     private FileInfoService fileInfoService;
     private UserService userService;
+    private VersionService versionService;
+    private MessageService messageService;
 
     @Autowired
-    public FileInfoController(FileInfoService fileInfoService, UserService userService) {
+    public FileInfoController(FileInfoService fileInfoService, UserService userService, VersionService versionService, MessageService messageService) {
         this.fileInfoService = fileInfoService;
         this.userService = userService;
+        this.versionService = versionService;
+        this.messageService = messageService;
     }
 
     @RequestMapping("{userName}/file/{fileId}")
@@ -64,8 +68,8 @@ public class FileInfoController {
     public Object uploadFile(
             HttpServletRequest request,
             @RequestParam Integer parentFolderId,
+            @RequestParam Integer mode,
             @RequestBody MultipartFile file) throws IOException {
-        System.out.println("test");
         if (!file.isEmpty()) {
             String filename = file.getOriginalFilename();
             String[] split = filename.split("\\.", 2);
@@ -73,6 +77,7 @@ public class FileInfoController {
             fileInfo.setParentFolderId(parentFolderId);
             fileInfo.setFileName(split[0]);
             fileInfo.setFormat(split[1]);
+            fileInfo.setMode(mode);
             String currentUser = CookieUtil.getCookieValue(request, "currentUser");
             if (currentUser != null) {
                 User user = userService.queryUserByAccount(currentUser);
@@ -95,6 +100,63 @@ public class FileInfoController {
             }
         }
         return null;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="file/comment", method=RequestMethod.POST)
+    public Object uploadFileInfo(
+            HttpServletRequest request,
+            @RequestParam String version,
+            @RequestBody MultipartFile file,
+            @RequestParam String comment,
+            @RequestParam Integer topicId,
+            @RequestParam Integer fileInfoId) throws Exception {
+        if (!file.isEmpty()) {
+            String filename = file.getOriginalFilename();
+            String[] split = filename.split("\\.", 2);
+            FileInfo fileInfo = new FileInfo();
+//            fileInfo.setParentFolderId(null);
+            fileInfo.setFileName(split[0]);
+            fileInfo.setFormat(split[1]);
+            fileInfo.setMode(3);
+            String currentUser = CookieUtil.getCookieValue(request, "currentUser");
+            if (currentUser != null) {
+                User user = userService.queryUserByAccount(currentUser);
+                fileInfo.setCreatedUserId(user.getUserId());
+                String path = DocumentUtil.handleDocumentPath(filename, new Date());
+                fileInfo.setContentUrl(path);
+                int fileId = fileInfoService.addFile(fileInfo);
+                if(Objects.equals(version, "版本文档")) {
+                    Version fileVersion = new Version();
+                    fileVersion.setFileId(fileId);
+                    fileVersion.setRawFileId(fileInfoId);
+                    fileVersion.setVersionDesc(comment);
+                    fileVersion.setVersionKey("版本" + fileId);
+                    versionService.addVersion(fileVersion);
+                }
+
+                Message message = new Message();
+                message.setTopicId(topicId);
+                message.setSendAccount(currentUser);
+                message.setContent(comment);
+                message.setMode(1);
+                messageService.addMessage(message);
+
+                String uploadPath = Constant.uploadPath + path;
+                File uploadFile = new File(uploadPath);
+                File parentFile = uploadFile.getParentFile();
+                if (!parentFile.exists()) {
+                    parentFile.mkdirs();
+                }
+                uploadFile.createNewFile();
+                file.transferTo(uploadFile);
+                if (Objects.equals(filename.split("\\.")[1], "docx")) {
+                    DocumentUtil.wordToPdf(uploadFile);
+                }
+                return "success";
+            }
+        }
+        return "error";
     }
 
     @ResponseBody

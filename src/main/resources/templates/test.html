@@ -127,7 +127,7 @@
                     </el-menu-item>
                     <el-menu-item index="5" disabled>我的工作台</el-menu-item>
                     <el-menu-item index="6" disabled>消息中心</el-menu-item>
-                    <el-menu-item index="7">讨论组</el-menu-item>
+                    <el-menu-item  index="7" ><a href="/topic">讨论组</a></el-menu-item>
                 </el-menu>
             </el-col>
             <el-col :span="6">
@@ -191,8 +191,9 @@
                     <!--<el-breadcrumb-item>{{currentFolder.folderName}}</el-breadcrumb-item>-->
                 <!--</el-breadcrumb>-->
                 <el-tabs v-model="activeTab" type="card" @tab-click="tabClick">
-                    <el-tab-pane label="课题小组" name="first"></el-tab-pane>
-                    <el-tab-pane label="公共文件" name="second"></el-tab-pane>
+                    <el-tab-pane label="课题小组" name="0"></el-tab-pane>
+                    <el-tab-pane label="公共文件" name="1"></el-tab-pane>
+                    <el-tab-pane label="私有文件" name="2"></el-tab-pane>
                 </el-tabs>
                 <el-main>
                     <el-dialog title="新建文件" :visible.sync="dialogFormVisible">
@@ -206,7 +207,6 @@
                             <el-button @click="dialogFormVisible = false">取 消</el-button>
                         </div>
                     </el-dialog>
-
                     <el-dialog
                             title="删除操作"
                             :visible.sync="dialogVisible"
@@ -217,7 +217,6 @@
                             <el-button @click="dialogVisible = false">取 消</el-button>
                         </span>
                     </el-dialog>
-
                     <el-row>
                         <el-col :span="4" style="margin-bottom: 5px ">
                             <el-button @click="execBefore">Before</el-button>
@@ -292,7 +291,7 @@
             file: "",    //上传文件
 
             //useless
-            activeTab: "first",
+            activeTab: "0",
             pressStuff: "",
             dialogVisible: false,
             dialogFormVisible: false,
@@ -313,7 +312,7 @@
         mounted: function () {
             document.oncontextmenu = function() {
                 return false;
-            }
+            };
             var obj = this;
             var account = obj.getCookie("currentUser");
             axios.get('login/'+account).then(function (response) {
@@ -332,14 +331,14 @@
                     axios.get('/groupName/'+obj.userMessage.groupId).then(function (response) {
                         obj.userMessage.userGroup = response.data;
                     });
-                    axios.get('/'+obj.userMessage.account+'/rootFolders').then(function (response) {
+                    axios.get('/'+obj.userMessage.account+'/rootFolders?mode=0').then(function (response) {
                         response.data.forEach(function (value, index, array) {
                             obj.folders.push(value);
                         });
                     }).catch(function (response) {
                         console.log(response);
                     });
-                    axios.get('/'+obj.userMessage.account+'/rootFiles').then(function (response) {
+                    axios.get('/'+obj.userMessage.account+'/rootFiles?mode=0').then(function (response) {
                         response.data.forEach(function (value, index, array) {
                             obj.files.push(value);
                         });
@@ -382,6 +381,7 @@
                 var formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('parentFolderId', this.currentFolderId);
+                formData.append('mode', this.activeTab);
                 var config = {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -412,11 +412,12 @@
             },
             createFolder: function(folder) {
                 var uploadFolder = folder;
+                // uploadFolder.mode = this.activeTab;
                 if (this.currentFolderId !== "") {
                     uploadFolder.parentFolderId = this.currentFolderId;
                 }
                 folder.isNew = false;
-                axios.post('/'+this.userMessage.account+"/folder", uploadFolder).then(function (response) {
+                axios.post('/'+this.userMessage.account+"/folder?mode="+this.activeTab, uploadFolder).then(function (response) {
                     if(response.data === "rootFolder") {
                         //为根目录.无需操作
                     } else {
@@ -553,13 +554,26 @@
                 });
             },
             tabClick: function(tab, event) {
-                if(tab.name === "first") {
-                    console.log("点击了第一个tab")
-                } else if (tab.name === 'second') {
-                    console.log("点击了第二个tab")
-                } else {
-                    console.log("点击了第三个tab")
-                }
+                // if(tab.name === "0") {
+                //     console.log("点击了第一个tab")
+                //
+                // } else if (tab.name === "1") {
+                //     console.log("点击了第二个tab")
+                // } else {
+                //     console.log("点击了第三个tab")
+                // }
+                var obj = this;
+                axios.get('/'+obj.userMessage.account+'/rootFolders?mode='+tab.name).then(function (response) {
+                    obj.folders = response.data;
+                }).catch(function (response) {
+                    console.log(response);
+                });
+                axios.get('/'+obj.userMessage.account+'/rootFiles?mode='+tab.name).then(function (response) {
+                    obj.files = response.data;
+                    console.log(obj.files)
+                }).catch(function (reason) {
+                    console.log(reason)
+                })
             }
         }
     })

@@ -13,8 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class TopicController {
@@ -38,8 +37,16 @@ public class TopicController {
     @ResponseBody
     @RequestMapping("topics/{account}")
     public Object getAllTopic(@PathVariable String account) {
-        List<Topic> topics = topicService.queryTopicByAccount(account);
-        return topics;
+//        List<Topic> topics = topicService.queryTopicByAccount(account);
+//        return topics;
+        List<TopicMember> topicMembers = topicMemberService.queryAllTopicByAccount(account);
+        List<Topic> topicList = new ArrayList<>();
+        for (TopicMember topicMember : topicMembers) {
+            Integer topicId = topicMember.getTopicId();
+            Topic topic = topicService.queryTopicById(topicId);
+            topicList.add(topic);
+        }
+        return topicList;
     }
 
 
@@ -83,6 +90,13 @@ public class TopicController {
     }
 
     @ResponseBody
+    @RequestMapping("justTopic/{topicId}")
+    public Object getTopic(@PathVariable Integer topicId) {
+        Topic topic = topicService.queryTopicById(topicId);
+        return topic;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "message", method = RequestMethod.POST)
     public String submitTopicMessage(@RequestBody Map map) {
         System.out.println("hello");
@@ -90,7 +104,29 @@ public class TopicController {
         message.setContent((String)map.get("message"));
         message.setSendAccount((String)map.get("sendAccount"));
         message.setTopicId((Integer)map.get("topicId"));
+        message.setMode(0);
         messageService.addMessage(message);
         return "success";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "message/uploadPath", method = RequestMethod.POST)
+    public Object getUploadPathMessages(@RequestBody Map map) {
+        System.out.println("hello");
+        List<Map<String,Object>> paths = new ArrayList<>();
+        List messages = (ArrayList)map.get("messages");
+        for (Object m : messages) {
+            Map message = (Map)m;
+            System.out.println(message.get("mode"));
+            if (Objects.equals(message.get("mode"), 1)) {
+                String uploadFilePath = messageService.getMessageUploadFilePath((Integer) message.get("messageId"));
+                Map<String,Object> temp = new HashMap<>();
+                temp.put("uploadPath", uploadFilePath);
+                temp.put("messageId", message.get("messageId"));
+                paths.add(temp);
+
+            }
+        }
+        return paths;
     }
 }

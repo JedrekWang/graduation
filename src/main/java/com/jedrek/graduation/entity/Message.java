@@ -11,4 +11,5 @@ public class Message {
     private String content;
     private Date sendDate;
     private Integer topicId;
+    private Integer mode; // 0 普通评论 1 带预览的评论
 }

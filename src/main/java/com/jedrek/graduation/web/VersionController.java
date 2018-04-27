@@ -22,7 +22,7 @@ public class VersionController {
     @ResponseBody
     @RequestMapping("{documentId}/version")
     public Object getAllVersion(@PathVariable Integer documentId) {
-        List<Version> versions = versionService.queryVersionsByDocumentId(documentId);
+        List<Version> versions = versionService.queryVersionsByRawFileId(documentId);//??????
         return versions;
     }
 

@@ -27,9 +27,9 @@ public class FolderController {
 
     @ResponseBody
     @RequestMapping(value = "{userName}/rootFolders", method = RequestMethod.GET)
-    public Object getRootFolder(@PathVariable String userName) {
+    public Object getRootFolder(@PathVariable String userName, @RequestParam Integer mode) {
         User user = userService.queryUserByAccount(userName);
-        List<Folder> folders = folderService.queryRootFolderByUser(user.getUserId());
+        List<Folder> folders = folderService.queryRootFolderByUser(user.getUserId(), mode);
         return folders;
     }
 
@@ -44,7 +44,7 @@ public class FolderController {
 //    }
     @ResponseBody
     @RequestMapping(value = "{userName}/folder", method = RequestMethod.POST)
-    public Object submitFolder(@PathVariable String userName, @RequestBody Map map) {
+    public Object submitFolder(@PathVariable String userName, @RequestBody Map map, @RequestParam Integer mode) {
         String folderName = (String)map.get("folderName");
         String folderDesc = (String)map.get("folderDesc");
         Integer createdUserId = (Integer)map.get("createdUserId");
@@ -57,6 +57,7 @@ public class FolderController {
         folder.setFolderDesc(folderDesc);
         folder.setCreatedUserId(createdUserId);
         folder.setParentFolderId(parentFolderId);
+        folder.setMode(mode);
         int i = folderService.addFolder(folder);
         if (i > 0 && parentFolderId != null) {
             Folder queryFolder = folderService.queryFolder(parentFolderId, folderName);
@@ -72,12 +73,17 @@ public class FolderController {
         return folders;
     }
 
+    /**
+     *  删除文件夹或文件后刷新首页内容
+     * @param request
+     * @return
+     */
     @ResponseBody
     @RequestMapping("folders/null")
     public Object getSubFolder(HttpServletRequest request) {
         String currentUser = CookieUtil.getCookieValue(request, "currentUser");
         User user = userService.queryUserByAccount(currentUser);
-        List<Folder> folders = folderService.queryRootFolderByUser(user.getUserId());
+        List<Folder> folders = folderService.queryRootFolderByUser(user.getUserId(), 0);
         return folders;
     }
 
