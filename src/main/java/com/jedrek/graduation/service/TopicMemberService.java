@@ -28,15 +28,15 @@ public class TopicMemberService {
         return topicMemberMapper.queryAllMembers(topicId);
    }
 
-   public List<Topic> queryAllTopicByAccount(String account) {
+   public List<TopicMember> queryAllTopicByAccount(String account) {
         return topicMemberMapper.queryAllTopicByAccount(account);
    }
 
-   public List<Topic> queryNotFinishedTopicByAccount(String account) {
+   public List<TopicMember> queryNotFinishedTopicByAccount(String account) {
         return topicMemberMapper.queryNotFinishedTopicByAccount(account);
    }
 
-   public List<Topic> queryFinishedTopicByAccount(String account) {
+   public List<TopicMember> queryFinishedTopicByAccount(String account) {
         return topicMemberMapper.queryFinishedTopicByAccount(account);
    }
 }

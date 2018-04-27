@@ -2,6 +2,7 @@ package com.jedrek.graduation.service;
 
 import com.jedrek.graduation.entity.FileInfo;
 import com.jedrek.graduation.mapper.FileInfoMapper;
+import com.jedrek.graduation.mapper.TopicMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,14 +15,21 @@ import java.util.List;
 public class FileInfoService {
 
     private FileInfoMapper fileInfoMapper;
+    private TopicMapper topicMapper;
 
     @Autowired
-    public FileInfoService(FileInfoMapper fileInfoMapper) {
+    public FileInfoService(FileInfoMapper fileInfoMapper, TopicMapper topicMapper) {
         this.fileInfoMapper = fileInfoMapper;
+        this.topicMapper = topicMapper;
     }
 
+
     public int addFile(FileInfo fileInfo) {
-        return fileInfoMapper.addFile(fileInfo);
+        int i = fileInfoMapper.addFile(fileInfo);
+        if(i > 0) {
+            return topicMapper.selectLastInsert();
+        }
+        return -1;
     }
 
     public int deleteFile(Integer fileId) {

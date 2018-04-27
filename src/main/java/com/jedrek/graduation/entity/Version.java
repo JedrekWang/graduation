@@ -6,6 +6,7 @@ import lombok.Data;
 public class Version {
     private Integer versionId;
     private String versionKey;
-    private Integer documentId;
+    private Integer fileId;
+    private Integer rawFileId;
     private String versionDesc;
 }

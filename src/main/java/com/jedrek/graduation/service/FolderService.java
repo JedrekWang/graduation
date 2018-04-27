@@ -32,8 +32,8 @@ public class FolderService {
         return folderMapper.queryFolderById(folderId);
     }
 
-    public List<Folder> queryRootFolderByUser(Integer createdUserId) {
-        return folderMapper.queryRootFolderByUser(createdUserId);
+    public List<Folder> queryRootFolderByUser(Integer createdUserId, Integer mode) {
+        return folderMapper.queryRootFolderByUser(createdUserId, mode);
     }
 
     public List<Folder> querySubFolder(Integer parentFolderId) {

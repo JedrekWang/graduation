@@ -18,5 +18,6 @@ public class Folder {
     private String contentUrl;
     private Integer createdUserId;
     private Date createdUserDate;
+    private Integer mode;
     private Set<FileInfo> fileInfos;
 }

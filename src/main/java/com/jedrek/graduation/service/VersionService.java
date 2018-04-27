@@ -18,8 +18,8 @@ public class VersionService {
         this.versionMapper = versionMapper;
     }
 
-    public List<Version> queryVersionsByDocumentId(Integer documentId) {
-        return versionMapper.queryVersionsByDocumentId(documentId);
+    public List<Version> queryVersionsByFileId (Integer fileId) {
+        return versionMapper.queryVersionsByFileId(fileId);
     }
 
     public Version queryVersionByKey(String versionKey){

@@ -12,7 +12,7 @@
         .comment_user {
             width: 30px;
             height: 30px;
-            background-image: url("../static/img/gakki.jpg");
+            /*background-image: url("../static/img/gakki.jpg");*/
             background-repeat: no-repeat;
             background-position: center center;
             background-size: 100%;
@@ -103,10 +103,10 @@
                         background-color="#24292e"
                         text-color="#fff"
                         active-text-color="#ffd04b">
-                    <el-menu-item index="8" @click="dialogFormVisible = true">
+                    <el-menu-item index="8">
                         <i class="el-icon-circle-plus-outline" title="新建文件"></i>
                     </el-menu-item>
-                    <el-menu-item index="9" @click="addFolder">
+                    <el-menu-item index="9" >
                         <i class="el-icon-plus"  title="新建文件夹"></i>
                     </el-menu-item>
                     <el-menu-item index="10">
@@ -127,25 +127,6 @@
             </el-col>
         </el-header>
         <el-container>
-
-            <el-dialog title="文档信息" :visible.sync="dialogFormVisible">
-                <el-form enctype="multipart/form-data" label-width="80px" method="post">
-                    <el-form-item label="版本标题">
-                        <el-input name="title" placeholder="请输入标题" size="medium"></el-input>
-                    </el-form-item>
-                    <el-form-item label="版本描述">
-                        <el-input name="documentDesc" placeholder="请输入描述" size="medium"></el-input>
-                    </el-form-item>
-                    <el-form-item label="上传文档">
-                        <input type="file" name="file" class="btn btn-primary">
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-                </div>
-            </el-dialog>
-
             <el-dialog title="上传资料" :visible.sync="dialogFormVisible">
                 <el-form label-width="80px">
                     <el-form-item label="上传类型">
@@ -155,11 +136,14 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="上传">
-                        <input type="file" name="file" class="btn btn-primary">
+                        <input type="file" name="file" class="btn btn-primary" @change="getFile($event)">
                     </el-form-item>
+                    <el-from-item>
+                        <el-input v-model="comment" name="comment" placeholder="请输入评论"></el-input>
+                    </el-from-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button type="primary" @click="startDiscuss">确 定</el-button>
+                    <el-button type="primary" @click="uploadFileInfo($event)">确 定</el-button>
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                 </div>
             </el-dialog>
@@ -168,8 +152,9 @@
                 <el-aside>
                     <el-menu
                             default-active="0"
-                            class="el-menu-vertical-demo">
-                    <el-menu-item v-for="(topic,index) in topics"  :index="index+''">
+                            class="el-menu-vertical-demo"
+                            @select="pressAside">
+                    <el-menu-item v-for="(topic,index) in topics"  :index="topic.topicId+''">
                         <i class="el-icon-menu"></i>
                         <span slot="title">由{{topic.topicStartAccount}}发起的{{topic.topicId}}</span>
                     </el-menu-item>
@@ -178,6 +163,7 @@
             </el-col>
             <el-col :span="18" :offset="1">
                 <el-main>
+                    {{currentTopic}}
                     <el-row>
                         <el-col :span="15" :offset="0">
                             <el-input  v-model="currentMessage" placeholder="请输入内容"></el-input>
@@ -192,7 +178,7 @@
                             <el-card class="box-card" v-for="message in messages">
                                     <el-row>
                                         <el-col :span="1">
-                                            <div class="comment_user"></div>
+                                            <div class="comment_user" :style="{backgroundImage: 'url(/system/img/' +message.sendAccount+ '.jpg)'}"></div>
                                         </el-col>
                                         <el-col :span="2">
                                             <p>{{message.sendAccount}}</p>
@@ -237,7 +223,10 @@
             currentTopic: "",
 
             dialogFormVisible: false,
-            version: "版本文档"
+            version: "版本文档",
+            activeAside: 0,
+            comment: "",
+            file: ""
         },
         mounted: function () {
             document.oncontextmenu = function() {
@@ -285,194 +274,6 @@
                 }
                 return "";
             },
-            format_url: function (url) {
-                return url.split(" ").join("_")
-            },
-            addFolder: function() {
-                var number = 10;
-                this.folders.push({
-                    "folderName": "课题项目",
-                    "folderDesc": "课题项目",
-                    "createdUserId": this.userMessage.userId,
-                    "isNew": true,
-                });
-            },
-            uploadFile: function(event) {
-                var obj = this;
-                event.preventDefault();
-                var formData = new FormData();
-                formData.append('file', this.file);
-                formData.append('parentFolderId', this.currentFolderId);
-                var config = {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                };
-                axios.post('/file/test', formData, config).then(function (response) {
-                    console.log(response);
-                }).then(function (value) {
-                    obj.dialogFormVisible = false;
-                    //fixme 更新的不是根文件，而是指定目录下的文件
-                    axios.get('/'+obj.userMessage.account+'/parentFolder/'+obj.currentFolderId).then(function (response) {
-                        obj.files = response.data;
-                    }).catch(function (reason) {
-                        console.log(reason)
-                    })
-                }).catch(function (reason) {
-                    console.log(reason);
-                })
-            },
-            getFile: function(event) {
-                this.file = event.target.files[0];
-                console.log("file");
-                console.log(this.file);
-            },
-            calculateCol: function(x, index) {
-                // 通过行数和数组的索引判断每行渲染的folder数目
-                return index + 1 <= x * 4 && index + 1 > Math.max(0, (x-1)*4);
-            },
-            createFolder: function(folder) {
-                var uploadFolder = folder;
-                if (this.currentFolderId !== "") {
-                    uploadFolder.parentFolderId = this.currentFolderId;
-                }
-                folder.isNew = false;
-                axios.post('/'+this.userMessage.account+"/folder", uploadFolder).then(function (response) {
-                    if(response.data === "rootFolder") {
-                        //为根目录.无需操作
-                    } else {
-                        // 为子目录,更新文件夹信息
-                        uploadFolder.folderId = response.data;
-                        folder.folderId = response.data;
-                        console.log("获取的文件夹id为"+response.data);
-                        axios.get('/folders/'+uploadFolder.folderId).then(function (response) {
-                            obj.folders = response.data;
-                        }).catch(function (reason) {
-                            console.log(reason);
-                        });
-                    }
-
-                });
-            },
-            deleteFolder: function (folder) {
-                console.log(folder);
-                this.folders.pop();
-                console.log(this.folders);
-            },
-            showFolderContent: function (folder) {
-                var obj = this;
-                obj.previousFolders = obj.folders;
-                obj.previousFiles = obj.files;
-                obj.currentFolder = folder;
-                obj.currentFolderId = folder.folderId;
-                console.log(folder);
-                axios.get('/folders/'+folder.folderId).then(function (response) {
-                    obj.folders = response.data;
-                }).catch(function (reason) {
-                    console.log(reason);
-                });
-                axios.get('/files/'+folder.folderId).then(function (response) {
-                    obj.files = response.data;
-                }).catch(function (response) {
-                    console.log(response)
-                })
-            },
-            setPressStuff: function (stuff) {
-                this.dialogVisible = true;
-                this.pressStuff = stuff;
-                console.log("pressStuff");
-                console.log(this.pressStuff);
-            },
-            removeStuff: function() {
-                var obj = this;
-                var noFolder = false;
-                var noFile = false;
-                if ('folderId' in this.pressStuff) {
-                    for (var i = 0; i < this.folders.length; i++) {
-                        if (this.folders[i].folderId == this.pressStuff.folderId) {
-                            this.folders.splice(i, 1);
-                            break;
-                        }
-                    }
-                    axios.get('/folders/'+obj.pressStuff.parentFolderId).then(function (response) {
-                        if (response.data == null) {
-                            noFolder = true;
-                        }
-                    }).then(function (response) {
-                        axios.get('/files/'+obj.pressStuff.parentFolderId).then(function (response) {
-                            if (response.data == null) {
-                                noFile = true;
-                            }
-                        }).then(function (response) {
-                            axios.get("/deleteFolder/"+ obj.pressStuff.folderId).then(function (response) {
-                                if(response.data == "success") {
-                                    console.log("成功删除文件夹");
-                                } else {
-                                    console.log("删除文件夹失败");
-                                }
-                            }).catch(function (response) {
-                                console.log(response);
-                            })
-                        }).catch(function (response) {
-                            console.log(response)
-                        });
-                    }).catch(function (reason) {
-                        console.log(reason);
-                    });
-
-
-
-                } else if('fileId' in this.pressStuff) {
-                    for (var j = 0; j < this.files.length; j++) {
-                        if (this.files[j].fileId == this.pressStuff.fileId) {
-                            this.files.splice(j, 1);
-                            break;
-                        }
-                    }
-                    axios.get("/deleteFile/"+ obj.pressStuff.fileId).then(function (response) {
-                        if(response.data == "success") {
-                            console.log("成功删除文件");
-                        } else {
-                            console.log("删除文件失败");
-                        }
-                    }).catch(function (response) {
-                        console.log(response);
-                    })
-                }
-                this.dialogVisible = false;
-            },
-            execBefore: function () {
-                if (this.currentFolder.folderName === "" || this.currentFolder.folderName == null) {
-                    console.log("无法继续before")
-                    return;
-                }
-                this.folders = this.previousFolders;
-                this.files = this.previousFiles;
-                var folder = this.currentFolder;
-                console.log(this.currentFolder);
-                var parentFolderId = folder.parentFolderId;
-                var obj = this;
-                axios.get('/folder/'+parentFolderId).then(function (response) {
-                    if (response.data != "error") {
-                        obj.currentFolder = response.data;
-                        obj.currentFolderId = obj.currentFolder.folderId;
-                    } else {
-                        obj.currentFolder = "";
-                        obj.currentFolderId = "";
-                    }
-                }).then(function (response) {
-                    axios.get('/folders/'+obj.currentFolder.parentFolderId).then(function (response) {
-                        obj.previousFolders = response.data;
-                    }).catch(function (reason) {
-                        console.log(reason);
-                    });
-                    axios.get('/files/'+obj.currentFolder.parentFolderId).then(function (response) {
-                        obj.previousFiles  = response.data;
-                    }).catch(function (response) {
-                        console.log(response)
-                    })
-                });
-            },
             tabClick: function(tab, event) {
                 if(tab.name === "first") {
                     console.log("点击了第一个tab")
@@ -487,7 +288,7 @@
                 var param = {
                     message: obj.currentMessage,
                     sendAccount: obj.userMessage.account,
-                    topicId: obj.currentTopic
+                    topicId: parseInt(obj.currentTopic)
                 };
                 axios.post("/message", param).then(function (response) {
                     axios.get("/topicDetail/"+obj.currentTopic).then(function (response) {
@@ -505,6 +306,49 @@
                 datetime.setTime(time);
                 return datetime.getFullYear() + "年" + (datetime.getMonth()+1) + "月" + datetime.getDay() + "日";
 
+            },
+            pressAside: function (index, indexPath) {
+                var obj = this;
+                var topicId = index;
+                obj.currentTopic = index;
+                axios.get("/topicDetail/"+topicId).then(function (response) {
+                    obj.messages = response.data;
+                }).catch(function (response) {
+                    console.log(response)
+                })
+                
+            },
+            uploadFileInfo: function () {
+
+                var obj = this;
+                var formData = new FormData();
+                formData.append('file', obj.file);
+                formData.append('version', obj.version);
+                formData.append('comment', obj.comment);
+                formData.append('topicId', obj.currentTopic);
+                var config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                axios.post('/file/comment', formData, config).then(function (response) {
+                    console.log(response)
+                }).then(function (response) {
+                    axios.get("/topicDetail/"+obj.currentTopic).then(function (response) {
+                        obj.dialogFormVisible = false;
+                        obj.messages = response.data;
+                    }).catch(function (response) {
+                        console.log(response)
+                    })
+                }).catch(function (response) {
+
+                })
+
+            },
+            getFile: function(event) {
+                this.file = event.target.files[0];
+                console.log("file");
+                console.log(this.file);
             }
         }
     })

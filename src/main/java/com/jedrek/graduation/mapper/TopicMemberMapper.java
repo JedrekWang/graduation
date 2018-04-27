@@ -13,10 +13,10 @@ public interface TopicMemberMapper {
 
     List<TopicMember> queryAllMembers(Integer topicId);
 
-    List<Topic> queryAllTopicByAccount(String account);
+    List<TopicMember> queryAllTopicByAccount(String account);
 
-    List<Topic> queryNotFinishedTopicByAccount(String account);
+    List<TopicMember> queryNotFinishedTopicByAccount(String account);
 
-    List<Topic> queryFinishedTopicByAccount(String account);
+    List<TopicMember> queryFinishedTopicByAccount(String account);
 
 }
