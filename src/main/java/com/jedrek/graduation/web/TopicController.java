@@ -127,4 +127,15 @@ public class TopicController {
         }
         return paths;
     }
+
+    @ResponseBody
+    @RequestMapping("shutDownTopic/{topicId}")
+    public Object shutDownTopic(@PathVariable Integer topicId) {
+        int i = topicService.closeTopic(topicId);
+        if(i > 0) {
+            return "success";
+        } else {
+            return "error";
+        }
+    }
 }

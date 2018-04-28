@@ -74,9 +74,6 @@
         .inputBox{
             margin-bottom: 30px;
         }
-        /*.el-card {*/
-            /*border: 0px;*/
-        /*}*/
 
     </style>
 </head>
@@ -177,12 +174,17 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-col :span="13" :offset="2">
+                        <el-col :span="10" :offset="2">
+                            <template v-if="currentTopic.finish == 0">
                             <el-input  v-model="currentMessage" placeholder="请输入内容"></el-input>
+                            </template>
                         </el-col>
-                        <el-col :span="6" :offset="0">
+                        <el-col :span="12" :offset="0">
+                            <template v-if="currentTopic.finish == 0">
                             <el-button type="primary" @click="sendMessage">评论</el-button>
                             <el-button type="primary" @click="dialogFormVisible = true">上传</el-button>
+                            <el-button v-if="currentTopic.topicStartAccount == userMessage.account" type="success" @click="shutDownDiscuss">关闭讨论</el-button>
+                            </template>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -201,7 +203,6 @@
                                     </el-row>
                                 <div class="messageContent">
                                     <p>{{message.content}}</p>
-                                    <!--<a v-if="message.mode == 1" href="/system/2018\04\28\038.PDF">预览</a>-->
                                     <a v-if="message.mode == 1" :href="getUploadFilePath(message.messageId)">预览</a>
                                 </div>
                             </el-card>
@@ -424,6 +425,17 @@
                     }
                 }
                 
+            },
+            shutDownDiscuss: function() {
+                var obj = this;
+                axios.get("shutDownTopic/"+obj.currentTopicId).then(function (response) {
+                    if (response.data === "success") {
+                        console.log("关闭话题成功")
+                        axios.get("/topics/"+obj.userMessage.account).then(function (response) {
+                            obj.topics = response.data;
+                        })
+                    }
+                })
             }
         }
     })

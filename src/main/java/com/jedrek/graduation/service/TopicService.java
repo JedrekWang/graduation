@@ -44,7 +44,7 @@ public class TopicService {
        return topicMapper.queryTopicByAccount(topicStartAccount);
    }
 
-   public int updateTopicStatus(Integer topicId) {
+   public int closeTopic(Integer topicId) {
        return topicMapper.updateTopicStatus(topicId);
    }
 
