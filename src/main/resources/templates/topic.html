@@ -201,6 +201,7 @@
                                     </el-row>
                                 <div class="messageContent">
                                     <p>{{message.content}}</p>
+                                    <!--<a v-if="message.mode == 1" href="/system/2018\04\28\038.PDF">预览</a>-->
                                     <a v-if="message.mode == 1" :href="getUploadFilePath(message.messageId)">预览</a>
                                 </div>
                             </el-card>
@@ -391,6 +392,15 @@
                     axios.get("/topicDetail/"+obj.currentTopicId).then(function (response) {
                         obj.dialogFormVisible = false;
                         obj.messages = response.data;
+                        // getUploadFilePath
+
+                    }).then(function (response) {
+                        var param = {
+                            "messages": obj.messages
+                        };
+                        axios.post("/message/uploadPath/", param).then(function (response) {
+                            obj.uploadPathMessages = response.data;
+                        })
                     }).catch(function (response) {
                         console.log(response)
                     })
@@ -405,20 +415,11 @@
                 console.log(this.file);
             },
             getUploadFilePath: function (messageId) {
-                console.log(messageId);
                 var obj = this;
-                console.log("start getUploadFilePath");
-                console.log(obj.uploadPathMessages);
-                // for(var message in obj.uploadPathMessages) {
-                //     console.log("message is"+message);
-                //     if (message.messageId == messageId) {
-                //         console.log(message.uploadPath);
-                //         return message.uploadPath;
-                //     }
-                // }
+                console.log("start getUploadFilePath"+messageId);
                 for(var i=0;i<obj.uploadPathMessages.length;i++){
-                    console.log(obj.uploadPathMessages[i]);
                     if(obj.uploadPathMessages[i].messageId == messageId) {
+                        console.log(obj.uploadPathMessages[i].uploadPath);
                         return obj.uploadPathMessages[i].uploadPath;
                     }
                 }

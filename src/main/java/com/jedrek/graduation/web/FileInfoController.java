@@ -126,15 +126,16 @@ public class FileInfoController {
                 String path = DocumentUtil.handleDocumentPath(filename, new Date());
                 fileInfo.setContentUrl(path);
                 int fileId = fileInfoService.addFile(fileInfo);
+                Version fileVersion = new Version();
+                fileVersion.setFileId(fileId);
+                fileVersion.setRawFileId(fileInfoId);
+                fileVersion.setVersionDesc(comment);
                 if(Objects.equals(version, "版本文档")) {
-                    Version fileVersion = new Version();
-                    fileVersion.setFileId(fileId);
-                    fileVersion.setRawFileId(fileInfoId);
-                    fileVersion.setVersionDesc(comment);
                     fileVersion.setVersionKey("版本" + fileId);
-                    versionService.addVersion(fileVersion);
+                } else {
+                    fileVersion.setVersionKey("普通"+fileId);
                 }
-
+                versionService.addVersion(fileVersion);
                 Message message = new Message();
                 message.setTopicId(topicId);
                 message.setSendAccount(currentUser);
@@ -161,9 +162,9 @@ public class FileInfoController {
 
     @ResponseBody
     @RequestMapping("{userName}/rootFiles")
-    public Object getRootFiles(@PathVariable String userName) {
+    public Object getRootFiles(@PathVariable String userName, @RequestParam Integer mode) {
         User user = userService.queryUserByAccount(userName);
-        List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId());
+        List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId(), mode);
         return fileInfos;
     }
 
@@ -189,7 +190,7 @@ public class FileInfoController {
     public Object getSubFolder(HttpServletRequest request) {
         String currentUser = CookieUtil.getCookieValue(request, "currentUser");
         User user = userService.queryUserByAccount(currentUser);
-        List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId());
+        List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId(), 0);
         return fileInfos;
     }
 

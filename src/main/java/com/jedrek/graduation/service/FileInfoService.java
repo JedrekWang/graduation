@@ -40,8 +40,8 @@ public class FileInfoService {
         return fileInfoMapper.queryFileByFileId(fileId);
     }
 
-    public List<FileInfo> queryRootFileByUserId(Integer createdUserId) {
-        return fileInfoMapper.queryRootFileByUserId(createdUserId);
+    public List<FileInfo> queryRootFileByUserId(Integer createdUserId, Integer mode) {
+        return fileInfoMapper.queryRootFileByUserId(createdUserId, mode);
     }
 
     public List<FileInfo> queryFilesByUserAndParentFolder(Integer createdUserId, Integer parentFolderId) {

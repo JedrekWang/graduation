@@ -112,12 +112,10 @@ public class TopicController {
     @ResponseBody
     @RequestMapping(value = "message/uploadPath", method = RequestMethod.POST)
     public Object getUploadPathMessages(@RequestBody Map map) {
-        System.out.println("hello");
         List<Map<String,Object>> paths = new ArrayList<>();
         List messages = (ArrayList)map.get("messages");
         for (Object m : messages) {
             Map message = (Map)m;
-            System.out.println(message.get("mode"));
             if (Objects.equals(message.get("mode"), 1)) {
                 String uploadFilePath = messageService.getMessageUploadFilePath((Integer) message.get("messageId"));
                 Map<String,Object> temp = new HashMap<>();

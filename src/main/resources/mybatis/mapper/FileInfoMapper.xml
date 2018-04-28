@@ -48,7 +48,9 @@
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
         mode
-        FROM file_info WHERE created_user_id = #{createdUserId} AND parent_folder_id IS NULL
+        FROM file_info
+        WHERE
+         created_user_id = #{createdUserId} AND parent_folder_id IS NULL AND mode= #{mode}
     </select>
 
     <select id="queryFilesByUserAndParentFolder" resultType="com.jedrek.graduation.entity.FileInfo">
