@@ -14,6 +14,8 @@ public interface TopicMapper {
 
     List<Topic> queryTopicByAccount(String topicStartAccount);
 
+    Topic queryTopicByFileInfo(Integer fileInfoId);
+
     int updateTopicStatus(Integer topicId);
 
     int selectLastInsert();

@@ -1,7 +1,10 @@
 package com.jedrek.graduation.service;
 
 import com.jedrek.graduation.entity.FileInfo;
+import com.jedrek.graduation.entity.Message;
+import com.jedrek.graduation.entity.Topic;
 import com.jedrek.graduation.mapper.FileInfoMapper;
+import com.jedrek.graduation.mapper.MessageMapper;
 import com.jedrek.graduation.mapper.TopicMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +19,13 @@ public class FileInfoService {
 
     private FileInfoMapper fileInfoMapper;
     private TopicMapper topicMapper;
+    private MessageMapper messageMapper;
 
     @Autowired
-    public FileInfoService(FileInfoMapper fileInfoMapper, TopicMapper topicMapper) {
+    public FileInfoService(FileInfoMapper fileInfoMapper, TopicMapper topicMapper, MessageMapper messageMapper) {
         this.fileInfoMapper = fileInfoMapper;
         this.topicMapper = topicMapper;
+        this.messageMapper = messageMapper;
     }
 
 
@@ -54,5 +59,11 @@ public class FileInfoService {
 
     public int updateFileInfoName(Integer fileId, String newFileName) {
         return fileInfoMapper.updateFileInfoName(fileId, newFileName);
+    }
+
+    public List<Message> queryFinishedFileInfoMessageContent(Integer fileInfoId) {
+        Topic topic = topicMapper.queryTopicByFileInfo(fileInfoId);
+        List<Message> messages = messageMapper.queryMessageByTopicId(topic.getTopicId());
+        return messages;
     }
 }

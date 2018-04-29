@@ -203,4 +203,11 @@ public class FileInfoController {
         }
         return "error";
     }
+
+    @ResponseBody
+    @RequestMapping("file/comment/{fileId}")
+    public Object getFileInfoFinishedComment(@PathVariable Integer fileId) {
+        List<Message> messages = fileInfoService.queryFinishedFileInfoMessageContent(fileId);
+        return messages;
+    }
 }

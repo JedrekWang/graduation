@@ -26,7 +26,17 @@
         topic.finish
         FROM topic WHERE topic_start_account = #{topicStartAccount}
     </select>
-    
+
+    <select id="queryTopicByFileInfo" resultType="com.jedrek.graduation.entity.Topic">
+        SELECT
+        topic.topic_id AS topicId,
+        topic.topic_start_account as topicStartAccount,
+        topic.file_info_id as fileInfoId,
+        topic.topic_start_date AS topicStartDate,
+        topic.finish
+        FROM topic where file_info_id = #{fileInfoId}
+    </select>
+
     <update id="updateTopicStatus">
         UPDATE topic SET
         topic.finish = 1

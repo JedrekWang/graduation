@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * 文档实体类
+ * @deprecated
  */
 @Data
 public class Document {
@@ -19,8 +20,4 @@ public class Document {
     private Date lastModifyDate;
     private Integer lastModifyUserId;
     private Integer rootDocumentId; //文档的最原始编号，用于跟踪所有版本的文档
-
-
-    // 科研小组信息
-    // 在原始文档上新添加一个版本文档，需要那些信息？
 }

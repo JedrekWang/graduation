@@ -40,6 +40,14 @@
             margin-top: 10px;
             margin-right: 40px;
         }
+        .comment_user {
+            width: 30px;
+            height: 30px;
+            /*background-image: url("../static/img/gakki.jpg");*/
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 100%;
+        }
     </style>
 </head>
 <body>
@@ -103,11 +111,12 @@
                     <el-menu
                             default-active="2"
                             class="el-menu-vertical-demo"
-                        <el-menu-item index="2">
+                            @select="pressAside">
+                        <el-menu-item index="file">
                             <i class="el-icon-menu"></i>
                             <span slot="title">查看原文</span>
                         </el-menu-item>
-                        <el-menu-item index="3">
+                        <el-menu-item index="comment" v-if="document.mode != 2">
                             <i class="el-icon-document"></i>
                             <span slot="title">查看讨论</span>
                         </el-menu-item>
@@ -115,6 +124,7 @@
                     </el-menu>
                 </el-aside>
             </el-col>
+            <template v-if="currentAside == 'file'">
             <el-col :span="2" :offset="2">
                 <a href="#">
                     <div class="creator-logo"></div>
@@ -146,6 +156,28 @@
                     <div class="document"></div>
                 </el-main>
             </el-col>
+            </template>
+            <template v-if="currentAside == 'comment'">
+                <el-col :span="11" :offset="4">
+                    <el-card class="box-card" v-for="message  in messages">
+                        <el-row>
+                            <el-col :span="1">
+                                <div class="comment_user" :style="{backgroundImage: 'url(/system/img/' +message.sendAccount+ '.jpg)'}"></div>
+                            </el-col>
+                            <el-col :span="4" :offset="1">
+                                <p>{{message.sendAccount}}</p>
+                            </el-col>
+                            <el-col :span="4" :offset="14">
+                                <p>{{parseDate(message.sendDate)}}</p>
+                            </el-col>
+                        </el-row>
+                        <div class="messageContent">
+                            <p>{{message.content}}</p>
+                            <a v-if="message.mode == 1" :href="getUploadFilePath(message.messageId)">预览</a>
+                        </div>
+                    </el-card>
+                </el-col>
+            </template>
         </el-container>
     </el-container>
 </div>
@@ -162,6 +194,7 @@
                 userName: ""
             },
             document: {
+                fileId: "",
                 title: "",
                 createdDate: "",
                 finalPath: "",
@@ -171,6 +204,8 @@
                 userName: ""
             },
 
+            messages: [],
+            currentAside: "file",
             dialogFormVisible: false,
             selectMembers: [],
             members: ['上海', '北京', '广州', '深圳'],
@@ -187,6 +222,7 @@
                 obj.creator.userName = response.data.user.userName;
                 obj.document.title = response.data.fileInfo.fileName;
                 obj.document.createdDate = response.data.dateString;
+                obj.document.fileId = response.data.fileInfo.fileId;
                 obj.document.mode = response.data.fileInfo.mode;
                 PDFObject.embed(obj.document.finalPath, ".document");
             }).then(function (response) {
@@ -244,6 +280,29 @@
             },
             testMessage: function () {
 
+            },
+            parseDate: function(time) {
+                var datetime = new Date();
+                datetime.setTime(time);
+                return datetime.getFullYear() + "年" + (datetime.getMonth()+1) + "月" + datetime.getDay() + "日";
+
+            },
+            checkDiscuss: function () {
+                var obj = this;
+
+
+            },
+            pressAside: function (index, indexPath) {
+                var obj = this;
+                console.log(index);
+                obj.currentAside = index;
+                if(index === "comment") {
+                    axios.get("/file/comment/"+obj.document.fileId).then(function (response) {
+                        obj.messages = response.data;
+                    })
+                } else if (index === "file"){
+                    PDFObject.embed(obj.document.finalPath, ".document");
+                }
             }
         }
     })
