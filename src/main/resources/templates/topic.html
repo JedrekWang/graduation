@@ -109,14 +109,11 @@
                         background-color="#24292e"
                         text-color="#fff"
                         active-text-color="#ffd04b">
-                    <el-menu-item index="8">
-                        <i class="el-icon-circle-plus-outline" title="新建文件"></i>
-                    </el-menu-item>
                     <el-menu-item index="9" >
-                        <i class="el-icon-plus"  title="新建文件夹"></i>
+                        <i class="el-icon-plus"  title="发起讨论" @click="discussFormVisible = true"></i>
                     </el-menu-item>
                     <el-menu-item index="10">
-                        <i class="el-icon-star-on"></i>
+                        <i class="el-icon-star-on" disabled></i>
                     </el-menu-item>
                     <el-submenu index="11">
                         <template slot="title">
@@ -133,6 +130,19 @@
             </el-col>
         </el-header>
         <el-container>
+            <el-dialog title="发起话题讨论" :visible.sync="discussFormVisible">
+                <el-form label-width="80px">
+                    <el-form-item label="@想讨论的成员">
+                        <el-checkbox-group v-model="selectMembers">
+                            <el-checkbox-button v-for="member in members" :label="member.account" :key="member.account">{{member.userName}}</el-checkbox-button>
+                        </el-checkbox-group>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="startDiscuss">确 定</el-button>
+                    <el-button @click="discussFormVisible = false">取 消</el-button>
+                </div>
+            </el-dialog>
             <el-dialog title="上传资料" :visible.sync="dialogFormVisible">
                 <el-form label-width="80px">
                     <el-form-item label="上传类型">
@@ -154,6 +164,7 @@
                 </div>
             </el-dialog>
             <el-col :span="4" :offset="1">
+                {{currentTopic}}
                 <el-aside>
                     <el-menu
                             default-active="10"
@@ -168,7 +179,7 @@
             </el-col>
             <el-col :span="18" :offset="1">
                 <el-main>
-                    <el-row>
+                    <el-row v-if="currentTopic.fileInfoId !== -1">
                         <el-col :span="20" :offset="2">
                             <div class="document" style="margin-bottom: 30px"></div>
                         </el-col>
@@ -250,11 +261,15 @@
             currentTopicId: "",
             currentTopic: "",
 
+            selectMembers: [],
+            members: [],
             dialogFormVisible: false,
+            discussFormVisible: false,
             version: "版本文档",
             activeAside: 0,
             comment: "",
-            file: ""
+            file: "",
+            finish: ""
         },
         mounted: function () {
             document.oncontextmenu = function() {
@@ -313,6 +328,9 @@
                     console.log(response);
                 });
             });
+            axios.get("/users/").then(function (response) {
+                obj.members = response.data;
+            });
         },
         methods: {
             //获取cookie
@@ -357,14 +375,19 @@
                 axios.get("/justTopic/"+topicId).then(function (response) {
                     obj.currentTopic = response.data;
                 }).then(function (response) {
-                    axios.get("/fileInfo/" + obj.currentTopic.fileInfoId).then(function (response) {
-                        obj.document.finalPath = response.data.finalPath;
-                        obj.creator.userName = response.data.user.userName;
-                        obj.document.title = response.data.fileInfo.fileName;
-                        obj.document.createdDate = response.data.dateString;
-                        obj.document.mode = response.data.fileInfo.mode;
-                        PDFObject.embed(obj.document.finalPath, ".document");
-                    })
+                    if (obj.currentTopic.fileInfoId !== -1) {
+                        console.log("当前为文档的讨论页面")
+                        axios.get("/fileInfo/" + obj.currentTopic.fileInfoId).then(function (response) {
+                            obj.document.finalPath = response.data.finalPath;
+                            obj.creator.userName = response.data.user.userName;
+                            obj.document.title = response.data.fileInfo.fileName;
+                            obj.document.createdDate = response.data.dateString;
+                            obj.document.mode = response.data.fileInfo.mode;
+                            PDFObject.embed(obj.document.finalPath, ".document");
+                        })
+                    } else {
+                        console.log("当前为没有文档的讨论页面")
+                    }
                 });
                 axios.get("/topicDetail/"+topicId).then(function (response) {
                     obj.messages = response.data;
@@ -430,13 +453,39 @@
                 var obj = this;
                 axios.get("shutDownTopic/"+obj.currentTopicId).then(function (response) {
                     if (response.data === "success") {
-                        console.log("关闭话题成功")
+                        obj.finish = true
+                        console.log("关闭话题成功");
                         axios.get("/topics/"+obj.userMessage.account).then(function (response) {
                             obj.topics = response.data;
                         })
                     }
                 })
-            }
+            },
+            startDiscuss: function () {
+                var obj = this;
+                var param = window.location.href;
+                // 发起话题讨论
+                this.discussFormVisible = false;
+                //todo 发起完成后,显示发起成功
+                //选取的成员的首页的讨论组后出现一条消息,点击会进入讨论页
+                var param = {
+                    "selectMembers": obj.selectMembers,
+                    "fileId": "-1"
+                };
+                console.log(param);
+                axios.post("/topic", param).then(function (response) {
+                    if (response.data === "success") {
+                        obj.$message({
+                            message: '创建话题讨论成功',
+                            type: 'success'
+                        });
+                    } else {
+                        this.$message.error('创建话题讨论失败');
+                    }
+                }).catch(function (response) {
+                    console.log(response);
+                })
+            },
         }
     })
 </script>

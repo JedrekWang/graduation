@@ -75,6 +75,7 @@ public class TopicController {
         message.setSendAccount(currentUser);
         message.setContent(currentUser+"发起了话题讨论");
         message.setTopicId(insertTopicId);
+        message.setMode(0);
 
         messageService.addMessage(message);
         return "success";
