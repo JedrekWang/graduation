@@ -1,16 +1,14 @@
 package com.jedrek.graduation.service;
 
-import com.jedrek.graduation.entity.FileInfo;
-import com.jedrek.graduation.entity.Message;
-import com.jedrek.graduation.entity.Topic;
-import com.jedrek.graduation.mapper.FileInfoMapper;
-import com.jedrek.graduation.mapper.MessageMapper;
-import com.jedrek.graduation.mapper.TopicMapper;
+import com.jedrek.graduation.entity.*;
+import com.jedrek.graduation.mapper.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.GroupSequence;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,12 +18,23 @@ public class FileInfoService {
     private FileInfoMapper fileInfoMapper;
     private TopicMapper topicMapper;
     private MessageMapper messageMapper;
-
+    private UserGroupMapper userGroupMapper;
+    private UserMapper userMapper;
+    private UserGroupConMapper userGroupConMapper;
     @Autowired
-    public FileInfoService(FileInfoMapper fileInfoMapper, TopicMapper topicMapper, MessageMapper messageMapper) {
+    public FileInfoService(
+            FileInfoMapper fileInfoMapper,
+            TopicMapper topicMapper,
+            MessageMapper messageMapper,
+            UserGroupMapper userGroupMapper,
+            UserMapper userMapper,
+            UserGroupConMapper userGroupConMapper) {
         this.fileInfoMapper = fileInfoMapper;
         this.topicMapper = topicMapper;
         this.messageMapper = messageMapper;
+        this.userGroupMapper = userGroupMapper;
+        this.userMapper = userMapper;
+        this.userGroupConMapper = userGroupConMapper;
     }
 
 
@@ -65,5 +74,25 @@ public class FileInfoService {
         Topic topic = topicMapper.queryTopicByFileInfo(fileInfoId);
         List<Message> messages = messageMapper.queryMessageByTopicId(topic.getTopicId());
         return messages;
+    }
+
+    public List<FileInfo> queryRootFileInfoByGroupId(Integer groupId) {
+        List<User> users = userGroupConMapper.queryUsersByGroup(groupId);
+        List<FileInfo> fileInfoList = new ArrayList<>();
+        for (User user : users) {
+            List<FileInfo> fileInfos = fileInfoMapper.queryRootFileByUserIdAndGroupId(user.getUserId(), 0,groupId);
+            fileInfoList.addAll(fileInfos);
+        }
+        return fileInfoList;
+    }
+
+    public List<FileInfo> queryFileInfoByGroupId(Integer groupId, Integer parentFolderId) {
+        List<User> users = userGroupConMapper.queryUsersByGroup(groupId);
+        List<FileInfo> fileInfoList = new ArrayList<>();
+        for(User user : users) {
+            List<FileInfo> fileInfos = fileInfoMapper.queryFilesByUserAndParentFolder(user.getUserId(), parentFolderId);
+            fileInfoList.addAll(fileInfos);
+        }
+        return fileInfoList;
     }
 }

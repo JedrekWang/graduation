@@ -1,6 +1,8 @@
 package com.jedrek.graduation.service;
 
 import com.jedrek.graduation.entity.User;
+import com.jedrek.graduation.entity.UserGroup;
+import com.jedrek.graduation.mapper.UserGroupConMapper;
 import com.jedrek.graduation.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,12 @@ import java.util.List;
 public class UserService {
 
     private UserMapper userMapper;
+    private UserGroupConMapper userGroupConMapper;
 
     @Autowired
-    public UserService(UserMapper userMapper) {
+    public UserService(UserMapper userMapper, UserGroupConMapper userGroupConMapper) {
         this.userMapper = userMapper;
+        this.userGroupConMapper = userGroupConMapper;
     }
 
     public User queryUserById(Integer userId) {
@@ -54,6 +58,7 @@ public class UserService {
     public List<User> queryAllUser() {
         return userMapper.queryAllUser();
     }
+
 
 
 

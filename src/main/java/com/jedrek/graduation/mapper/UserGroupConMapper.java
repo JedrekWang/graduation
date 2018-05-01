@@ -12,7 +12,7 @@ public interface UserGroupConMapper {
 
     List<User> queryUsersByGroup(Integer groupId);
 
-    List<Group> queryGroupByAccount(Integer userId);
+    List<Group> queryGroupByUserId(Integer userId);
 
     int userAddGroup(
             @Param("userId") Integer userId,

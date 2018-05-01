@@ -26,8 +26,8 @@ public class UserGroupConService {
         return userGroupConMapper.queryUsersByGroup(groupId);
     }
 
-    public List<Group> queryGroupByAccount(Integer userId) {
-        return userGroupConMapper.queryGroupByAccount(userId);
+    public List<Group> queryGroupByUserId(Integer userId) {
+        return userGroupConMapper.queryGroupByUserId(userId);
     }
 
     public int userAddGroup(Integer userId, Integer groupId) {

@@ -17,9 +17,15 @@ public interface FileInfoMapper {
 
     FileInfo queryFileByFileId(Integer fileId);
 
+    List<FileInfo> queryRootFileByUserIdAndGroupId(
+            @Param("createdUserId") Integer createdUserId,
+            @Param("mode") Integer mode,
+            @Param("groupId") Integer groupId);
+
     List<FileInfo> queryRootFileByUserId(
             @Param("createdUserId") Integer createdUserId,
             @Param("mode") Integer mode);
+
 
     List<FileInfo> queryFilesByUserAndParentFolder(
             @Param("createdUserId") Integer createdUserId,

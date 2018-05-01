@@ -16,6 +16,11 @@ public interface FolderMapper {
 
     Folder queryFolderById(Integer folderId);
 
+    List<Folder> queryRootFolderByUserAndGroupId(
+            @Param("createdUserId") Integer createdUserId,
+            @Param("mode") Integer mode,
+            @Param("groupId") Integer groupId);
+
     List<Folder> queryRootFolderByUser(
             @Param("createdUserId") Integer createdUserId,
             @Param("mode") Integer mode);

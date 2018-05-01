@@ -19,5 +19,6 @@ public class Folder {
     private Integer createdUserId;
     private Date createdUserDate;
     private Integer mode;
+    private Integer groupId;
     private Set<FileInfo> fileInfos;
 }

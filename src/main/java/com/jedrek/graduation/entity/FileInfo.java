@@ -18,5 +18,6 @@ public class FileInfo {
     private Date createdUserDate;
     private Integer createdUserId;
     private Integer mode; // 0 小组  1 公共  2 私有 3 临时或版本
+    private Integer groupId;
 
 }
