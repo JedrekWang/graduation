@@ -7,23 +7,97 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/css/header.css">
     <style>
-        .fileSystem {
-            border: 1px solid #d1d5da;
-            width: 982px;
-            height: 600px;
-            background-color: #f6f6f6;
-        }
-        .group-item {
-            font-size: 20px;
-            margin-left: 10%;
-        }
         .image {
-            width: 132px;
-            height: 122px;
+            width: 350px;
+            height: 350px;
             background-repeat: no-repeat;
             background-size: 100%;
             background-position: center center;
-            border-radius: 5px;
+            border-radius: 26px;
+        }
+        #card {
+            margin-left: 20px;
+        }
+        .helvetica {
+            font-size: 20px;
+            font-weight: bold;
+            font-family: "Helvetica Neue";
+        }
+        .desc {
+            font-size: 15px;
+            color: #666;
+            font-weight: lighter;
+        }
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+
+        .box-card a {
+            color: #000000;
+            text-decoration: none;
+        }
+        .box-card a:hover {
+            color: #175199;
+            text-decoration: none;
+        }
+        .el-menu-demo {
+            height: 60px;
+        }
+        .folder{
+            width: 80px;
+            height: 60px;
+            margin: auto;
+            /*background-color: #4cae4c;*/
+            background-image: url(../static/img/folder.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .file{
+            width: 80px;
+            height: 60px;
+            margin: auto;
+            /*background-color: #4cae4c;*/
+            background-image: url(../static/img/pdf.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .word{
+            width: 80px;
+            height: 60px;
+            margin: auto;
+            /*background-color: #4cae4c;*/
+            background-image: url(../static/img/word.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .other-file {
+            width: 80px;
+            height: 60px;
+            margin: auto;
+            /*background-color: #4cae4c;*/
+            background-image: url(../static/img/other.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+        }
+        .folder-card{
+            border: 0px;
+        }
+        .folder-card:hover{
+            background-color: #eff4f8;
+        }
+        .folder-name{
+            margin-top: 8px;
+        }
+        .button-right {
+            width:24px;
+            height: 24px;
         }
     </style>
 </head>
@@ -41,9 +115,15 @@
                         <el-menu-item index="1">
                             <a href="/">DocumentKiller</a>
                         </el-menu-item>
+                        <el-menu-item index="3">
+                            <el-input placeholder="请输入文档关键字">
+                                <i slot="suffix" class="el-icon-search"></i>
+                            </el-input>
+                        </el-menu-item>
                         <el-menu-item index="5" disabled>我的工作台</el-menu-item>
                         <el-menu-item index="6" disabled>消息中心</el-menu-item>
-                        <el-menu-item index="7" disabled>小组管理</el-menu-item>
+                        <el-menu-item  index="7" ><a href="/topic">讨论组</a></el-menu-item>
+                        <el-menu-item index="7" ><a href="/manageGroup">小组管理 </a></el-menu-item>
                     </el-menu>
                 </el-col>
                 <el-col :span="6">
@@ -53,83 +133,143 @@
                             background-color="#24292e"
                             text-color="#fff"
                             active-text-color="#ffd04b">
-                        <el-menu-item index="8" class="test">
-                            <i class="el-icon-bell"></i>
+                        <el-menu-item index="8" @click="dialogFormVisible = true">
+                            <i class="el-icon-circle-plus-outline" title="新建文件"></i>
                         </el-menu-item>
-                        <el-menu-item index="9" @click="dialogVisible = true">
-                            <i class="el-icon-plus" title="添加组成员"></i>
+                        <el-menu-item index="9" @click="addFolder">
+                            <i class="el-icon-plus"  title="新建文件夹"></i>
                         </el-menu-item>
                         <el-menu-item index="10">
                             <i class="el-icon-star-on"></i>
                         </el-menu-item>
+                        <el-submenu index="11">
+                            <template slot="title">
+                                <a class="user_head_a" href="#">
+                                    <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}">
+                                    </div>
+                                </a>
+                            </template>
+                            <el-menu-item index="2-1"><a :href="'/'+ userMessage.account">个人信息</a></el-menu-item>
+                            <el-menu-item index="2-2">个人文档</el-menu-item>
+                            <el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>
+                        </el-submenu>
                     </el-menu>
                 </el-col>
             </el-header>
-            <el-container style="margin-left: 20px; margin-right: 20px">
-                <el-aside width="25%">
-                    <el-menu
-                            default-active="0"
-                            class="el-menu-vertical-demo">
-                        <el-menu-item v-for="(group,key) in groups" :index="key+''" @click="getUsers(group)">
-                            <i class="el-icon-menu"></i>
-                            <span class="group-item" slot="title">{{group.groupName}}</span>
-                        </el-menu-item>
-                    </el-menu>
+            <el-container>
+                <el-aside width="35%">
+                    <el-col id="card" :span="20">
+                        <el-card :body-style="{ padding: '30px' }">
+                            <div class="image"  :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}"></div>
+                            <div style="padding: 14px;">
+                                <p class="helvetica"><span>{{userMessage.userName}}</span></p>
+                                <p class="desc"><span>{{userMessage.userDesc}}</span></p>
+                                <div class="line"></div>
+                                <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
+                                <span>{{userMessage.school}}</span>
+                                <div class="line"></div>
+                                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                                <span>
+                                <a :href="'mailto:' + userMessage.email">{{userMessage.email}}</a>
+                            </span>
+                                <!--<div class="line"></div>-->
+                                <!--<span class="glyphicon glyphicon-user" aria-hidden="true"></span>-->
+                                <!--<span>-->
+                                <!--<a href="#" v-for="group in groups">{{group.groupName}}</a>-->
+                            <!--</span>-->
+                            </div>
+                        </el-card>
+                    </el-col>
                 </el-aside>
                 <el-container>
-
-                    <el-dialog
-                            title="添加组成员"
-                            :visible.sync="dialogVisible"
-                            width="40%">
-                        <span>是否向该组添加组成员?</span>
-                        <el-select v-model="selectUser" placeholder="请选择">
-                            <el-option
-                                    v-for="item in options"
-                                    :key="item.account"
-                                    :label="item.userName"
-                                    :value="item.account">
-                            </el-option>
-                        </el-select>
-                        <span slot="footer" class="dialog-footer">
-                            <el-button type="primary" @click="addGroupUser">确 定</el-button>
+                    <el-menu
+                            default-active="0-1"
+                            class="el-menu-demo"
+                            mode="horizontal"
+                            @select="selectSubMenuItem">
+                        <el-submenu index="0">
+                            <template slot="title">课题小组</template>
+                            <el-menu-item v-for="group in groups" :index="'0-'+group.groupId">{{group.groupName}}</el-menu-item>
+                        </el-submenu>
+                        <!--<i class="el-icon-plus" title="添加小组"></i>-->
+                        <el-menu-item index="1">公共文件</el-menu-item>
+                        <el-menu-item index="2">私有文件</el-menu-item>
+                        <el-button style="margin-top: 12px;" @click="groupFormVisible = true">添加小组</el-button>
+                    </el-menu>
+                    <el-main>
+                        <el-dialog title="添加小组" :visible.sync="groupFormVisible">
+                            <el-form label-width="80px">
+                                <el-form-item label="小组名">
+                                    <el-input v-model="addedGroupName" placeholder="请输入小组名"></el-input>
+                                </el-form-item>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="addGroup">确 定</el-button>
+                                <el-button @click="groupFormVisible = false">取 消</el-button>
+                            </div>
+                        </el-dialog>
+                        <el-dialog title="新建文件" :visible.sync="dialogFormVisible">
+                            <el-form label-width="80px">
+                                <el-form-item label="上传文件">
+                                    <input type="file" name="file" class="btn btn-primary" @change="getFile($event)">
+                                </el-form-item>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button type="primary" @click="uploadFile($event)">确 定</el-button>
+                                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                            </div>
+                        </el-dialog>
+                        <el-dialog
+                                title="删除操作"
+                                :visible.sync="dialogVisible"
+                                width="20%">
+                            <span>是否删除该文件或文件夹?</span>
+                            <span slot="footer" class="dialog-footer">
+                            <el-button type="primary" @click="removeStuff">确 定</el-button>
                             <el-button @click="dialogVisible = false">取 消</el-button>
                         </span>
-                    </el-dialog>
-                    <el-row>
-                        <el-col :span="24">
-                            <div class="fileSystem">
-                            <!--<p v-for="user in users">{{user}}</p>-->
-                                <el-card :body-style="{ padding: '30px' }" v-for="user in users">
-                                    <el-row>
-                                        <el-col :span="6">
-                                            <div class="image"  :style="{backgroundImage: 'url(/system/img/' +user.account+ '.jpg)'}"></div>
-                                            <div style="padding: 14px;">
-                                        <p class="helvetica"><span><a :href="'/'+user.account">{{user.userName}}</a></span></p>
-                                        <p class="desc"><span>{{user.userDesc}}</span></p>
-                                        <div class="line"></div>
-                                        <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
-                                        <span>{{user.school}}</span>
-                                        <div class="line"></div>
-                                        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-                                        <span>
-                                <a :href="'mailto:' + user.email">{{user.email}}</a>
-                            </span>
-                                        <div class="line"></div>
-                                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                        <span>
-                                <a :href="'/groups/'+ user.groupId">{{user.groupId}}</a>
-                            </span>
+                        </el-dialog>
+                        <el-row>
+                            <el-col :span="4" style="margin-bottom: 5px ">
+                                <el-button @click="execBefore">Before</el-button>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter="10" v-for="x in allRow">
+                            <el-col :span="6" v-for="(stuff,index) in allData" v-if="calculateCol(x, index)">
+                                <el-card v-if="stuff.folderDesc" class="folder-card" :title="stuff.folderDesc">
+                                    <div class="folder"  @dblclick="showFolderContent(stuff)" @click.right="setPressStuff(stuff)"></div>
+                                    <div class="text item folder-name" >
+                                        <el-row v-if="stuff.isNew">
+                                            <el-col :span="16">
+                                                <el-input v-model="stuff.folderName" :value="stuff.folderName" size="mini" autofocus></el-input>
+                                            </el-col>
+                                            <el-col :span="3">
+                                                <el-button class="button-right" @click="createFolder(stuff)" type="primary" icon="el-icon-success" size="mini"></el-button>
+                                            </el-col>
+                                            <el-col :span="3" :offset="2">
+                                                <el-button class="button-right" @click="popFolder(stuff)" type="primary" icon="el-icon-error" size="mini"></el-button>
+                                            </el-col>
+                                        </el-row>
+                                        <p style="margin-left: 40%;" v-else="stuff.isNew">{{stuff.folderName}}</p>
                                     </div>
-                                        </el-col>
-                                        <el-col :span="17" :offset="1">
-                                            <p v-for=""></p>
-                                        </el-col>
-                                    </el-row>
                                 </el-card>
-                            </div>
-                        </el-col>
-                    </el-row>
+
+                                <el-card v-else="stuff.folderDesc" class="folder-card" :title="stuff.fileName">
+                                    <a v-if="stuff.format == 'pdf' " :href="'/'+userMessage.account+'/file/'+stuff.fileId"><div class="file" @click.right="setPressStuff(stuff)"></div></a>
+                                    <a v-else-if="stuff.format == 'docx'"  :href="'/'+userMessage.account+'/file/'+stuff.fileId"><div class="word" @click.right="setPressStuff(stuff)" ></div></a>
+                                    <div v-else class="other-file" @click.right="setPressStuff(stuff)"></div>
+
+                                    <div class="text item folder-name" >
+                                        <p style="margin-left: 40%;">{{stuff.fileName}}</p>
+                                    </div>
+                                </el-card>
+                            </el-col>
+                        </el-row>
+                    </el-main>
+                    <el-footer>
+                        {{footer}}
+                        <i class="el-icon-success"></i>
+                    </el-footer>
                 </el-container>
             </el-container>
         </el-container>
@@ -142,58 +282,370 @@
     var vm = new Vue({
         el: "#app",
         data: {
-            options: [],
+            userMessage: {
+                userId:"",
+                account: "",
+                userName: "",
+                userDesc: "",
+                school: "",
+                email: ""
+            },
+            groups: [],   // 用户加入所有的组
+            folders: [],  //当前页所有的文件夹
+            files: [],         //当前页所有的文件
+            previousFolders: [], //前一页所有的文件夹
+            previousFiles: [],      //前一页的所有的文件
+            currentFolderId: "", //前一页点击进去的文件夹id
+            currentFolder: "",     //前一页点击进去的文件夹
+            // parentFolder:"",   // delete it later
+            file: "",    //上传文件
+
+            //useless
+            addedGroupName: "",
+            groupFormVisible: false,
+            currentMode: "0",  //当前文件或文件夹的格式
+            currentGroupId: "1", // 当前点击进入的小组id
+            pressStuff: "",
             dialogVisible: false,
-            currentPressGroup: "",
-            groups: [],
-            users: [],
-            selectUser: ''
+            dialogFormVisible: false,
+            formLabelWidth: '100px',
+            footer: "@CopyRight 2017-2018 by Jedrek"
+        },
+        computed: {
+            folderRow: function () {
+                return Math.ceil(this.folders.length/4);
+            },
+            allRow: function () {
+                return Math.ceil((this.folders.length+this.files.length)/4);
+            },
+            allData: function () {
+                return this.folders.concat(this.files);
+            }
         },
         mounted: function () {
+            document.oncontextmenu = function() {
+                return false;
+            };
             var obj = this;
-            var groupId = 1;
-            axios.get('/groups').then(function (response) {
-                obj.groups = response.data;
-            }).catch(function (response) {
-               console.log(response);
-            });
-            axios.get('/group/'+groupId).then(function (response) {
-                obj.users = response.data;
-            }).catch(function (response) {
-                console.log(response);
-            });
-            axios.get('/users').then(function (response) {
-                obj.options = response.data;
-            }).catch(function (response) {
-            });
-        },
-        methods: {
-            getUsers: function (group) {
-                var obj = this;
-                obj.currentPressGroup = group;
-                axios.get('/group/'+group.groupId).then(function (response) {
-                    obj.users = response.data;
+            var account = obj.getCookie("currentUser");
+            axios.get('login/'+account).then(function (response) {
+                obj.userMessage.email = response.data.email;
+                obj.userMessage.account = response.data.account;
+            }).then(function (response) {
+                axios.get('/account/'+obj.userMessage.account).then(function (response) {
+                    obj.userMessage.userId = response.data.userId;
+                    obj.userMessage.userName = response.data.userName;
+                    obj.userMessage.userDesc = response.data.userDesc;
+                    obj.userMessage.school = response.data.school;
+                    obj.userMessage.email = response.data.email;
+                }).then(function (response) {
+                    axios.get('/groups/').then(function (response) {
+                        obj.groups = response.data;
+                    });
+                    obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
                 }).catch(function (response) {
                     console.log(response);
                 });
+            });
+        },
+        methods: {
+            //获取cookie
+            getCookie: function (cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+                }
+                return "";
             },
-            addGroupUser: function () {
+            //在页面中添加文件夹样式
+            addFolder: function() {
+                var number = 10;
+                this.folders.push({
+                    "folderName": "课题项目",
+                    "folderDesc": "课题项目",
+                    "createdUserId": this.userMessage.userId,
+                    "isNew": true
+                });
+            },
+            //获取上传多个文件的第一个文件
+            calculateCol: function(x, index) {
+                // 通过行数和数组的索引判断每行渲染的folder数目
+                return index + 1 <= x * 4 && index + 1 > Math.max(0, (x-1)*4);
+            },
+            getFile: function(event) {
+                this.file = event.target.files[0];
+                console.log("file");
+                console.log(this.file);
+            },
+            //上传文件
+            uploadFile: function(event) {
                 var obj = this;
-                axios.get('user/group?account='+obj.selectUser + '&groupId='+obj.currentPressGroup.groupId).then(function (response) {
-                    if(response.data === "success") {
-                        console.log("小组添加成员成功");
-                        axios.get('/group/'+obj.currentPressGroup.groupId).then(function (response) {
-                            obj.users = response.data;
-                        }).catch(function (response) {
-                            console.log(response);
-                        });
+                event.preventDefault();
+                var formData = new FormData();
+                formData.append('file', this.file);
+                formData.append('parentFolderId', this.currentFolderId);
+                formData.append('mode', this.currentMode);
+                if(this.currentGroupId == null) {
+                    formData.append("groupId", "-1");
+                }
+                formData.append("groupId", this.currentGroupId);
+                var config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
+                axios.post('/file/test', formData, config).then(function (response) {
+                    console.log(response);
+                }).then(function (value) {
+                    obj.dialogFormVisible = false;
+                    //fixme 更新的不是根文件，而是指定目录下的文件
+                    axios.get('/'+obj.userMessage.account+'/parentFolder/'+obj.currentFolderId).then(function (response) {
+                        obj.files = response.data;
+                    }).catch(function (reason) {
+                        console.log(reason)
+                    })
+                }).catch(function (reason) {
+                    console.log(reason);
+                })
+            },
+            //创建文件夹并上传并刷新
+            createFolder: function(folder) {
+                var obj = this;
+                var uploadFolder = folder;
+                if (this.currentFolderId !== "") {
+                    uploadFolder.parentFolderId = this.currentFolderId;
+                }
+                folder.isNew = false;
+                folder.groupId = obj.currentGroupId;
+
+                // 文件夹非为 课题小组文件夹和 公共,私有文件夹
+                // 又可分为根文件夹和子文件夹
+                axios.post('/' + this.userMessage.account + "/folder?mode=" + obj.currentMode, uploadFolder).then(function (response) {
+                    //此时为根文件夹
+                    if (response.data === "rootFolder") {
+                        //通过账号刷新首页的文件夹和文件
+                        obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
                     } else {
-                        console.log("小组添加成员失败");
+                        // 为子目录,返回创建的子文件夹的父文件夹编号
+                        console.log("获取的文件夹id为" + response.data);
+                        axios.get('/folders/' + response.data).then(function (response) {
+                            obj.folders = response.data;
+                        }).catch(function (reason) {
+                            console.log(reason);
+                        });
+                    }
+
+                });
+            },
+            popFolder: function (folder) {
+                console.log(folder);
+                this.folders.pop();
+                console.log(this.folders);
+            },
+            showFolderContent: function (folder) {
+                var obj = this;
+                obj.previousFolders = obj.folders;
+                obj.previousFiles = obj.files;
+                obj.currentFolder = folder;
+                obj.currentFolderId = folder.folderId;
+                console.log(folder);
+                axios.get('/folders/'+folder.folderId).then(function (response) {
+                    obj.folders = response.data;
+                }).catch(function (reason) {
+                    console.log(reason);
+                });
+                axios.get('/files/'+folder.folderId).then(function (response) {
+                    obj.files = response.data;
+                }).catch(function (response) {
+                    console.log(response)
+                })
+            },
+            //设置当前选取的文件夹或文件
+            setPressStuff: function (stuff) {
+                this.dialogVisible = true;
+                this.pressStuff = stuff;
+                console.log("pressStuff");
+                console.log(this.pressStuff);
+            },
+            //删除文件和文件夹
+            removeStuff: function() {
+                var obj = this;
+                var noFolder = false;
+                var noFile = false;
+                if ('folderId' in this.pressStuff) {
+                    for (var i = 0; i < this.folders.length; i++) {
+                        if (this.folders[i].folderId == this.pressStuff.folderId) {
+                            this.folders.splice(i, 1);
+                            break;
+                        }
+                    }
+                    axios.get('/folders/'+obj.pressStuff.parentFolderId).then(function (response) {
+                        if (response.data == null) {
+                            noFolder = true;
+                        }
+                    }).then(function (response) {
+                        axios.get('/files/'+obj.pressStuff.parentFolderId).then(function (response) {
+                            if (response.data == null) {
+                                noFile = true;
+                            }
+                        }).then(function (response) {
+                            axios.get("/deleteFolder/"+ obj.pressStuff.folderId).then(function (response) {
+                                if(response.data == "success") {
+                                    console.log("成功删除文件夹");
+                                } else {
+                                    console.log("删除文件夹失败");
+                                }
+                            }).catch(function (response) {
+                                console.log(response);
+                            })
+                        }).catch(function (response) {
+                            console.log(response)
+                        });
+                    }).catch(function (reason) {
+                        console.log(reason);
+                    });
+
+
+
+                } else if('fileId' in this.pressStuff) {
+                    for (var j = 0; j < this.files.length; j++) {
+                        if (this.files[j].fileId == this.pressStuff.fileId) {
+                            this.files.splice(j, 1);
+                            break;
+                        }
+                    }
+                    axios.get("/deleteFile/"+ obj.pressStuff.fileId).then(function (response) {
+                        if(response.data == "success") {
+                            console.log("成功删除文件");
+                        } else {
+                            console.log("删除文件失败");
+                        }
+                    }).catch(function (response) {
+                        console.log(response);
+                    })
+                }
+                this.dialogVisible = false;
+            },
+            execBefore: function () {
+                if (this.currentFolder.folderName === "" || this.currentFolder.folderName == null) {
+                    console.log("无法继续before");
+                    return;
+                }
+                // 将上一步保存的文件和文件夹信息赋值给当前文件夹和文件
+                this.folders = this.previousFolders;
+                this.files = this.previousFiles;
+
+                var folder = this.currentFolder;
+                console.log(this.currentFolder);
+                //得到当前文件夹的父文件夹id,然后获取该id下的所有子文件夹和文件
+                var parentFolderId = folder.parentFolderId;
+                var obj = this;
+                axios.get('/folder/'+parentFolderId).then(function (response) {
+                    if (response.data != "error") {
+                        obj.currentFolder = response.data;
+                        obj.currentFolderId = obj.currentFolder.folderId;
+                    } else {
+                        obj.currentFolder = "";
+                        obj.currentFolderId = "";
+                    }
+                }).then(function (response) {
+                    axios.get('/folders/'+obj.currentFolder.parentFolderId).then(function (response) {
+                        obj.previousFolders = response.data;
+                    }).catch(function (reason) {
+                        console.log(reason);
+                    });
+                    axios.get('/files/'+obj.currentFolder.parentFolderId).then(function (response) {
+                        obj.previousFiles  = response.data;
+                    }).catch(function (response) {
+                        console.log(response)
+                    })
+                });
+            },
+            // tabClick: function(tab, event) {
+            //     // if(tab.name === "0") {
+            //     //     console.log("点击了第一个tab")
+            //     //
+            //     // } else if (tab.name === "1") {
+            //     //     console.log("点击了第二个tab")
+            //     // } else {
+            //     //     console.log("点击了第三个tab")
+            //     // }
+            //     var obj = this;
+            //     axios.get('/'+obj.userMessage.account+'/rootFolders?mode='+tab.name+"&groupId=100").then(function (response) {
+            //         obj.folders = response.data;
+            //     }).catch(function (response) {
+            //         console.log(response);
+            //     });
+            //     axios.get('/'+obj.userMessage.account+'/rootFiles?mode='+tab.name+"&groupId=100").then(function (response) {
+            //         obj.files = response.data;
+            //         console.log(obj.files)
+            //     }).catch(function (reason) {
+            //         console.log(reason)
+            //     })
+            // },
+            //点击子菜单的选项
+            selectSubMenuItem: function(key, keyPath) {
+                console.log(key);
+                var obj = this;
+                var selectItem = key;
+                if (selectItem === "1" || selectItem === "2") {
+                    obj.currentGroupId = null;
+                    obj.currentMode = key;
+                    obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
+
+                } else {
+                    var list = selectItem.split("-");
+                    if (list[0] === "0") {
+                        obj.currentMode = list[0];
+                        var groupId = list[1];
+                        console.log("groupId--->"+groupId); // delete it later
+                        obj.currentGroupId = groupId;
+                        obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
+                    }
+                }
+
+            },
+            addGroup: function () {
+                var obj = this;
+                var userGroup = {
+                    "groupName": obj.addedGroupName,
+                    "groupDesc": obj.addedGroupName
+                };
+                obj.groupFormVisible = false;
+                axios.post("/userGroup/", userGroup).then(function (response) {
+                    if (response.data === "success") {
+                        console.log("创建小组成功");
+                        axios.get('/groups/').then(function (response) {
+                            obj.groups = response.data;
+                        });
                     }
                 }).catch(function (response) {
                     console.log(response)
+                })
+
+            },
+            //刷新首页的文件夹和文件
+            refreshRootFolderAndFileInfo: function (groupId) {
+                var obj = this;
+                if (groupId == null) {
+                    var groupId2 = "-1";
+                } else {
+                    groupId2 = groupId;
+                }
+                axios.get('/'+obj.userMessage.account+'/rootFolders?mode='+obj.currentMode+"&groupId="+groupId2).then(function (response) {
+                    obj.folders = response.data;
+                }).catch(function (response) {
+                    console.log(response);
                 });
-                obj.dialogVisible = false;
+                axios.get('/'+obj.userMessage.account+'/rootFiles?mode='+obj.currentMode+"&groupId="+groupId2).then(function (response) {
+                    obj.files = response.data;
+                    console.log(obj.files)
+                }).catch(function (reason) {
+                    console.log(reason)
+                })
             }
         }
     })

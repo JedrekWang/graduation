@@ -27,4 +27,8 @@
         DELETE FROM user_group where group_id = #{groupId}
     </delete>
 
+    <insert id="addGroup" parameterType="com.jedrek.graduation.entity.UserGroup">
+        INSERT INTO user_group(group_name, group_desc) VALUES (#{groupName}, #{groupDesc})
+    </insert>
+
 </mapper>

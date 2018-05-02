@@ -25,6 +25,9 @@ public interface FolderMapper {
             @Param("createdUserId") Integer createdUserId,
             @Param("mode") Integer mode);
 
+    List<Folder> queryRootFolderByPublic();
+
+
     List<Folder> querySubFolder(Integer parentFolderId);
 
     Folder queryFolder(

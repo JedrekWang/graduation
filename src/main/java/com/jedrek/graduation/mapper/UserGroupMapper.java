@@ -16,4 +16,6 @@ public interface UserGroupMapper {
     int deleteGroup(Integer groupId);
 
     List<UserGroup> queryAll();
+
+    int addGroup(UserGroup userGroup);
 }

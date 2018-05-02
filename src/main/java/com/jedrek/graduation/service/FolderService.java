@@ -67,6 +67,10 @@ public class FolderService {
         return folderList;
     }
 
+    public List<Folder> queryRootFolderByPublic() {
+        return folderMapper.queryRootFolderByPublic();
+    }
+
     public List<Folder> queryFolderByGroupId(Integer groupId, Integer parentFolderId) {
         List<User> users = userGroupConMapper.queryUsersByGroup(groupId);
         List<Folder> folderList = new ArrayList<>();

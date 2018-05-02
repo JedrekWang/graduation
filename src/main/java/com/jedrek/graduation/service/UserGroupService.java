@@ -35,4 +35,8 @@ public class UserGroupService {
         return userGroupMapper.queryAll();
     }
 
+    public int addGroup(UserGroup group) {
+        return userGroupMapper.addGroup(group);
+    }
+
 }

@@ -64,7 +64,21 @@
         AND mode = #{mode}
         AND group_id = #{groupId}
     </select>
-    
+
+    <select id="queryRootFolderByPublic" resultType="com.jedrek.graduation.entity.Folder">
+        SELECT
+        folder_id AS folderId,
+        folder_name AS folderName,
+        folder_desc AS folderDesc,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate,
+        group_id AS groupId,
+        mode
+        FROM folder where mode = 1;
+    </select>
+
     <select id="queryFolderById" resultType="com.jedrek.graduation.entity.Folder">
         SELECT
         folder_id AS folderId,

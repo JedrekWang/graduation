@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>用户首页</title>
+    <!--<link rel="stylesheet" href="../static/css/index.css">-->
+    <!--<link rel="stylesheet" href="../static/css/bootstrap.min.css">-->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/css/header.css">
     <style>
@@ -103,7 +104,7 @@
     </style>
 </head>
 <body>
-<div id="app2">
+<div id="app">
     <el-container>
         <el-header>
             <el-col :span="18">
@@ -133,10 +134,10 @@
                         background-color="#24292e"
                         text-color="#fff"
                         active-text-color="#ffd04b">
-                    <el-menu-item index="8" @click="dialogFormVisible = true">
+                    <el-menu-item index="8" @click="dialogFormVisible = true" :disabled="currentMode == 1">
                         <i class="el-icon-circle-plus-outline" title="新建文件"></i>
                     </el-menu-item>
-                    <el-menu-item index="9" @click="addFolder">
+                    <el-menu-item index="9" @click="addFolder" :disabled="currentMode == 1">
                         <i class="el-icon-plus"  title="新建文件夹"></i>
                     </el-menu-item>
                     <el-menu-item index="10">
@@ -175,22 +176,25 @@
                             <div class="line"></div>
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                             <span>
-                                <a :href="'/groups/'+ userMessage.groupId">{{userMessage.userGroup}}</a>
+                                <a href="#" v-for="group in groups">{{group.groupName}}</a>
                             </span>
                         </div>
                     </el-card>
                 </el-col>
             </el-aside>
             <el-container>
-                <!--<el-breadcrumb separator="/" class="breadcrumb">-->
-                    <!--<el-breadcrumb-item><a href="/">首页</a></el-breadcrumb-item>-->
-                    <!--<el-breadcrumb-item>{{currentFolder.folderName}}</el-breadcrumb-item>-->
-                <!--</el-breadcrumb>-->
-                <el-tabs v-model="activeTab" type="card" @tab-click="tabClick">
-                    <el-tab-pane label="课题小组" name="0"></el-tab-pane>
-                    <el-tab-pane label="公共文件" name="1"></el-tab-pane>
-                    <el-tab-pane label="私有文件" name="2"></el-tab-pane>
-                </el-tabs>
+                <el-menu
+                        default-active="0-1"
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        @select="selectSubMenuItem">
+                    <el-submenu index="0">
+                        <template slot="title">课题小组</template>
+                        <el-menu-item v-for="group in groups" :index="'0-'+group.groupId">{{group.groupName}}</el-menu-item>
+                    </el-submenu>
+                    <el-menu-item index="1">公共文件</el-menu-item>
+                    <el-menu-item index="2">私有文件</el-menu-item>
+                </el-menu>
                 <el-main>
                     <el-dialog title="新建文件" :visible.sync="dialogFormVisible">
                         <el-form label-width="80px">
@@ -231,7 +235,7 @@
                                             <el-button class="button-right" @click="createFolder(stuff)" type="primary" icon="el-icon-success" size="mini"></el-button>
                                         </el-col>
                                         <el-col :span="3" :offset="2">
-                                            <el-button class="button-right" @click="deleteFolder(stuff)" type="primary" icon="el-icon-error" size="mini"></el-button>
+                                            <el-button class="button-right" @click="popFolder(stuff)" type="primary" icon="el-icon-error" size="mini"></el-button>
                                         </el-col>
                                     </el-row>
                                     <p style="margin-left: 40%;" v-else="stuff.isNew">{{stuff.folderName}}</p>
@@ -264,8 +268,8 @@
 <script src="../static/js/index.js"></script>
 <script src="../static/js/axios.js"></script>
 <script>
-    var vm2 = new Vue({
-        el: "#app2",
+    var vm = new Vue({
+        el: "#app",
         data: {
             userMessage: {
                 userId:"",
@@ -273,21 +277,21 @@
                 userName: "",
                 userDesc: "",
                 school: "",
-                email: "",
-                userGroup: "",
-                groupId: 1, //此处暂时写死
+                email: ""
             },
+            groups: [],   // 用户加入所有的组
             folders: [],  //当前页所有的文件夹
             files: [],         //当前页所有的文件
             previousFolders: [], //前一页所有的文件夹
             previousFiles: [],      //前一页的所有的文件
             currentFolderId: "", //前一页点击进去的文件夹id
             currentFolder: "",     //前一页点击进去的文件夹
-            parentFolder:"",
+            // parentFolder:"",   // delete it later
             file: "",    //上传文件
 
             //useless
-            activeTab: "0",
+            currentMode: "0",  //当前文件或文件夹的格式
+            currentGroupId: "1", // 当前点击进入的小组id
             pressStuff: "",
             dialogVisible: false,
             dialogFormVisible: false,
@@ -321,27 +325,11 @@
                     obj.userMessage.userDesc = response.data.userDesc;
                     obj.userMessage.school = response.data.school;
                     obj.userMessage.email = response.data.email;
-                    // obj.userMessage.groupId = response.data.groupId;
                 }).then(function (response) {
-                    //todo 此处的groupId未获取到
-                    axios.get('/groupName/'+obj.userMessage.groupId).then(function (response) {
-                        obj.userMessage.userGroup = response.data;
+                    axios.get('/allGroup/'+obj.userMessage.userId).then(function (response) {
+                        obj.groups = response.data;
                     });
-                    axios.get('/'+obj.userMessage.account+'/rootFolders?mode=0').then(function (response) {
-                        response.data.forEach(function (value, index, array) {
-                            obj.folders.push(value);
-                        });
-                    }).catch(function (response) {
-                        console.log(response);
-                    });
-                    axios.get('/'+obj.userMessage.account+'/rootFiles?mode=0').then(function (response) {
-                        response.data.forEach(function (value, index, array) {
-                            obj.files.push(value);
-                        });
-                        console.log(obj.files)
-                    }).catch(function (reason) {
-                        console.log(reason)
-                    })
+                    obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
                 }).catch(function (response) {
                     console.log(response);
                 });
@@ -359,25 +347,35 @@
                 }
                 return "";
             },
-            format_url: function (url) {
-                return url.split(" ").join("_")
-            },
+            //在页面中添加文件夹样式
             addFolder: function() {
                 var number = 10;
                 this.folders.push({
                     "folderName": "课题项目",
                     "folderDesc": "课题项目",
                     "createdUserId": this.userMessage.userId,
-                    "isNew": true,
+                    "isNew": true
                 });
             },
+            //获取上传多个文件的第一个文件
+            calculateCol: function(x, index) {
+                // 通过行数和数组的索引判断每行渲染的folder数目
+                return index + 1 <= x * 4 && index + 1 > Math.max(0, (x-1)*4);
+            },
+            getFile: function(event) {
+                this.file = event.target.files[0];
+                console.log("file");
+                console.log(this.file);
+            },
+            //上传文件
             uploadFile: function(event) {
                 var obj = this;
                 event.preventDefault();
                 var formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('parentFolderId', this.currentFolderId);
-                formData.append('mode', this.activeTab);
+                formData.append('mode', this.currentMode);
+                formData.append("groupId", this.currentGroupId);
                 var config = {
                     headers: {
                         'Content-Type': 'multipart/form-data'
@@ -397,40 +395,36 @@
                     console.log(reason);
                 })
             },
-            getFile: function(event) {
-                this.file = event.target.files[0];
-                console.log("file");
-                console.log(this.file);
-            },
-            calculateCol: function(x, index) {
-                // 通过行数和数组的索引判断每行渲染的folder数目
-                return index + 1 <= x * 4 && index + 1 > Math.max(0, (x-1)*4);
-            },
+            //创建文件夹并上传并刷新
             createFolder: function(folder) {
+                var obj = this;
                 var uploadFolder = folder;
-                // uploadFolder.mode = this.activeTab;
                 if (this.currentFolderId !== "") {
                     uploadFolder.parentFolderId = this.currentFolderId;
                 }
                 folder.isNew = false;
-                axios.post('/'+this.userMessage.account+"/folder?mode="+this.activeTab, uploadFolder).then(function (response) {
-                    if(response.data === "rootFolder") {
-                        //为根目录.无需操作
-                    } else {
-                        // 为子目录,更新文件夹信息
-                        uploadFolder.folderId = response.data;
-                        folder.folderId = response.data;
-                        console.log("获取的文件夹id为"+response.data);
-                        axios.get('/folders/'+uploadFolder.folderId).then(function (response) {
-                            obj.folders = response.data;
-                        }).catch(function (reason) {
-                            console.log(reason);
-                        });
-                    }
+                folder.groupId = obj.currentGroupId;
 
-                });
+                // 文件夹非为 课题小组文件夹和 公共,私有文件夹
+                // 又可分为根文件夹和子文件夹
+                    axios.post('/' + this.userMessage.account + "/folder?mode=" + obj.currentMode, uploadFolder).then(function (response) {
+                        //此时为根文件夹
+                        if (response.data === "rootFolder") {
+                            //通过账号刷新首页的文件夹和文件
+                            obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
+                        } else {
+                            // 为子目录,返回创建的子文件夹的父文件夹编号
+                            console.log("获取的文件夹id为" + response.data);
+                            axios.get('/folders/' + response.data).then(function (response) {
+                                obj.folders = response.data;
+                            }).catch(function (reason) {
+                                console.log(reason);
+                            });
+                        }
+
+                    });
             },
-            deleteFolder: function (folder) {
+            popFolder: function (folder) {
                 console.log(folder);
                 this.folders.pop();
                 console.log(this.folders);
@@ -453,12 +447,14 @@
                     console.log(response)
                 })
             },
+            //设置当前选取的文件夹或文件
             setPressStuff: function (stuff) {
                 this.dialogVisible = true;
                 this.pressStuff = stuff;
                 console.log("pressStuff");
                 console.log(this.pressStuff);
             },
+            //删除文件和文件夹
             removeStuff: function() {
                 var obj = this;
                 var noFolder = false;
@@ -519,13 +515,16 @@
             },
             execBefore: function () {
                 if (this.currentFolder.folderName === "" || this.currentFolder.folderName == null) {
-                    console.log("无法继续before")
+                    console.log("无法继续before");
                     return;
                 }
+                // 将上一步保存的文件和文件夹信息赋值给当前文件夹和文件
                 this.folders = this.previousFolders;
                 this.files = this.previousFiles;
+
                 var folder = this.currentFolder;
                 console.log(this.currentFolder);
+                //得到当前文件夹的父文件夹id,然后获取该id下的所有子文件夹和文件
                 var parentFolderId = folder.parentFolderId;
                 var obj = this;
                 axios.get('/folder/'+parentFolderId).then(function (response) {
@@ -549,22 +548,64 @@
                     })
                 });
             },
-            tabClick: function(tab, event) {
-                // if(tab.name === "0") {
-                //     console.log("点击了第一个tab")
-                //
-                // } else if (tab.name === "1") {
-                //     console.log("点击了第二个tab")
-                // } else {
-                //     console.log("点击了第三个tab")
-                // }
+            // tabClick: function(tab, event) {
+            //     // if(tab.name === "0") {
+            //     //     console.log("点击了第一个tab")
+            //     //
+            //     // } else if (tab.name === "1") {
+            //     //     console.log("点击了第二个tab")
+            //     // } else {
+            //     //     console.log("点击了第三个tab")
+            //     // }
+            //     var obj = this;
+            //     axios.get('/'+obj.userMessage.account+'/rootFolders?mode='+tab.name+"&groupId=100").then(function (response) {
+            //         obj.folders = response.data;
+            //     }).catch(function (response) {
+            //         console.log(response);
+            //     });
+            //     axios.get('/'+obj.userMessage.account+'/rootFiles?mode='+tab.name+"&groupId=100").then(function (response) {
+            //         obj.files = response.data;
+            //         console.log(obj.files)
+            //     }).catch(function (reason) {
+            //         console.log(reason)
+            //     })
+            // },
+            //点击子菜单的选项
+            selectSubMenuItem: function(key, keyPath) {
+                console.log(key);
                 var obj = this;
-                axios.get('/'+obj.userMessage.account+'/rootFolders?mode='+tab.name).then(function (response) {
+                var selectItem = key;
+                if (selectItem === "1" || selectItem === "2") {
+                    obj.currentGroupId = null;
+                    obj.currentMode = key;
+                    obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
+
+                } else {
+                    var list = selectItem.split("-");
+                    if (list[0] === "0") {
+                        obj.currentMode = list[0];
+                        var groupId = list[1];
+                        console.log("groupId--->"+groupId); // delete it later
+                        obj.currentGroupId = groupId;
+                        obj.refreshRootFolderAndFileInfo(obj.currentGroupId);
+                    }
+                }
+
+            },
+            //刷新首页的文件夹和文件
+            refreshRootFolderAndFileInfo: function (groupId) {
+                var obj = this;
+                if (groupId == null) {
+                    var groupId2 = "-1";
+                } else {
+                    groupId2 = groupId;
+                }
+                axios.get('/'+obj.userMessage.account+'/rootFolders?mode='+obj.currentMode+"&groupId="+groupId2).then(function (response) {
                     obj.folders = response.data;
                 }).catch(function (response) {
                     console.log(response);
                 });
-                axios.get('/'+obj.userMessage.account+'/rootFiles?mode='+tab.name).then(function (response) {
+                axios.get('/'+obj.userMessage.account+'/rootFiles?mode='+obj.currentMode+"&groupId="+groupId2).then(function (response) {
                     obj.files = response.data;
                     console.log(obj.files)
                 }).catch(function (reason) {

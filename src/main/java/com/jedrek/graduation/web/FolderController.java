@@ -37,6 +37,10 @@ public class FolderController {
             List<Folder> folderList = folderService.queryRootFolderByGroupId(Integer.parseInt(groupId));
             return folderList;
         }
+        if (mode == 1) {
+            List<Folder> folders = folderService.queryRootFolderByPublic();
+            return folders;
+        }
         User user = userService.queryUserByAccount(userName);
         List<Folder> folders = folderService.queryRootFolderByUser(user.getUserId(), mode);
         return folders;
@@ -62,7 +66,7 @@ public class FolderController {
             parentFolderId = (Integer) map.get("parentFolderId");
         }
         Integer groupId = null;
-        if (map.containsKey("groupId")) {
+        if (map.containsKey("groupId") && map.get("groupId") != null) {
             groupId = Integer.parseInt((String)map.get("groupId"));
         }
         Folder folder = new Folder();

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小组管理</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <style>
+        .fileSystem {
+            border: 1px solid #d1d5da;
+            width: 982px;
+            height: 600px;
+            background-color: #f6f6f6;
+        }
+        .group-item {
+            font-size: 20px;
+            margin-left: 10%;
+        }
+        .image {
+            width: 132px;
+            height: 122px;
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-position: center center;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <el-header>
+            <el-col :span="18">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="1">
+                        <a href="/">DocumentKiller</a>
+                    </el-menu-item>
+                    <el-menu-item index="5" disabled>我的工作台</el-menu-item>
+                    <el-menu-item index="6" disabled>消息中心</el-menu-item>
+                    <el-menu-item index="7" disabled>小组管理</el-menu-item>
+                </el-menu>
+            </el-col>
+            <el-col :span="6">
+                <el-menu
+                        class="el-menu-demo"
+                        mode="horizontal"
+                        background-color="#24292e"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-menu-item index="8" class="test">
+                        <i class="el-icon-bell"></i>
+                    </el-menu-item>
+                    <el-menu-item index="9" @click="dialogVisible = true">
+                        <i class="el-icon-plus" title="添加组成员"></i>
+                    </el-menu-item>
+                    <el-menu-item index="10">
+                        <i class="el-icon-star-on"></i>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-header>
+        <el-container style="margin-left: 20px; margin-right: 20px">
+            <el-aside width="25%">
+                <el-menu
+                        default-active="0"
+                        class="el-menu-vertical-demo">
+                    <el-menu-item v-for="(group,key) in groups" :index="key+''" @click="getUsers(group)">
+                        <i class="el-icon-menu"></i>
+                        <span class="group-item" slot="title">{{group.groupName}}</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-aside>
+            <el-container>
+
+                <el-dialog
+                        title="添加组成员"
+                        :visible.sync="dialogVisible"
+                        width="40%">
+                    <span>是否向该组添加组成员?</span>
+                    <el-select v-model="selectUser" placeholder="请选择">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.account"
+                                :label="item.userName"
+                                :value="item.account">
+                        </el-option>
+                    </el-select>
+                    <span slot="footer" class="dialog-footer">
+                            <el-button type="primary" @click="addGroupUser">确 定</el-button>
+                            <el-button @click="dialogVisible = false">取 消</el-button>
+                        </span>
+                </el-dialog>
+                <el-row>
+                    <el-col :span="24">
+                        <div class="fileSystem">
+                            <!--<p v-for="user in users">{{user}}</p>-->
+                            <el-card :body-style="{ padding: '30px' }" v-for="user in users">
+                                <el-row>
+                                    <el-col :span="6">
+                                        <div class="image"  :style="{backgroundImage: 'url(/system/img/' +user.account+ '.jpg)'}"></div>
+                                        <div style="padding: 14px;">
+                                            <p class="helvetica"><span><a :href="'/'+user.account">{{user.userName}}</a></span></p>
+                                            <p class="desc"><span>{{user.userDesc}}</span></p>
+                                            <div class="line"></div>
+                                            <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
+                                            <span>{{user.school}}</span>
+                                            <div class="line"></div>
+                                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                                            <span>
+                                <a :href="'mailto:' + user.email">{{user.email}}</a>
+                            </span>
+                                            <div class="line"></div>
+                                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                            <span>
+                                <a :href="'/groups/'+ user.groupId">{{user.groupId}}</a>
+                            </span>
+                                        </div>
+                                    </el-col>
+                                    <el-col :span="17" :offset="1">
+                                        <p v-for=""></p>
+                                    </el-col>
+                                </el-row>
+                            </el-card>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-container>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script src="../static/js/vue.js"></script>
+<script src="../static/js/index.js"></script>
+<script src="../static/js/axios.js"></script>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            options: [],
+            dialogVisible: false,
+            currentPressGroup: "",
+            groups: [],
+            users: [],
+            selectUser: ''
+        },
+        mounted: function () {
+            var obj = this;
+            var groupId = 1;
+            axios.get('/groups').then(function (response) {
+                obj.groups = response.data;
+            }).catch(function (response) {
+                console.log(response);
+            });
+            axios.get('/group/'+groupId).then(function (response) {
+                obj.users = response.data;
+            }).catch(function (response) {
+                console.log(response);
+            });
+            axios.get('/users').then(function (response) {
+                obj.options = response.data;
+            }).catch(function (response) {
+            });
+        },
+        methods: {
+            getUsers: function (group) {
+                var obj = this;
+                obj.currentPressGroup = group;
+                axios.get('/group/'+group.groupId).then(function (response) {
+                    obj.users = response.data;
+                }).catch(function (response) {
+                    console.log(response);
+                });
+            },
+            addGroupUser: function () {
+                var obj = this;
+                axios.get('user/group?account='+obj.selectUser + '&groupId='+obj.currentPressGroup.groupId).then(function (response) {
+                    if(response.data === "success") {
+                        console.log("小组添加成员成功");
+                        axios.get('/group/'+obj.currentPressGroup.groupId).then(function (response) {
+                            obj.users = response.data;
+                        }).catch(function (response) {
+                            console.log(response);
+                        });
+                    } else {
+                        console.log("小组添加成员失败");
+                    }
+                }).catch(function (response) {
+                    console.log(response)
+                });
+                obj.dialogVisible = false;
+            }
+        }
+    })
+</script>
+</html>
