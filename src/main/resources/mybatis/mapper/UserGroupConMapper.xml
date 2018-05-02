@@ -4,26 +4,26 @@
 <mapper namespace="com.jedrek.graduation.mapper.UserGroupConMapper">
 
     <select id="queryUsersByGroup" resultType="com.jedrek.graduation.entity.User">
-        SELECT
-        user.user_id as userId,
-        user.user_name as userName,
-        user.account as account,
-        user.tel,
-        user.sex,
-        user.email,
-        user.school,
-        user.user_desc,
-        user.created_date as createdDate
-        user_group_con.group_id as groupId
-        FROM user,user_group_con WHERE user_group_con.group_id = #{groupId}
+      SELECT
+      user.user_id as userId,
+      user.user_name as userName,
+      user.account as account,
+      user.tel,
+      user.sex,
+      user.email,
+      user.school,
+      user.user_desc,
+      user.created_date as createdDate,
+      user_group_con.group_id as groupId
+    FROM user,user_group_con WHERE user.user_id = user_group_con.user_id and user_group_con.group_id =#{groupId};
     </select>
     
-    <select id="queryGroupByAccount" resultType="com.jedrek.graduation.entity.UserGroupCon">
+    <select id="queryGroupByUserId" resultType="com.jedrek.graduation.entity.UserGroup">
         SELECT
-        user_group.group_id as groupId,
-        user_group.group_name as groupName,
-        user_group.group_desc as groupDesc
-        FROM user_group, user_group_con WHERE user_group_con.user_id = #{userId}
+          user_group.group_id as groupId,
+          user_group.group_name as groupName,
+          user_group.group_desc as groupDesc
+        FROM user_group, user_group_con WHERE user_group.group_id = user_group_con.group_id and user_group_con.user_id= #{userId};
     </select>
 
     <insert id="userAddGroup">

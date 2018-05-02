@@ -69,6 +69,7 @@ public class FileInfoController {
             HttpServletRequest request,
             @RequestParam Integer parentFolderId,
             @RequestParam Integer mode,
+            @RequestParam Integer groupId,
             @RequestBody MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
             String filename = file.getOriginalFilename();
@@ -78,6 +79,7 @@ public class FileInfoController {
             fileInfo.setFileName(split[0]);
             fileInfo.setFormat(split[1]);
             fileInfo.setMode(mode);
+            fileInfo.setGroupId(groupId);
             String currentUser = CookieUtil.getCookieValue(request, "currentUser");
             if (currentUser != null) {
                 User user = userService.queryUserByAccount(currentUser);
@@ -162,7 +164,15 @@ public class FileInfoController {
 
     @ResponseBody
     @RequestMapping("{userName}/rootFiles")
-    public Object getRootFiles(@PathVariable String userName, @RequestParam Integer mode) {
+    public Object getRootFiles(
+            @PathVariable String userName,
+            @RequestParam Integer mode,
+            @RequestParam String groupId) {
+        if (mode == 0 && groupId != "-1") {
+            // 查询小组的文件
+            List<FileInfo> fileInfoList = fileInfoService.queryRootFileInfoByGroupId(Integer.parseInt(groupId));
+            return fileInfoList;
+        }
         User user = userService.queryUserByAccount(userName);
         List<FileInfo> fileInfos = fileInfoService.queryRootFileByUserId(user.getUserId(), mode);
         return fileInfos;

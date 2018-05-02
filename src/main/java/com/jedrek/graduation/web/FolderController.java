@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 public class FolderController {
@@ -27,7 +28,15 @@ public class FolderController {
 
     @ResponseBody
     @RequestMapping(value = "{userName}/rootFolders", method = RequestMethod.GET)
-    public Object getRootFolder(@PathVariable String userName, @RequestParam Integer mode) {
+    public Object getRootFolder(
+            @PathVariable String userName,
+            @RequestParam Integer mode,
+            @RequestParam String groupId) {
+        if (mode == 0 && !Objects.equals(groupId, "-1")) {
+            // 查询小组的文件
+            List<Folder> folderList = folderService.queryRootFolderByGroupId(Integer.parseInt(groupId));
+            return folderList;
+        }
         User user = userService.queryUserByAccount(userName);
         List<Folder> folders = folderService.queryRootFolderByUser(user.getUserId(), mode);
         return folders;
@@ -52,16 +61,21 @@ public class FolderController {
         if (map.containsKey("parentFolderId")) {
             parentFolderId = (Integer) map.get("parentFolderId");
         }
+        Integer groupId = null;
+        if (map.containsKey("groupId")) {
+            groupId = Integer.parseInt((String)map.get("groupId"));
+        }
         Folder folder = new Folder();
         folder.setFolderName(folderName);
         folder.setFolderDesc(folderDesc);
         folder.setCreatedUserId(createdUserId);
         folder.setParentFolderId(parentFolderId);
         folder.setMode(mode);
+        folder.setGroupId(groupId);
         int i = folderService.addFolder(folder);
         if (i > 0 && parentFolderId != null) {
             Folder queryFolder = folderService.queryFolder(parentFolderId, folderName);
-            return queryFolder.getFolderId();
+            return parentFolderId;
         }
         return "rootFolder";
     }

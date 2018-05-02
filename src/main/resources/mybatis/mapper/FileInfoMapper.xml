@@ -10,6 +10,7 @@
         parent_folder_id,
         content_url,
         created_user_id,
+        <if test="groupId != null">group_id,</if>
         mode
         )VALUES (
         #{fileName},
@@ -17,6 +18,7 @@
         #{parentFolderId},
         #{contentUrl},
         #{createdUserId},
+        <if test="groupId != null">#{groupId},</if>
         #{mode}
         )
     </insert>
@@ -34,6 +36,7 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM file_info WHERE file_id = #{fileId}
     </select>
@@ -47,10 +50,32 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM file_info
         WHERE
-         created_user_id = #{createdUserId} AND parent_folder_id IS NULL AND mode= #{mode}
+         created_user_id = #{createdUserId}
+         AND parent_folder_id IS NULL
+         AND mode= #{mode}
+    </select>
+    
+    <select id="queryRootFileByUserIdAndGroupId" resultType="com.jedrek.graduation.entity.FileInfo">
+        SELECT
+        file_id AS fileId,
+        file_name AS fileName,
+        format,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate,
+        group_id AS groupId,
+        mode
+        FROM file_info
+        WHERE
+        created_user_id = #{createdUserId}
+        AND parent_folder_id IS NULL
+        AND mode= #{mode}
+        AND group_id = #{groupId}
     </select>
 
     <select id="queryFilesByUserAndParentFolder" resultType="com.jedrek.graduation.entity.FileInfo">
@@ -62,6 +87,7 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM file_info WHERE created_user_id = #{createdUserId} AND parent_folder_id = #{parentFolderId}
     </select>
@@ -75,6 +101,7 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM file_info WHERE parent_folder_id = #{parentFolderId}
     </select>

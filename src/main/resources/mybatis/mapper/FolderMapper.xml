@@ -11,6 +11,7 @@
             parent_folder_id,
         </if>
         created_user_id,
+        <if test="groupId != null">group_id,</if>
         mode)
         VALUES (
         #{folderName},
@@ -19,6 +20,7 @@
             #{parentFolderId},
         </if>
         #{createdUserId},
+        <if test="groupId != null">#{groupId},</if>
         #{mode});
     </insert>
     
@@ -35,12 +37,32 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM folder
         WHERE
          created_user_id = #{createdUserId}
          AND parent_folder_id is NULL
          AND mode = #{mode}
+    </select>
+    
+    <select id="queryRootFolderByUserAndGroupId" resultType="com.jedrek.graduation.entity.Folder">
+        SELECT
+        folder_id AS folderId,
+        folder_name AS folderName,
+        folder_desc AS folderDesc,
+        parent_folder_id AS parentFolderId,
+        content_url AS contentUrl,
+        created_user_id AS createdUserId,
+        created_user_date AS createdUserDate,
+        group_id AS groupId,
+        mode
+        FROM folder
+        WHERE
+        created_user_id = #{createdUserId}
+        AND parent_folder_id is NULL
+        AND mode = #{mode}
+        AND group_id = #{groupId}
     </select>
     
     <select id="queryFolderById" resultType="com.jedrek.graduation.entity.Folder">
@@ -52,6 +74,7 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM folder WHERE folder_id = #{folderId}
     </select>
@@ -65,6 +88,7 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM folder where parent_folder_id = #{parentFolderId}
     </select>
@@ -78,6 +102,7 @@
         content_url AS contentUrl,
         created_user_id AS createdUserId,
         created_user_date AS createdUserDate,
+        group_id AS groupId,
         mode
         FROM folder WHERE folder_name=#{folderName} AND parent_folder_id = #{parentFolderId}
     </select>
