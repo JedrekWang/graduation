@@ -57,7 +57,9 @@
                         <i class="el-icon-star-on"></i>
                     </el-menu-item>
                     <el-submenu-item index="11">
-                        <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}"></div>
+                        <a :href="'/'+ userMessage.account">
+                            <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}"></div>
+                        </a>
                     </el-submenu-item>
                 </el-menu>
             </el-col>

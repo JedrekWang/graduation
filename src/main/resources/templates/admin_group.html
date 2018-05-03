@@ -73,15 +73,9 @@
                         <i class="el-icon-star-on"></i>
                     </el-menu-item>
                     <el-submenu-item index="11">
-                        <!--<template slot="title">-->
-                        <!--<a class="user_head_a" href="#">-->
-                        <div id="user_head" :style="{backgroundImage: 'url(/system/img/admin.jpg)'}">
-                        </div>
-                        <!--</a>-->
-                        <!--</template>-->
-                        <!--<el-menu-item index="2-1"><a :href="'/'+ userMessage.account">个人信息</a></el-menu-item>-->
-                        <!--<el-menu-item index="2-2">个人文档</el-menu-item>-->
-                        <!--<el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>-->
+                        <a :href="'/'+ userMessage.account">
+                            <div id="user_head" :style="{backgroundImage: 'url(/system/img/'admin.jpg)'}"></div>
+                        </a>
                     </el-submenu-item>
                 </el-menu>
             </el-col>
@@ -136,11 +130,6 @@
                                             <div class="line"></div>
                                             <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
                                             <span><a :href="'mailto:' + user.email">{{user.email}}</a></span>
-                                            <!--<div class="line"></div>-->
-                                            <!--<span class="glyphicon glyphicon-user" aria-hidden="true"></span>-->
-                                            <!--<span>-->
-                                <!--<a :href="'/groups/'+ user.groupId">{{user.groupId}}</a>-->
-                            <!--</span>-->
                                         </div>
                                     </el-col>
                                     <el-col :span="17" :offset="1">
