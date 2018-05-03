@@ -52,9 +52,9 @@
                                 <i slot="suffix" class="el-icon-search"></i>
                             </el-input>
                         </el-menu-item>
-                        <el-menu-item index="5">我的工作台</el-menu-item>
-                        <el-menu-item index="6">消息中心</el-menu-item>
-                        <el-menu-item index="7">小组管理</el-menu-item>
+                        <el-menu-item index="5" disabled>我的工作台</el-menu-item>
+                        <el-menu-item index="6" disabled>消息中心</el-menu-item>
+                        <el-menu-item  index="7" ><a href="/topic">讨论组</a></el-menu-item>
                     </el-menu>
                 </el-col>
                 <el-col :span="6">
@@ -64,26 +64,26 @@
                             background-color="#24292e"
                             text-color="#fff"
                             active-text-color="#ffd04b">
-                        <el-menu-item index="8" class="test">
-                            <i class="el-icon-bell"></i>
+                        <el-menu-item index="8">
+                            <i class="el-icon-circle-plus-outline" title="新建文件"></i>
                         </el-menu-item>
                         <el-menu-item index="9">
-                            <i class="el-icon-plus"></i>
+                            <i class="el-icon-plus"  title="新建文件夹"></i>
                         </el-menu-item>
                         <el-menu-item index="10">
                             <i class="el-icon-star-on"></i>
                         </el-menu-item>
-                        <el-submenu index="11">
-                            <template slot="title">
-                                <a class="user_head_a" href="#">
-                                    <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}">
-                                    </div>
-                                </a>
-                            </template>
-                            <el-menu-item index="2-1"><a :href="'/'+ userMessage.userName">个人信息</a></el-menu-item>
-                            <el-menu-item index="2-2">个人文档</el-menu-item>
-                            <el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>
-                        </el-submenu>
+                        <el-submenu-item index="11">
+                            <!--<template slot="title">-->
+                            <!--<a class="user_head_a" href="#">-->
+                            <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}">
+                            </div>
+                            <!--</a>-->
+                            <!--</template>-->
+                            <!--<el-menu-item index="2-1"><a :href="'/'+ userMessage.account">个人信息</a></el-menu-item>-->
+                            <!--<el-menu-item index="2-2">个人文档</el-menu-item>-->
+                            <!--<el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>-->
+                        </el-submenu-item>
                     </el-menu>
                 </el-col>
             </el-header>

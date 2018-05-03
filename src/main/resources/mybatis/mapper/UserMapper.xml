@@ -7,7 +7,17 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        account,tel,sex,email,school,
+        account,
+        tel,
+        sex,
+        email,
+        school,
+        major,
+        title,
+        research,
+        paper,
+        reward,
+        teaching_work AS teachingWork,
         user_desc as userDesc,
          created_date as createdDate
         FROM user WHERE user.user_id = #{userId};
@@ -17,7 +27,17 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        account,tel,sex,email,school,
+        account,
+        tel,
+        sex,
+        email,
+        school,
+        major,
+        title,
+        research,
+        paper,
+        reward,
+        teaching_work AS teachingWork,
         user_desc as userDesc,
          created_date as createdDate
         FROM user;
@@ -31,6 +51,14 @@
         sex,
         email,
         school,
+        <if test="title != null">
+        major,
+        title,
+        research,
+        paper,
+        reward,
+        teaching_work,
+        </if>
         user_desc)
         VALUES (
         #{userName},
@@ -39,7 +67,13 @@
         #{sex},
         #{email},
         #{school},
-        #{userDesc})
+        #{userDesc},
+        #{major},
+        #{title},
+        #{research},
+        #{paper},
+        #{reward},
+        #{teachingWork})
     </insert>
 
     <delete id="deleteUser" parameterType="java.lang.Integer">
@@ -47,7 +81,7 @@
     </delete>
 
     <update id="modifyUser">
-        UPDATE "user" SET
+        UPDATE user SET
         user.user_name = #{userName},
         user.account = #{account},
         user.tel = #{tel},
@@ -62,7 +96,17 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        account,tel,sex,email,school,
+        account,
+        tel,
+        sex,
+        email,
+        school,
+        major,
+        title,
+        research,
+        paper,
+        reward,
+        teaching_work AS teachingWork,
         user_desc as userDesc,
          created_date as createdDate
          FROM user WHERE user.account = #{account}
@@ -70,9 +114,19 @@
     
     <select id="queryUserByGroup" resultType="com.jedrek.graduation.entity.User">
         SELECT
-        user.user_id AS userId,
+        user_id AS userId,
         user_name AS userName,
-        account,tel,sex,email,school,
+        account,
+        tel,
+        sex,
+        email,
+        school,
+        major,
+        title,
+        research,
+        paper,
+        reward,
+        teaching_work AS teachingWork,
         user_desc as userDesc,
          created_date as createdDate
          FROM user,user_group_con WHERE user.user_id = user_group_con.user_id AND user_group_con.group_id = #{groupId}
@@ -82,7 +136,17 @@
         SELECT
         user_id AS userId,
         user_name AS userName,
-        account,tel,sex,email,school,
+        account,
+        tel,
+        sex,
+        email,
+        school,
+        major,
+        title,
+        research,
+        paper,
+        reward,
+        teaching_work AS teachingWork,
         user_desc as userDesc,
          created_date as createdDate
         FROM user WHERE user.school = #{school}

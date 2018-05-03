@@ -2,9 +2,10 @@
 #user_head {
     width: 80px;
     height: 55px;
+    margin-left: 200px;
     /*background-image: url(/static/img/gakki.jpg);*/
     background-repeat: no-repeat;
-    background-size: 70%;
+    background-size: 60%;
     background-position: center center;
 }
 /*.user_head_a {*/
@@ -14,3 +15,7 @@
 /*.test {*/
 /*margin-left: 200px;*/
 /*}*/
+
+.el-menu--horizontal>.el-menu-item {
+    height: 59px;
+}

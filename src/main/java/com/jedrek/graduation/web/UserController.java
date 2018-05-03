@@ -128,7 +128,12 @@ public class UserController {
             @RequestParam String sex,
             @RequestParam String school,
             @RequestParam String tel,
-            @RequestParam Integer groupId,
+            @RequestParam String major,
+            @RequestParam String title,
+            @RequestParam String research,
+            @RequestParam String paper,
+            @RequestParam String reward,
+            @RequestParam String teachingWork,
             @RequestParam MultipartFile file) throws IOException {
         String account = CookieUtil.getCookieValue(request, "currentUser");
         Login login = loginService.queryLoginByAccount(account);
@@ -141,6 +146,12 @@ public class UserController {
         user.setSchool(school);
         user.setSex(sex);
         user.setTel(tel);
+        user.setMajor(major);
+        user.setTitle(title);
+        user.setResearch(research);
+        user.setPaper(paper);
+        user.setReward(reward);
+        user.setTeachingWork(teachingWork);
         int i = userService.addUser(user);
         if (i > 0) {
             // 将用户上传的头像存入文件系统

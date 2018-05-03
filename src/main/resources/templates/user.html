@@ -54,9 +54,9 @@
                             <i slot="suffix" class="el-icon-search"></i>
                         </el-input>
                     </el-menu-item>
-                    <el-menu-item index="5">我的工作台</el-menu-item>
-                    <el-menu-item index="6">消息中心</el-menu-item>
-                    <el-menu-item index="7">小组管理</el-menu-item>
+                    <el-menu-item index="5" disabled>我的工作台</el-menu-item>
+                    <el-menu-item index="6" disabled>消息中心</el-menu-item>
+                    <el-menu-item  index="7" ><a href="/topic">讨论组</a></el-menu-item>
                 </el-menu>
             </el-col>
             <el-col :span="6">
@@ -66,26 +66,25 @@
                         background-color="#24292e"
                         text-color="#fff"
                         active-text-color="#ffd04b">
-                    <el-menu-item index="8" class="test">
-                        <i class="el-icon-bell"></i>
+                    <el-menu-item index="8">
+                        <i class="el-icon-circle-plus-outline" title="新建文件"></i>
                     </el-menu-item>
                     <el-menu-item index="9">
-                        <i class="el-icon-plus"></i>
+                        <i class="el-icon-plus"  title="新建文件夹"></i>
                     </el-menu-item>
                     <el-menu-item index="10">
                         <i class="el-icon-star-on"></i>
                     </el-menu-item>
-                    <el-submenu index="11">
-                        <template slot="title">
-                            <a class="user_head_a" href="#">
-                                <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}">
-                                </div>
-                            </a>
-                        </template>
-                        <el-menu-item index="2-1"><a :href="'/'+ userMessage.userName">个人信息</a></el-menu-item>
-                        <el-menu-item index="2-2">个人文档</el-menu-item>
-                        <el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>
-                    </el-submenu>
+                    <el-submenu-item index="11">
+                        <!--<a class="user_head_a" href="#">-->
+                        <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +currentUser+ '.jpg)'}">
+                        </div>
+                        <!--</a>-->
+                        <!--</template>-->
+                        <!--<el-menu-item index="2-1"><a :href="'/'+ userMessage.account">个人信息</a></el-menu-item>-->
+                        <!--<el-menu-item index="2-2">个人文档</el-menu-item>-->
+                        <!--<el-menu-item index="2-3"><a href="/document/test">新建文档</a></el-menu-item>-->
+                    </el-submenu-item>
                 </el-menu>
             </el-col>
         </el-header>
@@ -112,25 +111,10 @@
                                 <el-col :offset="2">
                                     <h2 class="item">{{userMessage.sex == "male" ? '男': '女'}}</h2>
                                 </el-col>
-                                <el-col :offset="2">
-                                    <button v-if="hidden" type="button" hidden="hidden">修改</button>
-                                    <button v-else="hidden" type="button">修改</button>
-                                </el-col>
-                            </el-container>
-                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
-                        </div>
-                        <div class="text item" @mouseover="showButton" @mouseleave="hiddenButton">
-                            <el-container>
-                                <el-col :offset="4" :span="5">
-                                    <h2 class="item">个人介绍</h2>
-                                </el-col>
-                                <el-col :offset="2">
-                                    <h2 class="item">{{userMessage.userDesc}}</h2>
-                                </el-col>
-                                <el-col :offset="2">
-                                    <button v-if="hidden" type="button" hidden="hidden">修改</button>
-                                    <button v-else="hidden" type="button">修改</button>
-                                </el-col>
+                                <!--<el-col :offset="2">-->
+                                    <!--<button v-if="hidden" type="button" hidden="hidden">修改</button>-->
+                                    <!--<button v-else="hidden" type="button">修改</button>-->
+                                <!--</el-col>-->
                             </el-container>
                             <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
                         </div>
@@ -156,29 +140,94 @@
                             </el-container>
                             <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
                         </div>
+                        <div class="text item">
+                            <el-container>
+                                <el-col :offset="4" :span="5">
+                                    <h2 class="item">邮箱</h2>
+                                </el-col>
+                                <el-col :offset="2">
+                                    <h2 class="item">{{userMessage.email}}</h2>
+                                </el-col>
+                            </el-container>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        </div>
+                        <div class="text item">
+                            <el-container>
+                                <el-col :offset="4" :span="5">
+                                    <h2 class="item">小组编号</h2>
+                                </el-col>
+                                <el-col :offset="2">
+                                    <h2 class="item">{{userMessage.group}}</h2>
+                                </el-col>
+                            </el-container>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        </div>
+                         <div class="text item">
+                             <el-row>
+                                 <el-col :span="4" :offset="4">
+                                     <h2 class="item">简介</h2>
+                                 </el-col>
+                             </el-row>
+                             <el-row>
+                                <el-col :span="16" :offset="4">
+                                    <p style="margin-top: 40px; font-size: 14px">{{userMessage.userDesc}}</p>
+                                </el-col>
+                             </el-row>
+                         </div>
+                        <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        <div class="text item">
+                            <el-row>
+                                <el-col :span="4" :offset="4">
+                                    <h2 class="item">科学研究</h2>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :span="16" :offset="4">
+                                    <p style="margin-top: 40px; font-size: 14px">{{userMessage.research}}</p>
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
                             <div class="text item">
-                                <el-container>
-                                    <el-col :offset="4" :span="5">
-                                        <h2 class="item">邮箱</h2>
+                                <el-row>
+                                    <el-col :span="4" :offset="4">
+                                        <h2 class="item">发表论文</h2>
                                     </el-col>
-                                    <el-col :offset="2">
-                                        <h2 class="item">{{userMessage.email}}</h2>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="16" :offset="4">
+                                        <p style="margin-top: 40px; font-size: 14px">{{userMessage.paper}} </p>
                                     </el-col>
-                                </el-container>
-                                <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                                </el-row>
                             </div>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
                             <div class="text item">
-                                <el-container>
-                                    <el-col :offset="4" :span="5">
-                                        <h2 class="item">小组编号</h2>
+                                <el-row>
+                                    <el-col :span="4" :offset="4">
+                                        <h2 class="item">奖励荣誉</h2>
                                     </el-col>
-                                    <el-col :offset="2">
-                                        <h2 class="item">{{userMessage.group}}</h2>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="16" :offset="4">
+                                        <p style="margin-top: 40px; font-size: 14px">{{userMessage.reward}}</p>
                                     </el-col>
-                                </el-container>
-                                <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                                </el-row>
                             </div>
-                    </el-card>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                            <div class="text item">
+                                <el-row>
+                                    <el-col :span="4" :offset="4">
+                                        <h2 class="item">教学工作</h2>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="16" :offset="4">
+                                        <p style="margin-top: 40px; font-size: 14px">{{userMessage.teachingWork}}</p>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
+                        </el-card>
                     </div>
                 </div>
             </el-col>
@@ -193,7 +242,9 @@
 <script>
     var vm = new Vue({
         el: "#app",
+
         data: {
+            currentUser: "",
             userMessage: {
                 userName: "",
                 userDesc: "",
@@ -201,12 +252,16 @@
                 school: "",
                 tel : "",
                 email: "",
-                group: ""
+                research: "",
+                paper: "",
+                reward: "",
+                teachingWork: ""
             },
             hidden: true
         },
         mounted: function () {
             obj = this;
+            obj.currentUser = obj.getCookie("currentUser");
             var url = window.location.href;
             var account = url.split("/")[3];
             axios.get("/account/"+account).then(function (response) {
@@ -216,12 +271,25 @@
                 obj.userMessage.school = response.data.school;
                 obj.userMessage.tel = response.data.tel;
                 obj.userMessage.email = response.data.email;
-                obj.userMessage.group = response.data.groupId;
+                obj.userMessage.research = response.data.research;
+                obj.userMessage.paper = response.data.paper;
+                obj.userMessage.reward = response.data.reward;
+                obj.userMessage.teachingWork = response.data.teachingWork;
             }).catch(function (response) {
                 console.log(response);
             })
         },
         methods: {
+            getCookie: function (cname) {
+                var name = cname + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1);
+                    if (c.indexOf(name) != -1) return c.substring(name.length, c.length);
+                }
+                return "";
+            },
             showButton: function() {
                 this.hidden = false;
             },
