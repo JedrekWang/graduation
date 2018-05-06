@@ -220,4 +220,12 @@ public class FileInfoController {
         List<Message> messages = fileInfoService.queryFinishedFileInfoMessageContent(fileId);
         return messages;
     }
+
+    @ResponseBody
+    @RequestMapping("versions/{fileId}")
+    public Object getAllVersionByFileId(@PathVariable Integer fileId) {
+        List<Version> versions = versionService.queryRealVersion(fileId);
+        return versions;
+
+    }
 }

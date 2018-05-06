@@ -12,7 +12,17 @@
         raw_file_id as rawFileId
         FROM version WHERE raw_file_id = #{rawFileId}
     </select>
-    
+
+    <select id="queryRealVersionByRawFileId" resultType="com.jedrek.graduation.entity.Version">
+                SELECT
+        version_id as versionId,
+        version_key as versionKey,
+        file_id as fileId,
+        version_desc as versionDesc,
+        raw_file_id as rawFileId
+        FROM version WHERE raw_file_id = #{rawFileId} AND version_key LIKE '版本%'
+    </select>
+
     <select id="queryVersionByKey" resultType="com.jedrek.graduation.entity.Version">
         SELECT
         version_id as versionId,
@@ -26,7 +36,7 @@
         INSERT INTO version(version_key, file_id,raw_file_id, version_desc)
         VALUES (#{versionKey}, #{fileId},#{rawFileId}, #{versionDesc})
     </insert>
-    
+
     <delete id="deleteVersion">
         DELETE FROM version where version_key = #{versionKey}
     </delete>

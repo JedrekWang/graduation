@@ -22,7 +22,11 @@ public class VersionService {
         return versionMapper.queryVersionsByRawFileId(fileId);
     }
 
-    public Version queryVersionByKey(String versionKey){
+    public List<Version> queryRealVersion(Integer fileId) {
+        return versionMapper.queryRealVersionByRawFileId(fileId);
+    }
+
+   public Version queryVersionByKey(String versionKey){
         return versionMapper.queryVersionByKey(versionKey);
     }
 

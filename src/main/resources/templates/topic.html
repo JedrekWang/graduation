@@ -111,17 +111,17 @@
                     <el-menu-item index="8">
                         <i class="el-icon-circle-plus-outline" title="新建文件"></i>
                     </el-menu-item>
-                    <el-menu-item index="9">
-                        <i class="el-icon-plus"  title="新建文件夹"></i>
+                    <el-menu-item index="9" >
+                        <i class="el-icon-plus"  title="发起讨论" @click="discussFormVisible = true"></i>
                     </el-menu-item>
                     <el-menu-item index="10">
                         <i class="el-icon-star-on"></i>
                     </el-menu-item>
-                    <el-submenu-item index="11">
+                    <!--<el-submenu-item index="11">-->
                         <a :href="'/'+ userMessage.account">
                             <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}"></div>
                         </a>
-                    </el-submenu-item>
+                    <!--</el-submenu-item>-->
                 </el-menu>
             </el-col>
         </el-header>
@@ -160,7 +160,6 @@
                 </div>
             </el-dialog>
             <el-col :span="4" :offset="1">
-                {{currentTopic}}
                 <el-aside>
                     <el-menu
                             default-active="10"
@@ -449,7 +448,7 @@
                 var obj = this;
                 axios.get("shutDownTopic/"+obj.currentTopicId).then(function (response) {
                     if (response.data === "success") {
-                        obj.finish = true
+                        obj.finish = true;
                         console.log("关闭话题成功");
                         axios.get("/topics/"+obj.userMessage.account).then(function (response) {
                             obj.topics = response.data;

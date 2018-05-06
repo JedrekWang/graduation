@@ -88,16 +88,16 @@ public class DocumentController {
         return "null";
     }
 
-        /**
-         * 用户文档信息展示
-         * @param userName
-         * @param documentId
-         * @return
-         */
-    @RequestMapping(value = "/{userName}/{documentId}" , method = RequestMethod.GET)
-    public String showDocumentInfo(@PathVariable String userName, @PathVariable Integer documentId) {
-        return "document";
-    }
+//        /**
+//         * 用户文档信息展示
+//         * @param userName
+//         * @param documentId
+//         * @return
+//         */
+//    @RequestMapping(value = "/{userName}/{documentId}" , method = RequestMethod.GET)
+//    public String showDocumentInfo(@PathVariable String userName, @PathVariable Integer documentId) {
+//        return "document";
+//    }
 
 
 

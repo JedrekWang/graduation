@@ -170,7 +170,7 @@
                             <div class="line"></div>
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                             <span>
-                                <a href="#" v-for="group in groups">{{group.groupName}}</a>
+                                <a :href="'/groups/'+ group.groupId" v-for="group in groups">{{group.groupName}} </a>
                             </span>
                         </div>
                     </el-card>

@@ -10,6 +10,8 @@ public interface VersionMapper {
 
     List<Version> queryVersionsByRawFileId(Integer rawFileId);
 
+    List<Version> queryRealVersionByRawFileId(Integer rawFileId);
+
     Version queryVersionByKey(String versionKey);
 
     int addVersion(Version version);

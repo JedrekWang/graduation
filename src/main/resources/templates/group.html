@@ -23,7 +23,7 @@
             background-color: #f6f6f6;
             width: 100%;
             height: 150px;
-            background-image: url(../static/img/gakki2.jpg);
+            /*background-image: url(../static/img/gakki2.jpg);*/
             background-repeat: no-repeat;
             background-size: 100%;
             background-position: center center;
@@ -86,46 +86,46 @@
                     <div class="content">
                         <el-container>
                             <el-col :span="18" :offset="3">
-                                <h1 class="user_name">实验一组</h1>
-                                <h4 style="color: grey">该小组为大数据人工智能区块链小组</h4>
+                                <h1 class="user_name">{{group.groupName}}</h1>
+                                <h4 style="color: grey">{{group.groupDesc}}</h4>
                                 <hr style="height:1px;border:none;border-top:1px solid #ebebeb;" />
                             </el-col>
                         </el-container>
                         <el-container class="users">
-                            <el-col :span="4" :offset="3">
+                            <el-col :span="4" :offset="3" v-for="user in users">
                                 <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
+                                    <div class="user_picture" :style="{backgroundImage: 'url(/system/img/' +user.account+ '.jpg)'}">
                                     </div>
-                                    <span>Timo</span>
+                                    <a :href="'/'+user.account"><span>{{user.userName}}</span></a>
                                 </el-card>
                             </el-col>
-                            <el-col :span="4" :offset="1">
-                                <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
-                                    </div>
-                                    <div>
-                                        <span>Timo</span>
-                                    </div>
-                                </el-card>
-                            </el-col>
-                            <el-col :span="4" :offset="1">
-                                <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
-                                    </div>
-                                    <div>
-                                        <span>Timo</span>
-                                    </div>
-                                </el-card>
-                            </el-col>
-                            <el-col :span="4" :offset="1">
-                                <el-card :body-style="{ padding: '0px' }">
-                                    <div class="user_picture">
-                                    </div>
-                                    <div>
-                                        <span>Timo</span>
-                                    </div>
-                                </el-card>
-                            </el-col>
+                            <!--<el-col :span="4" :offset="1">-->
+                                <!--<el-card :body-style="{ padding: '0px' }">-->
+                                    <!--<div class="user_picture">-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<span>Timo</span>-->
+                                    <!--</div>-->
+                                <!--</el-card>-->
+                            <!--</el-col>-->
+                            <!--<el-col :span="4" :offset="1">-->
+                                <!--<el-card :body-style="{ padding: '0px' }">-->
+                                    <!--<div class="user_picture">-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<span>Timo</span>-->
+                                    <!--</div>-->
+                                <!--</el-card>-->
+                            <!--</el-col>-->
+                            <!--<el-col :span="4" :offset="1">-->
+                                <!--<el-card :body-style="{ padding: '0px' }">-->
+                                    <!--<div class="user_picture">-->
+                                    <!--</div>-->
+                                    <!--<div>-->
+                                        <!--<span>Timo</span>-->
+                                    <!--</div>-->
+                                <!--</el-card>-->
+                            <!--</el-col>-->
                         </el-container>
                     </div>
                 </el-col>
@@ -142,11 +142,30 @@
         data: {
             userMessage: {
                 userName: ""
-            }
+            },
+            group: {
+                groupId: "",
+                groupName: "",
+                groupDesc: ""
+            },
+            users: []
         },
         mounted: function() {
             obj = this;
             obj.userMessage.userName = obj.getCookie("currentUser");
+            var groupId = obj.getGroupId();
+            axios.get("/userTestGroup/"+ groupId).then(function (response) {
+                obj.group.groupId = response.data.groupId;
+                obj.group.groupName = response.data.groupName;
+                obj.group.groupDesc = response.data.groupDesc;
+            }).catch(function (response) {
+                console.log(response);
+            });
+            axios.get("/groupAllUser/"+ groupId).then(function (response) {
+                obj.users = response.data;
+            }).catch(function (response) {
+
+            })
         },
         methods: {
             //获取cookie
@@ -162,6 +181,13 @@
             },
             format_url: function (url) {
                 return url.split(" ").join("_")
+            },
+            getGroupId: function () {
+                var url = window.location.href;
+                var groupId = url.split("/")[4];
+                console.log("groupId"+groupId)
+                return groupId
+
             }
         }
     })

@@ -92,7 +92,7 @@
                     </el-menu-item>
                     <el-submenu-item index="11">
                         <a :href="'/'+ userMessage.account">
-                            <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.account+ '.jpg)'}"></div>
+                            <div id="user_head" :style="{backgroundImage: 'url(/system/img/' +userMessage.userName+ '.jpg)'}"></div>
                         </a>
                     </el-submenu-item>
                 </el-menu>
@@ -113,11 +113,18 @@
                             <i class="el-icon-document"></i>
                             <span slot="title">查看讨论</span>
                         </el-menu-item>
+                        <el-submenu index="version">
+                            <template slot="title">
+                                <i class="el-icon-location"></i>
+                                <span>版本</span>
+                            </template>
+                            <el-menu-item v-for="version in versions" :index="'version-'+version.versionId">{{version.versionDesc}}</el-menu-item>
+                            <!--<el-menu-item index="1-2">选项2</el-menu-item>-->
                         </el-submenu>
                     </el-menu>
                 </el-aside>
             </el-col>
-            <template v-if="currentAside == 'file'">
+            <template v-if="currentAside != 'comment'">
             <el-col :span="2" :offset="2">
                 <a href="#">
                     <div class="creator-logo"></div>
@@ -196,7 +203,8 @@
             userMessage: {
                 userName: ""
             },
-
+            versions: [],
+            uploadPathMessages: [],
             messages: [],
             currentAside: "file",
             dialogFormVisible: false,
@@ -231,7 +239,11 @@
             axios.get("/users/").then(function (response) {
                 obj.members = response.data;
             });
-
+            axios.get("/versions/"+fileId).then(function (response) {
+                obj.versions = response.data;
+            }).catch(function (response) {
+                console.log(response)
+            })
         },
         methods: {
             //获取cookie
@@ -292,10 +304,37 @@
                 if(index === "comment") {
                     axios.get("/file/comment/"+obj.document.fileId).then(function (response) {
                         obj.messages = response.data;
+                    }).then(function (value) {
+                        var param = {
+                            "messages": obj.messages
+                        }
+                        var config = {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        };
+                        axios.post("/message/uploadPath/", param).then(function (response) {
+                            obj.uploadPathMessages = response.data;
+                        })
                     })
-                } else if (index === "file"){
+                } else if (index === "file" || index.split("-")[0] === "version"){
                     PDFObject.embed(obj.document.finalPath, ".document");
                 }
+            },
+            getUploadFilePath: function (messageId) {
+                var obj = this;
+                console.log("start getUploadFilePath"+messageId);
+                for(var i=0;i<obj.uploadPathMessages.length;i++){
+                    if(obj.uploadPathMessages[i].messageId == messageId) {
+                        console.log(obj.uploadPathMessages[i].uploadPath);
+                        return obj.uploadPathMessages[i].uploadPath;
+                    }
+                }
+
+            },
+            testAside: function () {
+                var obj = this;
+                return obj.currentAside === 'file' || obj.currentAside.split("-")[0] === "version";
             }
         }
     })

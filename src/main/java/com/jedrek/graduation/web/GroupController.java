@@ -1,8 +1,10 @@
 package com.jedrek.graduation.web;
 
+import com.jedrek.graduation.entity.User;
 import com.jedrek.graduation.entity.UserGroup;
 import com.jedrek.graduation.service.UserGroupConService;
 import com.jedrek.graduation.service.UserGroupService;
+import com.jedrek.graduation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.Map;
 public class GroupController {
     private UserGroupService userGroupService;
     private UserGroupConService userGroupConService;
+    private UserService userService;
 
     @Autowired
     public GroupController(UserGroupService userGroupService, UserGroupConService userGroupConService) {
@@ -46,6 +49,21 @@ public class GroupController {
         return "admin_group";
     }
 
+
+    @ResponseBody
+    @RequestMapping(value = "userTestGroup/{groupId}", method = RequestMethod.GET)
+    public Object getGroupMessage(@PathVariable Integer groupId) {
+        UserGroup userGroup = userGroupService.queryGroupById(groupId);
+        return userGroup;
+    }
+
+
+    @ResponseBody
+    @RequestMapping("groupAllUser/{groupId}")
+    public Object getAllUserFromGroup(@PathVariable Integer groupId) {
+        List<User> users = userGroupConService.queryUsersByGroup(groupId);
+        return users;
+    }
 
     @ResponseBody
     @RequestMapping("/allGroup/{userId}")
