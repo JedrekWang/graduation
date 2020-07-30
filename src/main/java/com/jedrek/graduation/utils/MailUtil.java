@@ -45,7 +45,7 @@ public class MailUtil {
         // 获取默认session对象
         Session session = Session.getDefaultInstance(properties, new Authenticator() {
             public PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("1309898641@qq.com", "cikojppfidbrijgb"); //发件人邮件用户名、密码
+                return new PasswordAuthentication("1309898641@qq.com", "******"); //发件人邮件用户名、密码
             }
         });
 
@@ -112,6 +112,3 @@ public class MailUtil {
         return "";
     }
 }
-
-
-//http://localhost:8088/verify_email?email=1850715048@qq.com%26hash=61AD531F838A33515487FEDFA252E66CF47C2AF34AF4F301CE196AB74175763301F589D93600FC5B&mailid=HQUJaHABAAUGFFpEBHZtAmJLeQV6VX9iRUpydGFtUQEG&spam=0
